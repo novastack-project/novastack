@@ -1,0 +1,82 @@
+name: "\U0001F41B Bug Report"
+description: Report a bug in NovaStack
+title: "[Bug]: "
+labels: ["bug"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for taking the time to report a bug! Please fill out the form below to help us investigate and fix the issue.
+
+  - type: checkboxes
+    id: prerequisites
+    attributes:
+      label: Prerequisites
+      description: Please confirm before submitting
+      options:
+        - label: I have searched existing issues to avoid duplicates
+          required: true
+        - label: I have read the documentation
+          required: true
+        - label: I am using the latest version of NovaStack
+          required: false
+
+  - type: textarea
+    id: description
+    attributes:
+      label: What happened?
+      description: Describe the bug, what you expected, and what actually happened
+      placeholder: |
+        I'm trying to use `novastack` to do X.
+        
+        **Expected:** The function should return Y
+        **Actual:** Instead, it returns Z with error "..."
+    validations:
+      required: true
+
+  - type: textarea
+    id: reproduction
+    attributes:
+      label: Steps to Reproduce
+      description: Provide minimal code to reproduce the issue
+      placeholder: |
+        ```python
+        from novastack.llms.litellm import LiteLLM
+        
+        # Your minimal code example here
+        ```
+      render: python
+    validations:
+      required: true
+
+  - type: textarea
+    id: logs
+    attributes:
+      label: Logs / Error Messages
+      description: Include relevant error messages or stack traces
+      placeholder: |
+        Traceback (most recent call last):
+          File "example.py", line 10, in <module>
+            ...
+      render: shell
+    validations:
+      required: false
+
+  - type: textarea
+    id: system-info
+    attributes:
+      label: Environment
+      description: Please provide your environment details
+      placeholder: |
+        - OS: [e.g., Ubuntu 22.04, macOS 14.0, Windows 11]
+        - Python version: [e.g., 3.11.9]
+        - NovaStack version: [e.g., 0.6.1]
+        - Installation method: [e.g., pip, poetry, conda]
+      value: |
+        - OS:
+        - Python version:
+        - NovaStack version:
+        - Installation method:
+    validations:
+      required: true
+      

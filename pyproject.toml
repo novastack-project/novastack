@@ -1,0 +1,34 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "novastack"
+version = "1.0.0"
+description = "Load any data"
+authors = [{ name = "Leonardo Furnielis", email = "leonardofurnielis@outlook.com" }]
+license = { text = "Apache-2.0" }
+readme = "README.md"
+requires-python = ">=3.11,<3.14"
+keywords = ["AI", "LLM", "QA", "RAG", "data", "observability", "retrieval", "semantic-search"]
+classifiers = [
+    "Topic :: Scientific/Engineering :: Artificial Intelligence",
+    "Topic :: Software Development :: Libraries :: Python Modules",
+    "Topic :: Software Development :: Libraries :: Application Frameworks",
+]
+
+dependencies = []
+
+[project.optional-dependencies]
+dev = [
+    "ruff>=0.15.8",
+]
+
+[tool.hatch.build.targets.sdist]
+include = ["_novastack/novastack"]
+
+[tool.hatch.build.targets.wheel]
+include = ["_novastack/novastack"]
+
+[tool.hatch.build.targets.wheel.sources]
+"_novastack/novastack" = "novastack"
