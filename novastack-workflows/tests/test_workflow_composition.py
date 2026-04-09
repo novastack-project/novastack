@@ -145,6 +145,6 @@ async def test_sub_workflow_isolation():
 @pytest.mark.asyncio
 async def test_validation_workflow_empty_data():
     validation_workflow = DataValidationWorkflow()
-    
+
     with pytest.raises(WorkflowRuntimeError, match="Data cannot be empty"):
         await validation_workflow.run(input_msg="")

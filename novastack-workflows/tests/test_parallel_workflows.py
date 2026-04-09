@@ -78,11 +78,11 @@ async def test_parallel_workflow():
     assert len(result) == 2
     assert any(r["processor"] == "A" for r in result)
     assert any(r["processor"] == "B" for r in result)
-    
+
     # Verify results contain expected values
     processor_a_result = next(r for r in result if r["processor"] == "A")
     processor_b_result = next(r for r in result if r["processor"] == "B")
-    
+
     assert processor_a_result["result"] == "Processed by A: 20"
     assert processor_b_result["result"] == "Processed by B: 30"
 
@@ -94,10 +94,10 @@ async def test_parallel_workflow_different_data():
     result = await workflow.run(ctx=ctx, data_id=5)
 
     assert len(result) == 2
-    
+
     processor_a_result = next(r for r in result if r["processor"] == "A")
     processor_b_result = next(r for r in result if r["processor"] == "B")
-    
+
     assert processor_a_result["result"] == "Processed by A: 10"
     assert processor_b_result["result"] == "Processed by B: 15"
 
@@ -109,9 +109,9 @@ async def test_parallel_workflow_zero_data():
     result = await workflow.run(ctx=ctx, data_id=0)
 
     assert len(result) == 2
-    
+
     processor_a_result = next(r for r in result if r["processor"] == "A")
     processor_b_result = next(r for r in result if r["processor"] == "B")
-    
+
     assert processor_a_result["result"] == "Processed by A: 0"
     assert processor_b_result["result"] == "Processed by B: 0"

@@ -17,7 +17,9 @@ class CounterWorkflow(Workflow):
     """
 
     @step(on=StartEvent)
-    async def increment_counter(self, ctx: Context[CounterState], ev: StartEvent) -> StopEvent:
+    async def increment_counter(
+        self, ctx: Context[CounterState], ev: StartEvent
+    ) -> StopEvent:
         current_counter = ctx.state.counter
         current_run_count = ctx.state.run_count
 
@@ -49,7 +51,7 @@ class GenericStateWorkflow(Workflow):
             state.counter = 1
             state.message = "Hello from generic state"
             state.items = ["a", "b", "c"]
-        
+
         return StopEvent(
             result={
                 "counter": ctx.state.counter,

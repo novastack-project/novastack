@@ -3,7 +3,6 @@ from novastack.workflows import Workflow, Context, step, Event, StartEvent, Stop
 
 
 class MyEvent(Event):
-
     message: str
 
 

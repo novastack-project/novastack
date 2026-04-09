@@ -45,7 +45,9 @@ class ResilientApiWorkflow(Workflow):
         num_retries=3,  # Retry up to 3 times
         retry_delay=1.0,  # 1 second delay between retries
     )
-    async def call_flaky_api(self, ctx: Context[ApiState], ev: ApiCallEvent) -> ApiResponseEvent:
+    async def call_flaky_api(
+        self, ctx: Context[ApiState], ev: ApiCallEvent
+    ) -> ApiResponseEvent:
         attempt = ctx.state.api_attempts + 1
 
         # Update attempts with copy-on-write

@@ -56,7 +56,7 @@ class Context(Generic[STATE_T]):
             event_queue: Event queue for emission
         """
         self._workflow = workflow
-        
+
         # Use provided queue or create OptimizedEventQueue
         if event_queue is None:
             self._event_queue = OptimizedEventQueue()
@@ -65,7 +65,7 @@ class Context(Generic[STATE_T]):
 
         # Copy-on-write state store with auto-initialization
         # Infer state type from workflow's _state_type if available
-        state_type = getattr(workflow, '_state_type', None)
+        state_type = getattr(workflow, "_state_type", None)
         self._store = StateStore(state_type=state_type)
 
     @property

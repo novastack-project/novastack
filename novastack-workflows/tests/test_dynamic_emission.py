@@ -107,7 +107,7 @@ async def test_dynamic_emission_all_tasks_processed():
 
     # Verify all 3 tasks were processed
     assert len(result) == 3
-    
+
     # Verify each task was processed correctly
     for i, task_result in enumerate(result, start=1):
         assert task_result["task_id"] == i

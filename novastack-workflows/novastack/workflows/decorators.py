@@ -29,6 +29,7 @@ def step(
         The decorated method must have the signature:
         async def fn(self, ctx: Context, ev: EventType) -> Event | None
     """
+
     def decorator(f: Callable) -> Callable:
         # Is async function?
         if not inspect.iscoroutinefunction(f):

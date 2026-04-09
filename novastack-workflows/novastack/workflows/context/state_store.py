@@ -50,7 +50,7 @@ class StateStore(Generic[STATE_T]):
         """
         self._lock = asyncio.Lock()
         self._state_type: Type[BaseModel] = state_type or DictLikeModel
-        
+
         if state_data is not None:
             self._state: STATE_T | None = state_data
         else:

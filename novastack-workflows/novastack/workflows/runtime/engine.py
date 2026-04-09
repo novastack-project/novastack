@@ -46,7 +46,9 @@ class WorkflowEngine:
         max_workers: int = 100,
     ) -> None:
         if max_iterations < 0:
-            raise WorkflowValidationError("'max_iterations' must be 0 (unlimited) or greater")
+            raise WorkflowValidationError(
+                "'max_iterations' must be 0 (unlimited) or greater"
+            )
         if queue_wait_timeout <= 0:
             raise WorkflowValidationError("'queue_wait_timeout' must be greater than 0")
 
@@ -131,7 +133,9 @@ class WorkflowEngine:
 
             # Check if max iterations reached (only if not unlimited)
             if self._max_iterations > 0 and iteration >= self._max_iterations:
-                raise WorkflowRuntimeError(f"Execution workflow maximum iterations: ({self._max_iterations}).")
+                raise WorkflowRuntimeError(
+                    f"Execution workflow maximum iterations: ({self._max_iterations})."
+                )
 
         except WorkflowRuntimeError:
             raise
@@ -206,8 +210,9 @@ class WorkflowEngine:
                 # Step returned an event, emit it
                 await context.emit(result)
             elif isinstance(result, Exception):
-                raise WorkflowRuntimeError(f"Execution failure in workflow step '{step_name}'. "
-                f"{str(result)}")
+                raise WorkflowRuntimeError(
+                    f"Execution failure in workflow step '{step_name}'. {str(result)}"
+                )
             else:
                 raise WorkflowRuntimeError(
                     f"Step '{step_name}' expected Event, got {type(result).__name__}. "
@@ -270,7 +275,7 @@ class WorkflowEngine:
                 if attempt < num_retries:
                     await asyncio.sleep(retry_delay)
                     continue
-                
+
                 # All retries exhausted
                 raise
 

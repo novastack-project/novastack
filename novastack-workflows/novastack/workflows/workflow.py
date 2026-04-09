@@ -46,7 +46,7 @@ class Workflow:
 
         # Build routing table: Event class -> list of step methods
         cls._step_registry: dict[Type[Event], list[tuple[str, Any]]] = {}
-        
+
         # Track state types across steps for consistency validation
         state_types: dict[str, Type] = {}
 
@@ -58,7 +58,7 @@ class Workflow:
                     if event_type not in cls._step_registry:
                         cls._step_registry[event_type] = []
                     cls._step_registry[event_type].append((name, method))
-                    
+
                     # Extract and validate Context state type
                     sig = inspect.signature(method)
                     for param_name, param in sig.parameters.items():
@@ -72,10 +72,10 @@ class Workflow:
                                 else:
                                     # Context without type - defaults to DictLikeModel
                                     state_type = DictLikeModel
-                                
+
                                 state_types[name] = state_type
                                 break
-        
+
         # Validate state type consistency across all steps
         if state_types:
             unique_types = set(state_types.values())
@@ -89,7 +89,7 @@ class Workflow:
                     f"All steps must use the same Context[StateType].\n"
                     f"Found:\n{type_details}"
                 )
-            
+
             # Store the validated state type for the workflow
             cls._state_type = next(iter(unique_types))
         else:

@@ -23,8 +23,10 @@ class StateWorkflow(Workflow):
     """
 
     @step(on=StartEvent)
-    async def initialize(self, ctx: Context[RunState], ev: StartEvent) -> IncrementEvent:
-        
+    async def initialize(
+        self, ctx: Context[RunState], ev: StartEvent
+    ) -> IncrementEvent:
+
         async with ctx.store.edit_state() as state:
             state.counter = 0
             state.items = ["initialized"]
@@ -64,10 +66,10 @@ async def test_state_workflow():
 async def test_state_workflow_multiple_increments():
     workflow = StateWorkflow()
     ctx = Context(workflow)
-    
+
     # Modify the workflow to accept different increment values
     result = await workflow.run(ctx=ctx)
-    
+
     assert result["counter"] == 5
     assert len(result["items"]) == 2
     assert result["total"] == 10
@@ -78,7 +80,7 @@ async def test_state_immutability():
     workflow = StateWorkflow()
     ctx = Context(workflow)
     result = await workflow.run(ctx=ctx)
-    
+
     # Verify state was properly managed
     assert result["counter"] == 5
     assert "initialized" in result["items"]
