@@ -1,5 +1,7 @@
 # 🗂️ NovaStack
 
+Forge data pipelines, unleash smart AI applications.
+
 ## Installation 
 
 ```bash

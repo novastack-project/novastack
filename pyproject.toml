@@ -5,7 +5,7 @@ build-backend = "hatchling.build"
 [project]
 name = "novastack"
 version = "1.0.0"
-description = "Load any data"
+description = "Forge data pipelines, unleash smart AI applications."
 authors = [{ name = "Leonardo Furnielis", email = "leonardofurnielis@outlook.com" }]
 license = { text = "Apache-2.0" }
 readme = "README.md"
