@@ -41,7 +41,8 @@ class SimpleWorkflow(Workflow):
 async def main():
     workflow = SimpleWorkflow()
     result = await workflow.run(input_msg="Hello, World!")
-    print(result)  # Output: Processed: Hello, World!
+
+    print(result)
 ```
 
 ## Core Concepts
