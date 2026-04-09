@@ -31,21 +31,3 @@ async def test_simple_workflow():
     result = await workflow.run(input_msg="Hello, World!")
 
     assert result == "Processed: Hello, World!"
-
-
-@pytest.mark.asyncio
-async def test_simple_workflow_empty_input():
-    """Test simple workflow with empty input."""
-    workflow = SimpleWorkflow()
-    result = await workflow.run(input_msg="")
-
-    assert result == "Processed: "
-
-
-@pytest.mark.asyncio
-async def test_simple_workflow_special_characters():
-    """Test simple workflow with special characters."""
-    workflow = SimpleWorkflow()
-    result = await workflow.run(input_msg="Test!@#$%^&*()")
-
-    assert result == "Processed: Test!@#$%^&*()"

@@ -14,7 +14,7 @@ class ProcessedEvent(Event):
 
 
 class ParallelState(BaseModel):
-    results: list[dict[str, Any]] = Field(default_factory=list)
+    result: list[dict[str, Any]] = Field(default_factory=list)
     completed_count: int = Field(default=0)
 
 
@@ -33,7 +33,7 @@ class ParallelWorkflow(Workflow):
 
         # Initialize state with copy-on-write
         async with ctx.store.edit_state() as state:
-            state.results = []
+            state.result = []
             state.completed_count = 0
 
         data_id = ev.get("data_id", 1)
@@ -54,7 +54,7 @@ class ParallelWorkflow(Workflow):
         self, ctx: Context, ev: ProcessedEvent
     ) -> StopEvent | None:
         async with ctx.store.edit_state() as state:
-            state.results.append(
+            state.result.append(
                 {
                     "processor": ev.processor,
                     "result": ev.result,
@@ -64,9 +64,9 @@ class ParallelWorkflow(Workflow):
 
         # Check if both parallel steps completed (read-only access)
         if ctx.state.completed_count >= 2:
-            return StopEvent(result=ctx.state.results)
+            return StopEvent(result=ctx.state.result)
 
-        return None  # Wait for more results
+        return None
 
 
 @pytest.mark.asyncio

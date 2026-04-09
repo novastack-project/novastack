@@ -13,7 +13,6 @@ class CounterWorkflow(Workflow):
     - State persists when the same context is reused
     - Multiple workflow executions with the same context
     - Counter incrementing across runs
-    - Clear demonstration of context reuse behavior
     """
 
     @step(on=StartEvent)

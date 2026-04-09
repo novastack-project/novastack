@@ -15,7 +15,7 @@ class RunState(BaseModel):
 
 class StateWorkflow(Workflow):
     """
-    - Automatic state initialization using DictLikeModel
+    - Automatic state initialization using RunState
     - Copy-on-write state mutations with async context manager
     - Immutability by default
     - Thread-safe state updates
@@ -57,6 +57,8 @@ async def test_state_workflow():
     ctx = Context(workflow)
     result = await workflow.run(ctx=ctx)
 
+    assert isinstance(ctx.state, RunState)
+
     assert result["counter"] == 5
     assert result["items"] == ["initialized", "incremented by 5"]
     assert result["total"] == 10
@@ -70,6 +72,8 @@ async def test_state_workflow_multiple_increments():
     # Modify the workflow to accept different increment values
     result = await workflow.run(ctx=ctx)
 
+    assert isinstance(ctx.state, RunState)
+
     assert result["counter"] == 5
     assert len(result["items"]) == 2
     assert result["total"] == 10
@@ -80,6 +84,8 @@ async def test_state_immutability():
     workflow = StateWorkflow()
     ctx = Context(workflow)
     result = await workflow.run(ctx=ctx)
+
+    assert isinstance(ctx.state, RunState)
 
     # Verify state was properly managed
     assert result["counter"] == 5

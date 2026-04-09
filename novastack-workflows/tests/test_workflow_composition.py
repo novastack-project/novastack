@@ -25,7 +25,6 @@ class DataCleaningWorkflow(Workflow):
     """
     - Reusable workflow component
     - Isolated state (independent from parent)
-    - Clean separation of concerns
     """
 
     @step(on=StartEvent)
