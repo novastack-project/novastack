@@ -62,7 +62,7 @@ body:
       description: How important is this feature to you?
       options:
         - Low - Nice to have
-        - Medium - Would significantly improve my workflow
+        - Medium
         - High - Blocking my use case
     validations:
       required: false
