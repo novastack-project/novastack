@@ -1,4 +1,4 @@
-name: Tests
+name: Testing
 
 on:
   push:
@@ -30,16 +30,3 @@ jobs:
       - name: Run tests
         working-directory: novastack-workflows
         run: uv run pytest tests/ -v --tb=short
-
-      - name: Run tests with coverage
-        working-directory: novastack-workflows
-        run: uv run pytest tests/ --cov=novastack.workflows --cov-report=term-missing --cov-report=xml
-
-      - name: Upload coverage reports
-        if: matrix.python-version == '3.11'
-        uses: codecov/codecov-action@v4
-        with:
-          file: ./novastack-workflows/coverage.xml
-          flags: unittests
-          name: codecov-umbrella
-          fail_ci_if_error: false
