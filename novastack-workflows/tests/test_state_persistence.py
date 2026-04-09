@@ -29,7 +29,7 @@ class CounterWorkflow(Workflow):
             state.run_count = current_run_count + 1
 
         # Get increment value from event or use default
-        increment_by = ev.get("increment_by", 1)
+        ev.get("increment_by", 1)
 
         return StopEvent(
             result={
@@ -151,7 +151,7 @@ async def test_state_isolation_between_workflows():
     ctx2 = Context(workflow2)
 
     # Run workflow1 twice
-    result1a = await workflow1.run(ctx=ctx1)
+    await workflow1.run(ctx=ctx1)
     result1b = await workflow1.run(ctx=ctx1)
     assert result1b["counter"] == 2
 
