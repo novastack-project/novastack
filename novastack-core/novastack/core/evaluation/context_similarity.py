@@ -13,30 +13,30 @@ class ContextSimilarityEvaluator(BaseEvaluator):
     """
     Evaluates context similarity using query-context and answer-context
     similarity combined with harmonic mean.
-    
+
     This evaluator provides a balanced evaluation of RAG systems by ensuring:
     - **Retrieval quality**: How well contexts match the query (retrieval quality).
     - **Answer grounding**: How well the answer is supported by contexts (answer grounding).
-    
+
     The harmonic mean is used to combine scores because it:
     - Penalizes imbalanced scores (both metrics must be good)
     - Is more conservative than arithmetic mean
     - Better reflects the "weakest link" in RAG quality
-    
+
     Attributes:
         embed_model (BaseEmbedding): The embedding model used to compute vector representations.
         similarity_mode (SimilarityMode, optional): Similarity strategy to use. Supported options are
             `"cosine"`, `"dot_product"`, and `"euclidean"`. Defaults to `"cosine"`.
         score_threshold (float, optional): Minimum required score for evaluation approval.
             Must be between 0.0 and 1.0. Defaults to `0.8`.
-    
+
     Example:
         ```python
         from novastack.core.evaluation import ContextSimilarityEvaluator
         from novastack.embedding.huggingface import HuggingFaceEmbedding
-        
+
         embedding = HuggingFaceEmbedding()
-        
+
         evaluator = ContextSimilarityEvaluator(embed_model=embedding)
         ```
     """
@@ -56,11 +56,11 @@ class ContextSimilarityEvaluator(BaseEvaluator):
     ) -> tuple[list[float], float]:
         """
         Calculate similarity scores between reference text and contexts.
-        
+
         Args:
             reference_text: The text to compare against contexts (query or answer)
             contexts: List of context strings
-            
+
         Returns:
             Tuple of (individual_scores, mean_score)
         """
@@ -88,11 +88,11 @@ class ContextSimilarityEvaluator(BaseEvaluator):
     def _compute_harmonic_mean(self, query_score: float, answer_score: float) -> float:
         """
         Compute harmonic mean of query and answer scores.
-        
+
         Args:
             query_score: Query-context similarity score
             answer_score: Answer-context similarity score
-            
+
         Returns:
             Harmonic mean: 2 * (q * a) / (q + a)
         """
@@ -109,13 +109,13 @@ class ContextSimilarityEvaluator(BaseEvaluator):
     ) -> dict:
         """
         Evaluate context similarity using query and answer.
-        
+
         Args:
             query (str): Input query text
             generated_text (str): LLM-generated answer text
             contexts (list[str]): List of context strings
             **kwargs: Additional keyword arguments (unused)
-            
+
         Returns:
             ```python
             {
@@ -131,7 +131,7 @@ class ContextSimilarityEvaluator(BaseEvaluator):
                 "passing": True,                      # Whether score >= threshold
             }
             ```
-            
+
         Example:
             ```python
             result = evaluator.evaluate(
@@ -139,7 +139,7 @@ class ContextSimilarityEvaluator(BaseEvaluator):
                 generated_text="The capital of France is Paris.",
                 contexts=["Paris is the capital city of France.", "France is in Europe."]
             )
-            
+
             print(f"Query-Context Score: {result['query_context_similarity']['score']}")
             print(f"Answer-Context Score: {result['answer_context_similarity']['score']}")
             print(f"Combined Score: {result['score']}")
