@@ -24,5 +24,7 @@ include = ["novastack/"]
 
 [project.optional-dependencies]
 dev = [
-    "ruff>=0.15.8",
+    "pytest>=9.0.3,<10.0.0",
+    "pytest-asyncio>=1.3.0,<2.0.0",
+    "ruff>=0.15.8,<1.0.0",
 ]
