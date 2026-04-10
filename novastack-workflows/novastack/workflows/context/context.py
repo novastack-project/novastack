@@ -26,11 +26,13 @@ class Context(Generic[STATE_T]):
             counter: int = 0
             items: list[str] = []
 
+
         # With typed state - auto-initialized
         @step
         async def start(self, ctx: Context[RunState], ev: StartEvent):
             async with ctx.store.edit_state() as state:
                 state.counter += 1  # RunState auto-initialized
+
 
         # Without type - uses DictLikeModel
         @step

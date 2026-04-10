@@ -121,14 +121,14 @@ class ContextSimilarityEvaluator(BaseEvaluator):
             {
                 "query_context_similarity": {
                     "contexts_score": [0.92, 0.85],  # Individual scores per context
-                    "score": 0.885                    # Mean query-context score
+                    "score": 0.885,  # Mean query-context score
                 },
                 "answer_context_similarity": {
                     "contexts_score": [0.88, 0.82],  # Individual scores per context
-                    "score": 0.850                    # Mean answer-context score
+                    "score": 0.850,  # Mean answer-context score
                 },
-                "score": 0.867,                       # Harmonic mean of both scores
-                "passing": True,                      # Whether score >= threshold
+                "score": 0.867,  # Harmonic mean of both scores
+                "passing": True,  # Whether score >= threshold
             }
             ```
 
@@ -137,11 +137,16 @@ class ContextSimilarityEvaluator(BaseEvaluator):
             result = evaluator.evaluate(
                 query="What is the capital of France?",
                 generated_text="The capital of France is Paris.",
-                contexts=["Paris is the capital city of France.", "France is in Europe."]
+                contexts=[
+                    "Paris is the capital city of France.",
+                    "France is in Europe.",
+                ],
             )
 
             print(f"Query-Context Score: {result['query_context_similarity']['score']}")
-            print(f"Answer-Context Score: {result['answer_context_similarity']['score']}")
+            print(
+                f"Answer-Context Score: {result['answer_context_similarity']['score']}"
+            )
             print(f"Combined Score: {result['score']}")
             print(f"Passing: {result['passing']}")
             ```

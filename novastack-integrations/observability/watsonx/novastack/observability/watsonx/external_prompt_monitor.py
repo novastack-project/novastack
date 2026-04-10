@@ -238,7 +238,9 @@ class WatsonxExternalPromptMonitor(PromptObservability):
 
         Example:
             ```python
-            from novastack.observability.watsonx.supporting_classes.enums import TaskType
+            from novastack.observability.watsonx.supporting_classes.enums import (
+                TaskType,
+            )
 
             wxgov_client.create_prompt_monitor(
                 name="Detached prompt (model AWS Anthropic)",

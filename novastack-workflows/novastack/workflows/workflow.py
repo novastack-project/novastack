@@ -30,6 +30,7 @@ class Workflow:
             async def process(self, ctx: Context[MyState], ev: MyEvent) -> StopEvent:
                 return StopEvent(result="done")
 
+
         workflow = MyWorkflow()
         result = await workflow.run(input_msg="hello")
         ```
