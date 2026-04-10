@@ -12,7 +12,7 @@ __all__ = [
     "Workflow",
     "Context",
     "step",
-    # Event system
+    # Events
     "Event",
     "StartEvent",
     "StopEvent",
