@@ -488,8 +488,6 @@ class WatsonxPromptMonitor(PromptObservability):
             )
             ```
         """
-        from ibm_cloud_sdk_core.authenticators import IAMAuthenticator
-        from ibm_watson_openscale import APIClient as WosAPIClient
         from ibm_watson_openscale.supporting_classes.enums import (
             DataSetTypes,
             TargetTypes,
