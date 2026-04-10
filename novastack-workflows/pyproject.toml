@@ -10,7 +10,7 @@ authors = [{ name = "Leonardo Furnielis", email = "leonardofurnielis@outlook.com
 license = { text = "Apache-2.0" }
 readme = "README.md"
 requires-python = ">=3.11,<3.14"
-keywords = ["AI", "LLM", "QA", "RAG", "data", "observability", "retrieval", "semantic-search"]
+keywords = ["AI", "LLM", "QA", "RAG", "data", "workflows", "retrieval", "semantic-search"]
 classifiers = [
     "Topic :: Scientific/Engineering :: Artificial Intelligence",
     "Topic :: Software Development :: Libraries :: Python Modules",
@@ -29,7 +29,7 @@ dev = [
 ]
 
 [project.urls]
-Repository = "https://github.com/novastack-project/novastack"
+Repository = "https://github.com/novastack-project/novastack/tree/main/novastack-workflows"
 
 [tool.hatch.build.targets.sdist]
 include = ["novastack/"]

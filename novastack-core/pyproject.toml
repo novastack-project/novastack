@@ -30,7 +30,7 @@ dev = [
 ]
 
 [project.urls]
-Repository = "https://github.com/novastack-project/novastack"
+Repository = "https://github.com/novastack-project/novastack/tree/main/novastack-core"
 
 [tool.hatch.build.targets.sdist]
 include = ["novastack/"]
