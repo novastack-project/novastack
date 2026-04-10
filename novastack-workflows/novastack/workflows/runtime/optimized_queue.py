@@ -1,6 +1,6 @@
 import asyncio
 from collections import deque
-from typing import TypeVar, Generic
+from typing import Generic, TypeVar
 
 from novastack.workflows.events import Event
 

@@ -1,12 +1,12 @@
 import asyncio
 import uuid
-from typing import Any, TYPE_CHECKING
+from typing import TYPE_CHECKING, Any
 
 from novastack.workflows.context import Context
 from novastack.workflows.decorators import (
-    get_step_timeout,
     get_step_num_retries,
     get_step_retry_delay,
+    get_step_timeout,
 )
 from novastack.workflows.events import Event, StartEvent, StopEvent
 from novastack.workflows.exceptions import (
@@ -140,7 +140,7 @@ class WorkflowEngine:
         except WorkflowRuntimeError:
             raise
         except Exception as e:
-            raise WorkflowRuntimeError(f"Execution failure in workflow: {str(e)}.")
+            raise WorkflowRuntimeError(f"Execution failure in workflow: {e!s}.")
 
         # Return workflow result
         return WorkflowResult(
@@ -211,7 +211,7 @@ class WorkflowEngine:
                 await context.emit(result)
             elif isinstance(result, Exception):
                 raise WorkflowRuntimeError(
-                    f"Execution failure in workflow step '{step_name}'. {str(result)}"
+                    f"Execution failure in workflow step '{step_name}'. {result!s}"
                 )
             else:
                 raise WorkflowRuntimeError(
@@ -245,7 +245,6 @@ class WorkflowEngine:
             num_retries: Number of retry attempts on failure.
             retry_delay: Delay in seconds between retry attempts.
         """
-
         for attempt in range(num_retries + 1):
             try:
                 if timeout is not None:

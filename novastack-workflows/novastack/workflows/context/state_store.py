@@ -3,9 +3,9 @@ import copy
 from contextlib import asynccontextmanager
 from typing import Generic, Type, TypeVar, cast
 
-from pydantic import BaseModel
 from novastack.workflows.exceptions import ContextStateError
 from novastack.workflows.types import DictLikeModel
+from pydantic import BaseModel
 
 STATE_T = TypeVar("STATE_T", bound=BaseModel)
 

@@ -1,7 +1,8 @@
-import pytest
 from typing import Any
+
+import pytest
+from novastack.workflows import Context, Event, StartEvent, StopEvent, Workflow, step
 from pydantic import BaseModel, Field
-from novastack.workflows import Workflow, Context, step, Event, StartEvent, StopEvent
 
 
 class TaskEvent(Event):
@@ -22,10 +23,10 @@ class DynamicState(BaseModel):
 
 class DynamicWorkflow(Workflow):
     """
-    - Using ctx.emit() for manual event emission
-    - Multiple events emitted from a single step
-    - Copy-on-write state for tracking
-    - Flexible event patterns with immutable state
+    - Using ctx.emit() for manual event emission.
+    - Multiple events emitted from a single step.
+    - Copy-on-write state for tracking.
+    - Flexible event patterns with immutable state.
     """
 
     @step(on=StartEvent)

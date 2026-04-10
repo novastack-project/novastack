@@ -1,7 +1,7 @@
 from typing import Any
 
-from pydantic import Field
 from novastack.workflows.types import DictLikeModel
+from pydantic import Field
 
 
 class Event(DictLikeModel):
@@ -9,7 +9,8 @@ class Event(DictLikeModel):
 
 
 class StartEvent(Event):
-    """Workflow initialization event.
+    """
+    Workflow initialization event.
 
     This event marks the beginning of a workflow execution and can carry
     any dynamic fields needed to initialize the workflow state.
@@ -17,7 +18,8 @@ class StartEvent(Event):
 
 
 class StopEvent(Event):
-    """Workflow completion event.
+    """
+    Workflow completion event.
 
     This event marks the end of a workflow execution and typically contains
     the final result. Additional dynamic fields can be included as needed.

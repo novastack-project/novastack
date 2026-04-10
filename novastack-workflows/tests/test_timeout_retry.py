@@ -1,8 +1,9 @@
-import pytest
 import asyncio
 import random
+
+import pytest
+from novastack.workflows import Context, Event, StartEvent, StopEvent, Workflow, step
 from pydantic import BaseModel, Field
-from novastack.workflows import Workflow, Context, step, Event, StartEvent, StopEvent
 
 
 class ApiCallEvent(Event):
@@ -25,11 +26,11 @@ class ApiState(BaseModel):
 
 class ResilientApiWorkflow(Workflow):
     """
-    - Step timeout (5 seconds max)
-    - Automatic retry (up to 3 attempts)
-    - 1 second delay between retries
-    - Error handling for timeout and retry exhaustion
-    - Thread-safe state tracking with copy-on-write
+    - Step timeout (5 seconds max).
+    - Automatic retry (up to 3 attempts).
+    - 1 second delay between retries.
+    - Error handling for timeout and retry exhaustion.
+    - Thread-safe state tracking with copy-on-write.
     """
 
     @step(on=StartEvent)

@@ -1,5 +1,5 @@
 import pytest
-from novastack.workflows import Workflow, Context, step, Event, StartEvent, StopEvent
+from novastack.workflows import Context, Event, StartEvent, StopEvent, Workflow, step
 
 
 class MyEvent(Event):
@@ -8,10 +8,10 @@ class MyEvent(Event):
 
 class SimpleWorkflow(Workflow):
     """
-    - Workflow without state management
-    - Simple event chaining: StartEvent → MyEvent → StopEvent
-    - Basic decorator usage with @step(on=...)
-    - Returning events from step methods
+    - Workflow without state management.
+    - Simple event chaining: StartEvent → MyEvent → StopEvent.
+    - Basic decorator usage with @step(on=...).
+    - Returning events from step methods.
     """
 
     @step(on=StartEvent)

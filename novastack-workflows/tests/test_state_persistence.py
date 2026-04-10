@@ -1,6 +1,6 @@
 import pytest
+from novastack.workflows import Context, StartEvent, StopEvent, Workflow, step
 from pydantic import BaseModel, Field
-from novastack.workflows import Workflow, Context, step, StartEvent, StopEvent
 
 
 class CounterState(BaseModel):
@@ -10,9 +10,9 @@ class CounterState(BaseModel):
 
 class CounterWorkflow(Workflow):
     """
-    - State persists when the same context is reused
-    - Multiple workflow executions with the same context
-    - Counter incrementing across runs
+    - State persists when the same context is reused.
+    - Multiple workflow executions with the same context.
+    - Counter incrementing across runs.
     """
 
     @step(on=StartEvent)
@@ -40,8 +40,8 @@ class CounterWorkflow(Workflow):
 
 class GenericStateWorkflow(Workflow):
     """
-    - Automatic state initialization with DictLikeModel
-    - DictLikeModel allows dynamic field assignment like a dictionary
+    - Automatic state initialization with DictLikeModel.
+    - DictLikeModel allows dynamic field assignment like a dictionary.
     """
 
     @step(on=StartEvent)

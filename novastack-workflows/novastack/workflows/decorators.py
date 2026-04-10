@@ -1,6 +1,6 @@
-from typing import Any, Callable, Type
-from functools import wraps
 import inspect
+from functools import wraps
+from typing import Any, Callable, Type
 
 from novastack.workflows.events import Event
 from novastack.workflows.exceptions import WorkflowValidationError

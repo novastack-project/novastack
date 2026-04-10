@@ -1,9 +1,9 @@
 import asyncio
-from typing import Any, Generic, TypeVar, TYPE_CHECKING
+from typing import TYPE_CHECKING, Any, Generic, TypeVar
 
-from pydantic import BaseModel
 from novastack.workflows.context.state_store import StateStore
 from novastack.workflows.runtime.optimized_queue import OptimizedEventQueue
+from pydantic import BaseModel
 
 if TYPE_CHECKING:
     from novastack.workflows.events import Event

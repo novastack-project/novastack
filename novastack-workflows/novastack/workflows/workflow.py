@@ -3,10 +3,10 @@ import warnings
 from typing import Any, Type, get_args, get_origin
 
 from novastack.workflows.context import Context
-from novastack.workflows.exceptions import WorkflowValidationError
-from novastack.workflows.decorators import is_step_method, get_step_event_type
-from novastack.workflows.runtime.engine import WorkflowEngine
+from novastack.workflows.decorators import get_step_event_type, is_step_method
 from novastack.workflows.events import Event, StartEvent
+from novastack.workflows.exceptions import WorkflowValidationError
+from novastack.workflows.runtime.engine import WorkflowEngine
 from novastack.workflows.types import DictLikeModel
 
 
@@ -62,7 +62,7 @@ class Workflow:
 
                     # Extract and validate Context state type
                     sig = inspect.signature(method)
-                    for param_name, param in sig.parameters.items():
+                    for param_name, param in sig.parameters.items():  # noqa: PERF102
                         if param.annotation != inspect.Parameter.empty:
                             origin = get_origin(param.annotation)
                             if origin is Context:

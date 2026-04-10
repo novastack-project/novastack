@@ -1,7 +1,7 @@
-from novastack.workflows.exceptions import WorkflowRuntimeError
 import pytest
+from novastack.workflows import Context, Event, StartEvent, StopEvent, Workflow, step
+from novastack.workflows.exceptions import WorkflowRuntimeError
 from pydantic import BaseModel, Field
-from novastack.workflows import Workflow, Context, step, Event, StartEvent, StopEvent
 
 
 class DataCleanEvent(Event):
@@ -23,8 +23,8 @@ class PipelineState(BaseModel):
 
 class DataCleaningWorkflow(Workflow):
     """
-    - Reusable workflow component
-    - Isolated state (independent from parent)
+    - Reusable workflow component.
+    - Isolated state (independent from parent).
     """
 
     @step(on=StartEvent)
@@ -40,9 +40,9 @@ class DataCleaningWorkflow(Workflow):
 
 class DataValidationWorkflow(Workflow):
     """
-    - Reusable validation logic
-    - Error handling in sub-workflows
-    - Isolated state (independent from parent)
+    - Reusable validation logic.
+    - Error handling in sub-workflows.
+    - Isolated state (independent from parent).
     """
 
     @step(on=StartEvent)
@@ -60,11 +60,11 @@ class DataValidationWorkflow(Workflow):
 
 class DataPipelineWorkflow(Workflow):
     """
-    - Simple sub-workflow execution via direct run() calls
-    - Complete context isolation (each sub-workflow is independent)
-    - No automatic state sharing between workflows
-    - Explicit communication via parameters and return values
-    - Modular and reusable workflow design
+    - Simple sub-workflow execution via direct run() calls.
+    - Complete context isolation (each sub-workflow is independent).
+    - No automatic state sharing between workflows.
+    - Explicit communication via parameters and return values.
+    - Modular and reusable workflow design.
     """
 
     @step(on=StartEvent)

@@ -1,6 +1,6 @@
 import pytest
+from novastack.workflows import Context, Event, StartEvent, StopEvent, Workflow, step
 from pydantic import BaseModel, Field
-from novastack.workflows import Workflow, Context, step, Event, StartEvent, StopEvent
 
 
 class IncrementEvent(Event):
@@ -15,11 +15,11 @@ class RunState(BaseModel):
 
 class StateWorkflow(Workflow):
     """
-    - Automatic state initialization using RunState
-    - Copy-on-write state mutations with async context manager
-    - Immutability by default
-    - Thread-safe state updates
-    - Automatic rollback on errors
+    - Automatic state initialization using RunState.
+    - Copy-on-write state mutations with async context manager.
+    - Immutability by default.
+    - Thread-safe state updates.
+    - Automatic rollback on errors.
     """
 
     @step(on=StartEvent)

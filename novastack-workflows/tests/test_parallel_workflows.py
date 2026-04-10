@@ -1,7 +1,8 @@
-import pytest
 from typing import Any
+
+import pytest
+from novastack.workflows import Context, Event, StartEvent, StopEvent, Workflow, step
 from pydantic import BaseModel, Field
-from novastack.workflows import Workflow, Context, step, Event, StartEvent, StopEvent
 
 
 class DataFetchedEvent(Event):
@@ -20,10 +21,10 @@ class ParallelState(BaseModel):
 
 class ParallelWorkflow(Workflow):
     """
-    - Multiple steps listening to the same event
-    - Parallel execution (fan-out pattern)
-    - Thread-safe state coordination with copy-on-write
-    - Natural parallelism with immutable state
+    - Multiple steps listening to the same event.
+    - Parallel execution (fan-out pattern).
+    - Thread-safe state coordination with copy-on-write.
+    - Natural parallelism with immutable state.
     """
 
     @step(on=StartEvent)

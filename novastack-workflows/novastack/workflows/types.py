@@ -1,11 +1,12 @@
 from typing import Any
 
-from pydantic import BaseModel, ConfigDict, Field
 from novastack.workflows.enums import WorkflowStatus
+from pydantic import BaseModel, ConfigDict, Field
 
 
 class DictLikeModel(BaseModel):
-    """A Pydantic model that works like a dictionary for dynamic fields.
+    """
+    A Pydantic model that works like a dictionary for dynamic fields.
 
     This class provides a Pydantic-based class system that supports both
     attribute access (event.field) and dictionary-style access (event["field"]).
@@ -18,7 +19,6 @@ class DictLikeModel(BaseModel):
 
     def __getitem__(self, key: str) -> Any:
         """Support event["field"] access."""
-
         try:
             return getattr(self, key)
         except AttributeError:
