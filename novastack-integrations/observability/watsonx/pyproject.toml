@@ -1,0 +1,31 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "novastack-observability-watsonx"
+version = "1.0.0"
+description = "novastack integration observability watsonx"
+authors = [{ name = "Leonardo Furnielis", email = "leonardofurnielis@outlook.com" }]
+license = { text = "Apache-2.0" }
+readme = "README.md"
+requires-python = ">=3.11,<3.14"
+dependencies = [
+    "certifi>=2026.2.25,<2026.3.0",
+    "ipython==9.10.1",
+    "ibm-aigov-facts-client>=1.0.105,<1.1.0",
+    "ibm-watson-openscale>=3.1.4,<3.2.0",
+    "ibm-watsonx-ai>=1.5.5,<1.6.0",
+    "novastack-core>=1.0.0,<1.0.0",
+]
+
+[tool.hatch.build.targets.sdist]
+include = ["novastack/"]
+
+[tool.hatch.build.targets.wheel]
+include = ["novastack/"]
+
+[project.optional-dependencies]
+dev = [
+    "ruff>=0.15.8",
+]
