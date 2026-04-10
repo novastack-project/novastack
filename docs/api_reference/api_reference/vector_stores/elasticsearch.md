@@ -1,0 +1,1 @@
+::: novastack.vector_stores.elasticsearch

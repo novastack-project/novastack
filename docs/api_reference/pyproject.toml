@@ -1,0 +1,14 @@
+[build-system]
+build-backend = "poetry.core.masonry.api"
+requires = ["poetry-core"]
+
+[tool.poetry]
+name = "novastack-docs"
+package-mode = false
+
+[tool.poetry.dependencies]
+python = ">=3.11"
+mkdocs = ">=1.6.1"
+mkdocs-material = ">=9.7.6"
+mkdocstrings = { version = ">=1.0.3", extras = ["python"] }
+mkdocs-include-dir-to-nav = ">=1.2.0"

@@ -1,0 +1,33 @@
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Red+Hat+Text:ital,wght@0,300..700;1,300..700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@300;400;500;600;700&display=swap');
+
+/* Change the font for the entire body */
+body {
+    font-family: "Montserrat", sans-serif;
+    font-weight: 400;
+    font-optical-sizing: auto;
+}
+
+p {
+  font-size: 15px;
+}
+
+.highlight > pre > code {
+    font-family: "IBM Plex Mono", serif;
+    font-size: 14px;
+    background: #eeffcc
+}
+
+.doc-signature.highlight > pre > code {
+    font-family: "IBM Plex Mono", serif;
+    background: #f5f5f5
+}
+
+.md-nav--secondary > .md-nav__list > .md-nav__item > .md-nav  {
+    font-size: 14px;
+}
+
+.md-nav--secondary > .md-nav__list  {
+    font-size: 14px;
+}

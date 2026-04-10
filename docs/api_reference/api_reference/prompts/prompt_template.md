@@ -1,0 +1,1 @@
+::: novastack.core.prompts.base

@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+
+{% block header %}
+  {{ super() }}
+  <!-- UPDATED: Add styled version badge -->
+  <style>
+    [data-md-color-scheme="default"] .md-header__inner::after {
+      content: "v{{ config.extra.version }}";
+      display: inline-block;
+      margin-left: auto;
+      margin-right: 16px;
+      padding: 4px 12px;
+      font-size: 0.5rem;
+      font-weight: 700;
+      color: black;
+      letter-spacing: 0.5px;
+    }
+
+    [data-md-color-scheme="slate"] .md-header__inner::after {
+      content: "v{{ config.extra.version }}";
+      display: inline-block;
+      margin-left: auto;
+      margin-right: 16px;
+      padding: 4px 12px;
+      font-size: 0.5rem;
+      font-weight: 700;
+      color: white;
+      letter-spacing: 0.5px;
+    }
+  </style>
+{% endblock %}

@@ -1,0 +1,98 @@
+site_name: NovaStack
+# repo_url: https://github.com/novastack-project/novastack
+
+markdown_extensions:
+  - toc:
+      title: "On this page"
+      permalink: "#"
+      toc_depth: 4
+  - attr_list
+  - admonition
+  - pymdownx.details
+  - pymdownx.superfences
+  - md_in_html
+
+extra:
+  version: "1.0.0"
+extra_css:
+  - _static/css/style.css
+
+docs_dir: api_reference
+
+plugins:
+  - search
+  - include_dir_to_nav
+  - mkdocstrings:
+      default_handler: python
+      handlers:
+        python:
+          options:
+            show_source: false
+            separate_signature: true
+            merge_init_into_class: true
+            docstring_style: google
+            docstring_options:
+              ignore_init_summary: true
+            heading_level: 2
+            members_order: source
+            show_signature_annotations: true
+            show_root_toc_entry: false
+          paths:
+            - ../../novastack-core/
+            - ../../novastack-integrations/embeddings/huggingface
+            - ../../novastack-integrations/embeddings/watsonx
+            - ../../novastack-integrations/guardrails/watsonx
+            - ../../novastack-integrations/llms/litellm
+            - ../../novastack-integrations/llms/watsonx
+            - ../../novastack-integrations/observability/watsonx
+            - ../../novastack-integrations/loaders/docling
+            - ../../novastack-integrations/loaders/file
+            - ../../novastack-integrations/loaders/ibm_cos
+            - ../../novastack-integrations/loaders/watson_discovery
+            - ../../novastack-integrations/retrievers/watson_discovery
+            - ../../novastack-integrations/vector_stores/chroma
+            - ../../novastack-integrations/vector_stores/elasticsearch
+
+nav:
+  - API Reference: index.md
+  # - Getting Started:
+  #   - Installation: getting-started/installation.md
+  - Embeddings: embeddings/
+  - Evaluation: evaluation/
+  - Guardrails: guardrails/
+  - LLMs: llms/
+  - Observability: observability/
+  - Prompts: prompts/
+  - Loaders: loaders/
+  - Retriever: retrievers/
+  - Text Chunkers: text_chunkers/
+  - Vector Stores: vector_stores/
+
+theme:
+  name: material
+  custom_dir: overrides
+  palette:
+    - scheme: default
+      media: "(prefers-color-scheme: light)"
+      primary: white
+      accent: purple
+      toggle:
+        icon: material/brightness-7
+        name: Switch to dark mode
+    - scheme: slate
+      media: "(prefers-color-scheme: dark)"
+      primary: black
+      accent: purple
+      toggle:
+        icon: material/brightness-4
+        name: Switch to light mode
+  features:
+    # - navigation.tabs
+    # - navigation.sections
+    - navigation.instant        
+    - navigation.indexes        
+    - navigation.top                    
+    - navigation.tracking
+    - search.highlight
+    - content.code.copy
+    - toc.follow
