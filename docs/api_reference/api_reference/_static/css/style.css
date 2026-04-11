@@ -30,3 +30,34 @@ p {
 .md-nav--secondary > .md-nav__list  {
     font-size: 14px;
 }
+
+/* Left sidebar base styles */
+.md-nav__item .md-nav__link {
+    font-size: 14px !important;
+    font-weight: 300 !important;
+}
+
+/* Left sidebar hover state */
+.md-nav__item .md-nav__link:hover {
+    color: #e91e63 !important;
+}
+
+/* Left sidebar focus state */
+.md-nav__item .md-nav__link:focus {
+    color: #e91e63 !important;
+}
+
+/* Left sidebar selected/active state */
+.md-nav__item .md-nav__link--active {
+    color: #c2185b !important;
+}
+
+/* Left sidebar active state (when clicked) */
+.md-nav__item .md-nav__link:active {
+    color: #c2185b !important;
+}
+
+/* Left sidebar passed/visited state (if applicable) */
+.md-nav__item .md-nav__link--passed {
+    color: #c2185b !important;
+}
