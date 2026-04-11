@@ -2,6 +2,8 @@
 title: watsonx
 ---
 
+`% pip install novastack-guardrails-watsonx`
+
 ::: novastack.guardrails.watsonx.WatsonxGuardrail
     options:
       members_order: source

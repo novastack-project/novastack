@@ -2,6 +2,8 @@
 title: watsonx
 ---
 
+`% pip install novastack-observability-watsonx`
+
 ## Monitors
 
 ::: novastack.observability.watsonx.WatsonxPromptMonitor

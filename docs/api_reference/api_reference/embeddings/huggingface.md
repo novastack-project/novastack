@@ -2,9 +2,7 @@
 title: Hugging Face
 ---
 
-```bash
-
-pip install novastack-embeddings-huggingface```
+`% pip install novastack-embeddings-huggingface`
 
 ::: novastack.embeddings.huggingface
     options:

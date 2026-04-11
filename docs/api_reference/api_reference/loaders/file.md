@@ -1,4 +1,3 @@
-```bash
-pip install novastack-loaders-file```
+`% pip install novastack-loaders-file`
 
 ::: novastack.loaders.file
