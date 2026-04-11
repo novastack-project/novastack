@@ -31,6 +31,31 @@ p {
     font-size: 14px;
 }
 
+/* Right sidebar scrollbar styling - Webkit (Chrome, Safari, Edge) */
+/* Target the scrollable wrapper in the right sidebar */
+.md-sidebar--secondary .md-sidebar__scrollwrap::-webkit-scrollbar {
+    width: 8px;
+}
+
+.md-sidebar--secondary .md-sidebar__scrollwrap::-webkit-scrollbar-track {
+    background: rgba(194, 24, 91, 0.1); /* Lighter shade of #c2185b */
+}
+
+.md-sidebar--secondary .md-sidebar__scrollwrap::-webkit-scrollbar-thumb {
+    background: #c2185b; /* Primary color */
+    border-radius: 4px;
+}
+
+.md-sidebar--secondary .md-sidebar__scrollwrap::-webkit-scrollbar-thumb:hover {
+    background: #ad1457; /* Darker shade for hover state */
+}
+
+/* Right sidebar scrollbar styling - Firefox */
+.md-sidebar--secondary .md-sidebar__scrollwrap {
+    scrollbar-width: thin;
+    scrollbar-color: #c2185b rgba(194, 24, 91, 0.1); /* thumb track */
+}
+
 /* Left sidebar base styles */
 .md-nav__item .md-nav__link {
     font-size: 14px !important;
