@@ -1,6 +1,12 @@
 @import url('https://fonts.googleapis.com/css2?family=Geist:wght@100..900&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=Geist+Mono:wght@100..900&display=swap');
 
+:root  > * {
+  --md-accent-fg-color:        #c2185b;
+  --md-accent-fg-color--light: #c2185b;
+  --md-accent-fg-color--dark:  #c2185b;
+}
+
 /* Change the font for the entire body */
 body {
     font-family: "Geist", sans-serif;
@@ -15,61 +21,22 @@ p {
 .highlight > pre > code {
     font-family: "Geist Mono", ui-monospace, monospace;
     font-size: 12px;
-    background: #eeffcc
+    background: #eeffcc;
+    border-radius: 10px;
+    overflow: hidden;
 }
 
 .doc-signature.highlight > pre > code {
     font-family: "Geist Mono", ui-monospace, monospace;
-    background: #f5f5f5
-}
-
-.md-nav--secondary > .md-nav__list > .md-nav__item > .md-nav  {
-    font-size: 14px;
-}
-
-.md-nav--secondary > .md-nav__list  {
-    font-size: 14px;
-}
-
-/* Right sidebar scrollbar styling - Webkit (Chrome, Safari, Edge) */
-/* Target the scrollable wrapper in the right sidebar */
-.md-sidebar--secondary .md-sidebar__scrollwrap::-webkit-scrollbar {
-    width: 8px;
-}
-
-.md-sidebar--secondary .md-sidebar__scrollwrap::-webkit-scrollbar-track {
-    background: rgba(194, 24, 91, 0.1); /* Lighter shade of #c2185b */
-}
-
-.md-sidebar--secondary .md-sidebar__scrollwrap::-webkit-scrollbar-thumb {
-    background: #c2185b; /* Primary color */
-    border-radius: 4px;
-}
-
-.md-sidebar--secondary .md-sidebar__scrollwrap::-webkit-scrollbar-thumb:hover {
-    background: #ad1457; /* Darker shade for hover state */
-}
-
-/* Right sidebar scrollbar styling - Firefox */
-.md-sidebar--secondary .md-sidebar__scrollwrap {
-    scrollbar-width: thin;
-    scrollbar-color: #c2185b rgba(194, 24, 91, 0.1); /* thumb track */
+    background: #f5f5f5;
+    border-radius: 10px;
+    overflow: hidden;
 }
 
 /* Left sidebar base styles */
 .md-nav__item .md-nav__link {
     font-size: 14px !important;
     font-weight: 300 !important;
-}
-
-/* Left sidebar hover state */
-.md-nav__item .md-nav__link:hover {
-    color: #e91e63 !important;
-}
-
-/* Left sidebar focus state */
-.md-nav__item .md-nav__link:focus {
-    color: #e91e63 !important;
 }
 
 /* Left sidebar selected/active state */
