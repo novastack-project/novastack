@@ -53,7 +53,6 @@ class WatsonxGuardrail(BaseGuardrail):
     _token_manager: Any = PrivateAttr(default=None)
 
     def model_post_init(self, __context):  # noqa: PYI063
-        """Initialize region and token manager after Pydantic validation."""
         from ibm_cloud_sdk_core.authenticators import IAMAuthenticator
 
         self.region = Region.from_value(self.region)

@@ -58,7 +58,6 @@ class WatsonDiscoveryLoader(BaseLoader):
     _client: Any = PrivateAttr()
 
     def model_post_init(self, __context):  # noqa: PYI063
-        """Initialize Watson Discovery client after Pydantic validation."""
         from ibm_cloud_sdk_core.authenticators import IAMAuthenticator
         from ibm_watson import DiscoveryV2
 

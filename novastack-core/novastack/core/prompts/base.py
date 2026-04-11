@@ -92,5 +92,4 @@ class PromptTemplate(BaseModel):
         return self.template.format_map(SafeFormatter(**kwargs))
 
     def __str__(self) -> str:
-        """Returns the template as a string."""
         return self.template

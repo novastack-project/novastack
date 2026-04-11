@@ -47,7 +47,6 @@ class ChromaVectorStore(BaseVectorStore):
     _collection: Any = PrivateAttr()
 
     def model_post_init(self, __context):  # noqa: PYI063
-        """Initialize ChromaDB client and collection after Pydantic validation."""
         import chromadb
         import chromadb.config
 

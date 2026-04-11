@@ -116,22 +116,6 @@ class ContextSimilarityEvaluator(BaseEvaluator):
             contexts (list[str]): List of context strings
             **kwargs: Additional keyword arguments (unused)
 
-        Returns:
-            ```python
-            {
-                "query_context_similarity": {
-                    "contexts_score": [0.92, 0.85],  # Individual scores per context
-                    "score": 0.885,  # Mean query-context score
-                },
-                "answer_context_similarity": {
-                    "contexts_score": [0.88, 0.82],  # Individual scores per context
-                    "score": 0.850,  # Mean answer-context score
-                },
-                "score": 0.867,  # Harmonic mean of both scores
-                "passing": True,  # Whether score >= threshold
-            }
-            ```
-
         Example:
             ```python
             result = evaluator.evaluate(

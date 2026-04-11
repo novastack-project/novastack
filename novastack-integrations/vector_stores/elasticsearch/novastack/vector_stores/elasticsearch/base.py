@@ -68,7 +68,6 @@ class ElasticsearchVectorStore(BaseVectorStore):
     _es_bulk: Any = PrivateAttr()
 
     def model_post_init(self, __context):  # noqa: PYI063
-        """Initialize Elasticsearch client after Pydantic validation."""
         from elasticsearch import Elasticsearch
         from elasticsearch.helpers import bulk
 

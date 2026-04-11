@@ -117,7 +117,6 @@ class WatsonxExternalPromptMonitor(PromptObservability):
     _deployment_stage: str | None = PrivateAttr(default=None)
 
     def model_post_init(self, __context: Any) -> None:  # noqa: PYI063
-        """Initialize computed fields after Pydantic validation."""
         self.region = Region.from_value(self.region)
 
         # Set container-related attributes

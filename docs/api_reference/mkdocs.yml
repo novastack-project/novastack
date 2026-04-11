@@ -71,8 +71,8 @@ nav:
 theme:
   name: material
   custom_dir: overrides
-  favicon: _static/css/favicon.png
-  logo: _static/css/favicon.png
+  favicon: _static/assets/favicon.png
+  logo: _static/assets/favicon.png
   palette:
     - scheme: default
       media: "(prefers-color-scheme: light)"
