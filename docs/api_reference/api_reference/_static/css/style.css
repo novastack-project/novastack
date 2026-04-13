@@ -1,6 +1,5 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:ital,wght@0,100..800;1,100..800&display=swap');
-
+@import url('https://fonts.googleapis.com/css2?family=Mulish:ital,wght@0,200..1000;1,200..1000&display=swap');
 
 :root  > * {
   --md-accent-fg-color:        #c2185b;
@@ -10,7 +9,7 @@
 
 /* Change the font for the entire body */
 body {
-    font-family: "Inter", sans-serif;
+    font-family: "Mulish", sans-serif;
     font-weight: 400;
     font-optical-sizing: auto;
 }
