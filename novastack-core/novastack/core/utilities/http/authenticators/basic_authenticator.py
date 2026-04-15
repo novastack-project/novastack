@@ -2,7 +2,7 @@ import base64
 
 from novastack.core.bridge.pydantic import Field, SecretStr
 from novastack.core.utilities.http.authenticators.base import BaseAuthenticator
-from novastack.core.utilities.http.exceptions import AuthenticationError
+from novastack.core.utilities.http.exceptions import HttpAuthenticationError
 
 
 class BasicAuthenticator(BaseAuthenticator):
@@ -24,7 +24,7 @@ class BasicAuthenticator(BaseAuthenticator):
             Dictionary with Authorization header containing Base64-encoded credentials
 
         Raises:
-            AuthenticationError: If the provided credentials are missing, invalid, or fail verification during the authentication process.
+            HttpAuthenticationError: If the provided credentials are missing, invalid, or fail verification during the authentication process.
         """
         try:
             password_value = self.password.get_secret_value()
@@ -39,6 +39,6 @@ class BasicAuthenticator(BaseAuthenticator):
             return {"Authorization": f"Basic {encoded}"}
 
         except Exception as e:
-            raise AuthenticationError(
+            raise HttpAuthenticationError(
                 f"Failed to generate BasicAuthenticator header: {e}"
             )

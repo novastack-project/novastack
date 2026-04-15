@@ -1,10 +1,9 @@
 import pytest
 from novastack.core.bridge.pydantic import SecretStr
+from novastack.core.utilities.http import HttpService
 from novastack.core.utilities.http.authenticators import (
     BasicAuthenticator,
     OAuth2Authenticator,
-)
-from novastack.core.utilities.http.authenticators.oauth2_authenticator import (
     OAuth2GrantType,
 )
 
@@ -59,3 +58,49 @@ def mock_oauth_token_response():
         return response
 
     return _response
+
+
+@pytest.fixture
+def mock_httpx_response():
+    """Fixture for mock httpx response."""
+    from unittest.mock import Mock
+
+    def _response(status_code=200, content=b'{"data": "test"}', headers=None):
+        response = Mock()
+        response.status_code = status_code
+        response.content = content
+        response.headers = headers or {}
+        response.url = "https://api.example.com/test"
+        return response
+
+    return _response
+
+
+@pytest.fixture
+def http_service_no_auth():
+    """Fixture for HttpService without authentication."""
+    service = HttpService(base_url="https://api.example.com")
+    yield service
+    service.close()
+
+
+@pytest.fixture
+def http_service_basic_auth(basic_auth):
+    """Fixture for HttpService with basic authentication."""
+    service = HttpService(
+        base_url="https://api.example.com",
+        authenticator=basic_auth,
+    )
+    yield service
+    service.close()
+
+
+@pytest.fixture
+def http_service_oauth(oauth_client_credentials):
+    """Fixture for HttpService with OAuth authentication."""
+    service = HttpService(
+        base_url="https://api.example.com",
+        authenticator=oauth_client_credentials,
+    )
+    yield service
+    service.close()

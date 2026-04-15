@@ -7,6 +7,7 @@ from novastack.core.utilities.http.authenticators.no_auth_authenticator import (
 )
 from novastack.core.utilities.http.authenticators.oauth2_authenticator import (
     OAuth2Authenticator,
+    OAuth2GrantType,
 )
 
 __all__ = [
@@ -14,4 +15,5 @@ __all__ = [
     "BasicAuthenticator",
     "NoAuthAuthenticator",
     "OAuth2Authenticator",
+    "OAuth2GrantType",
 ]

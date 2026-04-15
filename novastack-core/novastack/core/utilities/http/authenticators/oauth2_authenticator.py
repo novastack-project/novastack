@@ -10,7 +10,7 @@ from novastack.core.bridge.pydantic import (
     field_validator,
 )
 from novastack.core.utilities.http.authenticators.base import BaseAuthenticator
-from novastack.core.utilities.http.exceptions import AuthenticationError
+from novastack.core.utilities.http.exceptions import HttpAuthenticationError
 
 
 class OAuth2GrantType(str, Enum):
@@ -87,7 +87,7 @@ class OAuth2Authenticator(BaseAuthenticator):
     def model_post_init(self, __context: Any) -> None:  # noqa: PYI063
         if self.grant_type == OAuth2GrantType.PASSWORD:
             if not self.username or not self.password:
-                raise AuthenticationError(
+                raise HttpAuthenticationError(
                     "'username' and 'password' are required for PASSWORD grant_type."
                 )
 
@@ -101,7 +101,7 @@ class OAuth2Authenticator(BaseAuthenticator):
             Dictionary with Authorization header containing access token
 
         Raises:
-            AuthenticationError: If the provided credentials are missing, invalid, or fail verification during the authentication process.
+            HttpAuthenticationError: If the provided credentials are missing, invalid, or fail verification during the authentication process.
         """
         # Check if token needs refresh
         if self.is_expired():
@@ -120,14 +120,14 @@ class OAuth2Authenticator(BaseAuthenticator):
         Attempts to use refresh token if available, otherwise obtains new token.
 
         Raises:
-            AuthenticationError: If the provided credentials are missing, invalid, or fail verification during the authentication process.
+            HttpAuthenticationError: If the provided credentials are missing, invalid, or fail verification during the authentication process.
         """
         # If we have a refresh token, try to use it
         if self._refresh_token:
             try:
                 self._get_access_token(use_refresh_token=True)
                 return
-            except AuthenticationError:
+            except HttpAuthenticationError:
                 # If refresh fails, fall through to get new token
                 pass
 
@@ -155,7 +155,7 @@ class OAuth2Authenticator(BaseAuthenticator):
             use_refresh_token: Whether to use refresh token grant
 
         Raises:
-            AuthenticationError: If the provided credentials are missing, invalid, or fail verification during the authentication process.
+            HttpAuthenticationError: If the provided credentials are missing, invalid, or fail verification during the authentication process.
         """
         try:
             # Build request payload
@@ -175,7 +175,9 @@ class OAuth2Authenticator(BaseAuthenticator):
 
             self._access_token = token_data.get("access_token")
             if not self._access_token:
-                raise AuthenticationError("No 'access_token' in authenticator response")
+                raise HttpAuthenticationError(
+                    "No 'access_token' in authenticator response"
+                )
 
             self._token_type = token_data.get("token_type", "Bearer")
             self._refresh_token = token_data.get("refresh_token")
@@ -190,17 +192,17 @@ class OAuth2Authenticator(BaseAuthenticator):
 
         except httpx.HTTPStatusError as e:
             error_detail = e.response.text
-            raise AuthenticationError(
+            raise HttpAuthenticationError(
                 f"Token request failed with status {e.response.status_code}: {error_detail}"
             )
         except httpx.TimeoutException as e:
-            raise AuthenticationError(f"Token request timed out: {e}")
+            raise HttpAuthenticationError(f"Token request timed out: {e}")
         except httpx.ConnectError as e:
-            raise AuthenticationError(f"Failed to connect to token endpoint: {e}")
-        except AuthenticationError:
+            raise HttpAuthenticationError(f"Failed to connect to token endpoint: {e}")
+        except HttpAuthenticationError:
             raise
         except Exception as e:
-            raise AuthenticationError(f"Failed to get OAuth2 token: {e}")
+            raise HttpAuthenticationError(f"Failed to get OAuth2 token: {e}")
 
     def _build_token_request_data(self, use_refresh_token: bool) -> dict[str, str]:
         """

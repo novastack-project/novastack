@@ -22,5 +22,5 @@ class BaseAuthenticator(BaseModel, ABC):
             Dictionary of authentication headers
 
         Raises:
-            AuthenticationError: If the provided credentials are missing, invalid, or fail verification during the authentication process.
+            HttpAuthenticationError: If the provided credentials are missing, invalid, or fail verification during the authentication process.
         """

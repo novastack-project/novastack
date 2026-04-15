@@ -1,5 +1,5 @@
-from novastack.core.utilities.http.base import HTTPService
+from novastack.core.utilities.http.base import HttpService
 
 __all__ = [
-    "HTTPService",
+    "HttpService",
 ]

@@ -1,20 +1,18 @@
-from typing import TYPE_CHECKING, Any
+from typing import Any
 
 import httpx
 from novastack.core.bridge.pydantic import BaseModel, Field, PrivateAttr
 from novastack.core.utilities.http.authenticators import NoAuthAuthenticator
+from novastack.core.utilities.http.authenticators.base import BaseAuthenticator
 from novastack.core.utilities.http.exceptions import (
-    ConnectionError,
-    RequestError,
-    RequestTimeoutError,
+    HttpConnectionError,
+    HttpRequestError,
+    HttpRequestTimeoutError,
 )
-from novastack.core.utilities.http.types import HTTPResponse
-
-if TYPE_CHECKING:
-    from novastack.core.utilities.http.authenticators.base import BaseAuthenticator
+from novastack.core.utilities.http.types import HttpResponse
 
 
-class HTTPService(BaseModel):
+class HttpService(BaseModel):
     """
     Enterprise-grade HTTP service with authentication and connection pooling.
 
@@ -32,7 +30,7 @@ class HTTPService(BaseModel):
     headers: dict[str, str] = Field(
         default_factory=dict, description="Default headers for all requests"
     )
-    authenticator: "BaseAuthenticator" = Field(
+    authenticator: BaseAuthenticator = Field(
         default_factory=NoAuthAuthenticator, description="Authentication strategy."
     )
 
@@ -78,20 +76,20 @@ class HTTPService(BaseModel):
 
         return combined_headers
 
-    def _handle_response(self, response: httpx.Response) -> HTTPResponse:
+    def _handle_response(self, response: httpx.Response) -> HttpResponse:
         """
-        Handle HTTP response and convert to HTTPResponse object.
+        Handle HTTP response and convert to HttpResponse object.
 
         Args:
             response: httpx response object
 
         Returns:
-            HTTPResponse object
+            HttpResponse object
 
         Raises:
-            RequestError: For other HTTP errors
+            HttpRequestError: For other HTTP errors
         """
-        return HTTPResponse(
+        return HttpResponse(
             status_code=response.status_code,
             headers=dict(response.headers),
             content=response.content,
@@ -103,7 +101,7 @@ class HTTPService(BaseModel):
         url: str,
         params: dict[str, Any] | None = None,
         headers: dict[str, str] | None = None,
-    ) -> HTTPResponse:
+    ) -> HttpResponse:
         """
         Perform synchronous GET request.
 
@@ -113,12 +111,12 @@ class HTTPService(BaseModel):
             headers: Additional headers
 
         Returns:
-            HTTPResponse object
+            HttpResponse object
 
         Raises:
-            ConnectionError: If connection fails
-            RequestTimeoutError: If request times out
-            RequestError: For other errors
+            HttpConnectionError: If connection fails
+            HttpRequestTimeoutError: If request times out
+            HttpRequestError: For other errors
         """
         try:
             prepared_headers = self._prepare_headers(headers)
@@ -126,11 +124,11 @@ class HTTPService(BaseModel):
             return self._handle_response(response)
 
         except httpx.TimeoutException as e:
-            raise RequestTimeoutError(str(e))
+            raise HttpRequestTimeoutError(str(e))
         except httpx.ConnectError as e:
-            raise ConnectionError(f"Failed to connect: {e}")
+            raise HttpConnectionError(f"Failed to connect: {e}")
         except Exception as e:
-            raise RequestError(f"GET request failed: {e}")
+            raise HttpRequestError(f"GET request failed: {e}")
 
     def post(
         self,
@@ -138,7 +136,7 @@ class HTTPService(BaseModel):
         data: dict[str, Any] | None = None,
         json: dict[str, Any] | None = None,
         headers: dict[str, str] | None = None,
-    ) -> HTTPResponse:
+    ) -> HttpResponse:
         """
         Perform synchronous POST request.
 
@@ -149,12 +147,12 @@ class HTTPService(BaseModel):
             headers: Additional headers
 
         Returns:
-            HTTPResponse object
+            HttpResponse object
 
         Raises:
-            ConnectionError: If connection fails
-            RequestTimeoutError: If request times out
-            RequestError: For other errors
+            HttpConnectionError: If connection fails
+            HttpRequestTimeoutError: If request times out
+            HttpRequestError: For other errors
         """
         try:
             prepared_headers = self._prepare_headers(headers)
@@ -163,11 +161,11 @@ class HTTPService(BaseModel):
             )
             return self._handle_response(response)
         except httpx.TimeoutException as e:
-            raise RequestTimeoutError(str(e))
+            raise HttpRequestTimeoutError(str(e))
         except httpx.ConnectError as e:
-            raise ConnectionError(f"Failed to connect: {e}")
+            raise HttpConnectionError(f"Failed to connect: {e}")
         except Exception as e:
-            raise RequestError(f"POST request failed: {e}")
+            raise HttpRequestError(f"POST request failed: {e}")
 
     def put(
         self,
@@ -175,7 +173,7 @@ class HTTPService(BaseModel):
         data: dict[str, Any] | None = None,
         json: dict[str, Any] | None = None,
         headers: dict[str, str] | None = None,
-    ) -> HTTPResponse:
+    ) -> HttpResponse:
         """
         Perform synchronous PUT request.
 
@@ -186,12 +184,12 @@ class HTTPService(BaseModel):
             headers: Additional headers
 
         Returns:
-            HTTPResponse object
+            HttpResponse object
 
         Raises:
-            ConnectionError: If connection fails
-            RequestTimeoutError: If request times out
-            RequestError: For other errors
+            HttpConnectionError: If connection fails
+            HttpRequestTimeoutError: If request times out
+            HttpRequestError: For other errors
         """
         try:
             prepared_headers = self._prepare_headers(headers)
@@ -200,18 +198,18 @@ class HTTPService(BaseModel):
             )
             return self._handle_response(response)
         except httpx.TimeoutException as e:
-            raise RequestTimeoutError(str(e))
+            raise HttpRequestTimeoutError(str(e))
         except httpx.ConnectError as e:
-            raise ConnectionError(f"Failed to connect: {e}")
+            raise HttpConnectionError(f"Failed to connect: {e}")
         except Exception as e:
-            raise RequestError(f"PUT request failed: {e}")
+            raise HttpRequestError(f"PUT request failed: {e}")
 
     def delete(
         self,
         url: str,
         params: dict[str, Any] | None = None,
         headers: dict[str, str] | None = None,
-    ) -> HTTPResponse:
+    ) -> HttpResponse:
         """
         Perform synchronous DELETE request.
 
@@ -221,30 +219,30 @@ class HTTPService(BaseModel):
             headers: Additional headers
 
         Returns:
-            HTTPResponse object
+            HttpResponse object
 
         Raises:
-            ConnectionError: If connection fails
-            RequestTimeoutError: If request times out
-            RequestError: For other errors
+            HttpConnectionError: If connection fails
+            HttpRequestTimeoutError: If request times out
+            HttpRequestError: For other errors
         """
         try:
             prepared_headers = self._prepare_headers(headers)
             response = self._client.delete(url, params=params, headers=prepared_headers)
             return self._handle_response(response)
         except httpx.TimeoutException as e:
-            raise RequestTimeoutError(str(e))
+            raise HttpRequestTimeoutError(str(e))
         except httpx.ConnectError as e:
-            raise ConnectionError(f"Failed to connect: {e}")
+            raise HttpConnectionError(f"Failed to connect: {e}")
         except Exception as e:
-            raise RequestError(f"DELETE request failed: {e}")
+            raise HttpRequestError(f"DELETE request failed: {e}")
 
     async def aget(
         self,
         url: str,
         params: dict[str, Any] | None = None,
         headers: dict[str, str] | None = None,
-    ) -> HTTPResponse:
+    ) -> HttpResponse:
         """
         Perform asynchronous GET request.
 
@@ -254,12 +252,12 @@ class HTTPService(BaseModel):
             headers: Additional headers
 
         Returns:
-            HTTPResponse object
+            HttpResponse object
 
         Raises:
-            ConnectionError: If connection fails
-            RequestTimeoutError: If request times out
-            RequestError: For other errors
+            HttpConnectionError: If connection fails
+            HttpRequestTimeoutError: If request times out
+            HttpRequestError: For other errors
         """
         try:
             prepared_headers = self._prepare_headers(headers)
@@ -268,11 +266,11 @@ class HTTPService(BaseModel):
             )
             return self._handle_response(response)
         except httpx.TimeoutException as e:
-            raise RequestTimeoutError(str(e))
+            raise HttpRequestTimeoutError(str(e))
         except httpx.ConnectError as e:
-            raise ConnectionError(f"Failed to connect: {e}")
+            raise HttpConnectionError(f"Failed to connect: {e}")
         except Exception as e:
-            raise RequestError(f"GET request failed: {e}")
+            raise HttpRequestError(f"GET request failed: {e}")
 
     async def apost(
         self,
@@ -280,7 +278,7 @@ class HTTPService(BaseModel):
         data: dict[str, Any] | None = None,
         json: dict[str, Any] | None = None,
         headers: dict[str, str] | None = None,
-    ) -> HTTPResponse:
+    ) -> HttpResponse:
         """
         Perform asynchronous POST request.
 
@@ -291,12 +289,12 @@ class HTTPService(BaseModel):
             headers: Additional headers
 
         Returns:
-            HTTPResponse object
+            HttpResponse object
 
         Raises:
-            ConnectionError: If connection fails
-            RequestTimeoutError: If request times out
-            RequestError: For other errors
+            HttpConnectionError: If connection fails
+            HttpRequestTimeoutError: If request times out
+            HttpRequestError: For other errors
         """
         try:
             prepared_headers = self._prepare_headers(headers)
@@ -305,11 +303,11 @@ class HTTPService(BaseModel):
             )
             return self._handle_response(response)
         except httpx.TimeoutException as e:
-            raise RequestTimeoutError(str(e))
+            raise HttpRequestTimeoutError(str(e))
         except httpx.ConnectError as e:
-            raise ConnectionError(f"Failed to connect: {e}")
+            raise HttpConnectionError(f"Failed to connect: {e}")
         except Exception as e:
-            raise RequestError(f"POST request failed: {e}")
+            raise HttpRequestError(f"POST request failed: {e}")
 
     async def aput(
         self,
@@ -317,7 +315,7 @@ class HTTPService(BaseModel):
         data: dict[str, Any] | None = None,
         json: dict[str, Any] | None = None,
         headers: dict[str, str] | None = None,
-    ) -> HTTPResponse:
+    ) -> HttpResponse:
         """
         Perform asynchronous PUT request.
 
@@ -328,12 +326,12 @@ class HTTPService(BaseModel):
             headers: Additional headers
 
         Returns:
-            HTTPResponse object
+            HttpResponse object
 
         Raises:
-            ConnectionError: If connection fails
-            RequestTimeoutError: If request times out
-            RequestError: For other errors
+            HttpConnectionError: If connection fails
+            HttpRequestTimeoutError: If request times out
+            HttpRequestError: For other errors
         """
         try:
             prepared_headers = self._prepare_headers(headers)
@@ -342,18 +340,18 @@ class HTTPService(BaseModel):
             )
             return self._handle_response(response)
         except httpx.TimeoutException as e:
-            raise RequestTimeoutError(str(e))
+            raise HttpRequestTimeoutError(str(e))
         except httpx.ConnectError as e:
-            raise ConnectionError(f"Failed to connect: {e}")
+            raise HttpConnectionError(f"Failed to connect: {e}")
         except Exception as e:
-            raise RequestError(f"PUT request failed: {e}")
+            raise HttpRequestError(f"PUT request failed: {e}")
 
     async def adelete(
         self,
         url: str,
         params: dict[str, Any] | None = None,
         headers: dict[str, str] | None = None,
-    ) -> HTTPResponse:
+    ) -> HttpResponse:
         """
         Perform asynchronous DELETE request.
 
@@ -363,12 +361,12 @@ class HTTPService(BaseModel):
             headers: Additional headers
 
         Returns:
-            HTTPResponse object
+            HttpResponse object
 
         Raises:
-            ConnectionError: If connection fails
-            RequestTimeoutError: If request times out
-            RequestError: For other errors
+            HttpConnectionError: If connection fails
+            HttpRequestTimeoutError: If request times out
+            HttpRequestError: For other errors
         """
         try:
             prepared_headers = self._prepare_headers(headers)
@@ -377,11 +375,11 @@ class HTTPService(BaseModel):
             )
             return self._handle_response(response)
         except httpx.TimeoutException as e:
-            raise RequestTimeoutError(str(e))
+            raise HttpRequestTimeoutError(str(e))
         except httpx.ConnectError as e:
-            raise ConnectionError(f"Failed to connect: {e}")
+            raise HttpConnectionError(f"Failed to connect: {e}")
         except Exception as e:
-            raise RequestError(f"DELETE request failed: {e}")
+            raise HttpRequestError(f"DELETE request failed: {e}")
 
     def close(self) -> None:
         if self._client:

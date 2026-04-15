@@ -3,7 +3,7 @@ from datetime import datetime, timedelta
 import httpx
 from novastack.core.bridge.pydantic import Field, PrivateAttr, SecretStr
 from novastack.core.utilities.http.authenticators.base import BaseAuthenticator
-from novastack.core.utilities.http.exceptions import AuthenticationError
+from novastack.core.utilities.http.exceptions import HttpAuthenticationError
 
 
 class IBMIAMAuthenticator(BaseAuthenticator):
@@ -35,7 +35,7 @@ class IBMIAMAuthenticator(BaseAuthenticator):
             Dictionary with Authorization header containing access token
 
         Raises:
-            AuthenticationError: If token acquisition fails
+            HttpAuthenticationError: If token acquisition fails
         """
         # Check if token needs refresh
         if self.is_expired():
@@ -62,7 +62,7 @@ class IBMIAMAuthenticator(BaseAuthenticator):
         Get IBM IAM access token.
 
         Raises:
-            AuthenticationError: If token acquisition fails
+            HttpAuthenticationError: If token acquisition fails
         """
         try:
             data = {
@@ -84,7 +84,9 @@ class IBMIAMAuthenticator(BaseAuthenticator):
 
             self._access_token = token_data.get("access_token")
             if not self._access_token:
-                raise AuthenticationError("No 'access_token' in IBM IAM token response")
+                raise HttpAuthenticationError(
+                    "No 'access_token' in IBM IAM token response"
+                )
 
             self._token_type = token_data.get("token_type", "Bearer")
             self._refresh_token = token_data.get("refresh_token")
@@ -99,14 +101,14 @@ class IBMIAMAuthenticator(BaseAuthenticator):
 
         except httpx.HTTPStatusError as e:
             error_detail = e.response.text
-            raise AuthenticationError(
+            raise HttpAuthenticationError(
                 f"IBM IAM token request failed with status {e.response.status_code}: {error_detail}"
             )
         except httpx.TimeoutException as e:
-            raise AuthenticationError(f"IBM IAM token request timed out: {e}")
+            raise HttpAuthenticationError(f"IBM IAM token request timed out: {e}")
         except httpx.ConnectError as e:
-            raise AuthenticationError(f"Failed to connect to IBM IAM endpoint: {e}")
-        except AuthenticationError:
+            raise HttpAuthenticationError(f"Failed to connect to IBM IAM endpoint: {e}")
+        except HttpAuthenticationError:
             raise
         except Exception as e:
-            raise AuthenticationError(f"Failed to obtain IBM IAM token: {e}")
+            raise HttpAuthenticationError(f"Failed to obtain IBM IAM token: {e}")

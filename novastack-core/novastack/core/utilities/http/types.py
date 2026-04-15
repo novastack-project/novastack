@@ -3,7 +3,7 @@ from typing import Any
 from novastack.core.bridge.pydantic import BaseModel, Field
 
 
-class HTTPRetryConfig(BaseModel):
+class HttpRetryConfig(BaseModel):
     """Configuration for retry behavior."""
 
     max_retries: int = Field(
@@ -14,7 +14,7 @@ class HTTPRetryConfig(BaseModel):
     )
 
 
-class HTTPResponse(BaseModel):
+class HttpResponse(BaseModel):
     """HTTP Response wrapper."""
 
     model_config = {"arbitrary_types_allowed": True}

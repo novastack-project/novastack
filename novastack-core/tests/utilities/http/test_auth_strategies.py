@@ -10,7 +10,7 @@ from novastack.core.utilities.http.authenticators import (
     OAuth2Authenticator,
     OAuth2GrantType,
 )
-from novastack.core.utilities.http.exceptions import AuthenticationError
+from novastack.core.utilities.http.exceptions import HttpAuthenticationError
 
 
 class TestBasicAuthStrategy:
@@ -152,7 +152,7 @@ class TestOAuthStrategy:
         mock_response.raise_for_status = raise_for_status
         mock_post.return_value = mock_response
 
-        with pytest.raises(AuthenticationError) as exc_info:
+        with pytest.raises(HttpAuthenticationError) as exc_info:
             oauth_client_credentials.authenticate()
 
         assert "401" in str(exc_info.value)

@@ -4,15 +4,13 @@ from unittest.mock import Mock, patch
 
 import pytest
 from novastack.core.bridge.pydantic import SecretStr
-from novastack.core.utilities.http import HTTPService
+from novastack.core.utilities.http import HttpService
 from novastack.core.utilities.http.authenticators import (
     BasicAuthenticator,
     OAuth2Authenticator,
-)
-from novastack.core.utilities.http.authenticators.oauth2_authenticator import (
     OAuth2GrantType,
 )
-from novastack.core.utilities.http.exceptions import AuthenticationError
+from novastack.core.utilities.http.exceptions import HttpAuthenticationError
 
 
 class TestCredentialMasking:
@@ -20,7 +18,9 @@ class TestCredentialMasking:
 
     def test_basic_auth_password_masked(self):
         """Test that password is masked in string representation."""
-        auth = BasicAuthStrategy(username="testuser", password=SecretStr("supersecret"))
+        auth = BasicAuthenticator(
+            username="testuser", password=SecretStr("supersecret")
+        )
 
         auth_str = str(auth)
         auth_repr = repr(auth)
@@ -31,11 +31,11 @@ class TestCredentialMasking:
 
     def test_oauth_client_secret_masked(self):
         """Test that client secret is masked in string representation."""
-        oauth = OAuthStrategy(
+        oauth = OAuth2Authenticator(
             token_url="https://auth.example.com/token",
             client_id="test_client",
             client_secret=SecretStr("supersecret"),
-            grant_type=OAuthGrantType.CLIENT_CREDENTIALS,
+            grant_type=OAuth2GrantType.CLIENT_CREDENTIALS,
         )
 
         oauth_str = str(oauth)
@@ -48,11 +48,11 @@ class TestCredentialMasking:
     @patch("httpx.Client.post")
     def test_credentials_not_in_error_messages(self, mock_post):
         """Test that credentials don't appear in error messages."""
-        oauth = OAuthStrategy(
+        oauth = OAuth2Authenticator(
             token_url="https://auth.example.com/token",
             client_id="test_client",
             client_secret=SecretStr("supersecret"),
-            grant_type=OAuthGrantType.CLIENT_CREDENTIALS,
+            grant_type=OAuth2GrantType.CLIENT_CREDENTIALS,
         )
 
         mock_response = Mock()
@@ -62,7 +62,7 @@ class TestCredentialMasking:
 
         try:
             oauth.authenticate()
-        except AuthenticationError as e:
+        except HttpAuthenticationError as e:
             error_msg = str(e)
             assert "supersecret" not in error_msg
 
@@ -72,7 +72,7 @@ class TestSSLVerification:
 
     def test_ssl_verification_enabled_by_default(self):
         """Test that SSL verification is enabled by default."""
-        service = HTTPService(base_url="https://api.example.com")
+        service = HttpService(base_url="https://api.example.com")
 
         assert service.verify_ssl is True
 
@@ -80,7 +80,7 @@ class TestSSLVerification:
 
     def test_ssl_verification_can_be_disabled(self):
         """Test that SSL verification can be explicitly disabled."""
-        service = HTTPService(
+        service = HttpService(
             base_url="https://api.example.com",
             verify_ssl=False,
         )
@@ -93,20 +93,20 @@ class TestSSLVerification:
 class TestTokenExpiryEnforcement:
     """Test that token expiry is properly enforced."""
 
-    @patch("httpx.Client.post")
+    @patch("httpx.post")
     @patch("httpx.Client.get")
-    def test_expired_token_not_used(self, mock_get, mock_post):
+    def test_expired_token_not_used(self, mock_get, mock_httpx_post):
         """Test that expired tokens trigger refresh."""
-        oauth = OAuthStrategy(
+        oauth = OAuth2Authenticator(
             token_url="https://auth.example.com/token",
             client_id="test_client",
             client_secret=SecretStr("test_secret"),
-            grant_type=OAuthGrantType.CLIENT_CREDENTIALS,
+            grant_type=OAuth2GrantType.CLIENT_CREDENTIALS,
         )
 
-        service = HTTPService(
+        service = HttpService(
             base_url="https://api.example.com",
-            auth_strategy=oauth,
+            authenticator=oauth,
         )
 
         # Mock initial token response
@@ -117,7 +117,8 @@ class TestTokenExpiryEnforcement:
             "token_type": "Bearer",
             "expires_in": 3600,
         }
-        mock_post.return_value = mock_token_response
+        mock_token_response.raise_for_status = Mock()
+        mock_httpx_post.return_value = mock_token_response
 
         # Mock API response
         mock_api_response = Mock()
@@ -129,7 +130,7 @@ class TestTokenExpiryEnforcement:
 
         # First request
         service.get("/test")
-        initial_token_calls = mock_post.call_count
+        initial_token_calls = mock_httpx_post.call_count
 
         # Manually expire the token
         oauth._expires_at = datetime.now() - timedelta(hours=1)
@@ -144,17 +145,17 @@ class TestTokenExpiryEnforcement:
         # Second request should get new token
         service.get("/test")
 
-        assert mock_post.call_count > initial_token_calls
+        assert mock_httpx_post.call_count > initial_token_calls
 
         service.close()
 
     def test_token_expiry_buffer_enforced(self):
         """Test that 60-second expiry buffer is enforced."""
-        oauth = OAuthStrategy(
+        oauth = OAuth2Authenticator(
             token_url="https://auth.example.com/token",
             client_id="test_client",
             client_secret=SecretStr("test_secret"),
-            grant_type=OAuthGrantType.CLIENT_CREDENTIALS,
+            grant_type=OAuth2GrantType.CLIENT_CREDENTIALS,
         )
 
         # Set token to expire in 30 seconds (within buffer)

@@ -2,37 +2,36 @@ from unittest.mock import Mock, patch
 
 import httpx
 import pytest
-from novastack.core.utilities.http import HTTPService
+from novastack.core.utilities.http import HttpService
 from novastack.core.utilities.http.exceptions import (
-    ConnectionError,
-    RateLimitError,
-    RequestTimeoutError,
+    HttpConnectionError,
+    HttpRequestTimeoutError,
 )
-from novastack.core.utilities.http.types import Response
+from novastack.core.utilities.http.types import HttpResponse
 
 
 class TestHTTPServiceCore:
-    """Test core HTTPService functionality."""
+    """Test core HttpService functionality."""
 
     def test_init_without_auth(self):
         """Test initialization without authentication."""
-        service = HTTPService(base_url="https://api.example.com")
+        service = HttpService(base_url="https://api.example.com")
 
         assert service.base_url == "https://api.example.com"
         assert service.timeout == 30.0
         assert service.verify_ssl is True
-        assert service.auth_strategy is None
+        assert service.authenticator is not None
 
         service.close()
 
     def test_init_with_auth(self, basic_auth):
         """Test initialization with authentication."""
-        service = HTTPService(
+        service = HttpService(
             base_url="https://api.example.com",
-            auth_strategy=basic_auth,
+            authenticator=basic_auth,
         )
 
-        assert service.auth_strategy is not None
+        assert service.authenticator is not None
 
         service.close()
 
@@ -43,7 +42,7 @@ class TestHTTPServiceCore:
 
         response = http_service_no_auth.get("/users")
 
-        assert isinstance(response, Response)
+        assert isinstance(response, HttpResponse)
         assert response.status_code == 200
         assert response.is_success()
 
@@ -67,7 +66,7 @@ class TestHTTPServiceCore:
 
         response = await http_service_no_auth.aget("/users")
 
-        assert isinstance(response, Response)
+        assert isinstance(response, HttpResponse)
         assert response.status_code == 200
 
 
@@ -75,25 +74,11 @@ class TestHTTPServiceErrorHandling:
     """Test critical error handling."""
 
     @patch("httpx.Client.get")
-    def test_rate_limit_error(
-        self, mock_get, http_service_no_auth, mock_httpx_response
-    ):
-        """Test rate limit error handling."""
-        mock_get.return_value = mock_httpx_response(
-            status_code=429, headers={"Retry-After": "60"}
-        )
-
-        with pytest.raises(RateLimitError) as exc_info:
-            http_service_no_auth.get("/users")
-
-        assert exc_info.value.status_code == 429
-
-    @patch("httpx.Client.get")
     def test_timeout_error(self, mock_get, http_service_no_auth):
         """Test timeout error handling."""
         mock_get.side_effect = httpx.TimeoutException("Request timed out")
 
-        with pytest.raises(RequestTimeoutError):
+        with pytest.raises(HttpRequestTimeoutError):
             http_service_no_auth.get("/users")
 
     @patch("httpx.Client.get")
@@ -101,7 +86,7 @@ class TestHTTPServiceErrorHandling:
         """Test connection error handling."""
         mock_get.side_effect = httpx.ConnectError("Connection failed")
 
-        with pytest.raises(ConnectionError):
+        with pytest.raises(HttpConnectionError):
             http_service_no_auth.get("/users")
 
 
@@ -122,29 +107,32 @@ class TestHTTPServiceAuthentication:
         assert "Authorization" in headers
         assert headers["Authorization"].startswith("Basic ")
 
+    @patch("httpx.post")
     @patch("httpx.Client.get")
     def test_oauth_auth_headers(
         self,
         mock_get,
+        mock_httpx_post,
         http_service_oauth,
         mock_httpx_response,
         mock_oauth_token_response,
     ):
         """Test that OAuth headers are included."""
-        with patch("httpx.Client.post") as mock_post:
-            mock_token_response = Mock()
-            mock_token_response.status_code = 200
-            mock_token_response.json.return_value = mock_oauth_token_response()
-            mock_post.return_value = mock_token_response
+        # Mock OAuth token response
+        mock_token_response = Mock()
+        mock_token_response.status_code = 200
+        mock_token_response.json.return_value = mock_oauth_token_response()
+        mock_token_response.raise_for_status = Mock()
+        mock_httpx_post.return_value = mock_token_response
 
-            mock_get.return_value = mock_httpx_response()
+        mock_get.return_value = mock_httpx_response()
 
-            http_service_oauth.get("/users")
+        http_service_oauth.get("/users")
 
-            call_args = mock_get.call_args
-            headers = call_args[1]["headers"]
-            assert "Authorization" in headers
-            assert headers["Authorization"].startswith("Bearer ")
+        call_args = mock_get.call_args
+        headers = call_args[1]["headers"]
+        assert "Authorization" in headers
+        assert headers["Authorization"].startswith("Bearer ")
 
 
 class TestResponseWrapper:
@@ -152,7 +140,7 @@ class TestResponseWrapper:
 
     def test_json_content(self):
         """Test JSON content parsing."""
-        response = Response(
+        response = HttpResponse(
             status_code=200,
             headers={},
             content=b'{"name": "John"}',
@@ -164,7 +152,7 @@ class TestResponseWrapper:
 
     def test_is_success(self):
         """Test is_success for success and error codes."""
-        success_response = Response(
+        success_response = HttpResponse(
             status_code=200,
             headers={},
             content=b"",
@@ -172,7 +160,7 @@ class TestResponseWrapper:
         )
         assert success_response.is_success() is True
 
-        error_response = Response(
+        error_response = HttpResponse(
             status_code=404,
             headers={},
             content=b"",

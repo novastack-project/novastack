@@ -1,14 +1,14 @@
-class RequestError(Exception):
+class HttpRequestError(Exception):
     """Generic exception for HTTP service errors."""
 
 
-class AuthenticationError(Exception):
+class HttpAuthenticationError(Exception):
     """Raised when authentication fails."""
 
 
-class RequestTimeoutError(RequestError):
+class HttpRequestTimeoutError(HttpRequestError):
     """Raised when a request times out."""
 
 
-class ConnectionError(RequestError):
+class HttpConnectionError(HttpRequestError):
     """Raised when connection to server fails."""
