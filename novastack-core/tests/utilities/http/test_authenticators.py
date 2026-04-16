@@ -3,7 +3,6 @@ from datetime import datetime, timedelta
 from unittest.mock import Mock, patch
 
 import pytest
-from novastack.core.bridge.pydantic import SecretStr
 from novastack.core.utilities.http.authenticators import (
     BasicAuthenticator,
     NoAuthAuthenticator,
@@ -13,18 +12,15 @@ from novastack.core.utilities.http.authenticators import (
 from novastack.core.utilities.http.exceptions import HttpAuthenticationError
 
 
-class TestBasicAuthStrategy:
-    """Test BasicAuthenticator critical functionality."""
+class TestBasicAuthAuthenticator:
 
     def test_initialization(self):
-        """Test BasicAuthenticator initialization."""
-        auth = BasicAuthenticator(username="testuser", password=SecretStr("testpass"))
+        auth = BasicAuthenticator(username="testuser", password="testpass")
 
         assert auth.username == "testuser"
         assert auth.password.get_secret_value() == "testpass"
 
     def test_authenticate_encoding(self, basic_auth):
-        """Test successful authentication with proper Base64 encoding."""
         headers = basic_auth.authenticate()
 
         assert "Authorization" in headers
@@ -36,16 +32,13 @@ class TestBasicAuthStrategy:
         assert decoded == "testuser:testpass"
 
     def test_empty_username_validation(self):
-        """Test validation fails with empty username."""
         with pytest.raises(ValueError):
-            BasicAuthenticator(username="", password=SecretStr("testpass"))
+            BasicAuthenticator(username="", password="testpass")
 
 
-class TestOAuthStrategy:
-    """Test OAuth2Authenticator critical functionality."""
+class TestOAuth2Authenticator:
 
     def test_initialization(self, oauth_client_credentials):
-        """Test OAuth2Authenticator initialization."""
         from novastack.core.utilities.http.authenticators.oauth2_authenticator import (
             OAuth2GrantType,
         )
@@ -58,7 +51,6 @@ class TestOAuthStrategy:
     def test_token_acquisition(
         self, mock_post, oauth_client_credentials, mock_oauth_token_response
     ):
-        """Test successful token acquisition."""
         mock_response = Mock()
         mock_response.status_code = 200
         mock_response.json.return_value = mock_oauth_token_response()
@@ -73,7 +65,6 @@ class TestOAuthStrategy:
     def test_token_caching(
         self, mock_post, oauth_client_credentials, mock_oauth_token_response
     ):
-        """Test that token is cached and reused."""
         mock_response = Mock()
         mock_response.status_code = 200
         mock_response.json.return_value = mock_oauth_token_response()
@@ -93,7 +84,6 @@ class TestOAuthStrategy:
     def test_token_expiry_detection(
         self, mock_post, oauth_client_credentials, mock_oauth_token_response
     ):
-        """Test token expiry detection with buffer."""
         mock_response = Mock()
         mock_response.status_code = 200
         mock_response.json.return_value = mock_oauth_token_response(expires_in=3600)
@@ -115,13 +105,11 @@ class TestOAuthStrategy:
     def test_automatic_token_refresh(
         self, mock_post, oauth_client_credentials, mock_oauth_token_response
     ):
-        """Test automatic token refresh when expired."""
         mock_response = Mock()
         mock_response.status_code = 200
         mock_response.json.return_value = mock_oauth_token_response()
         mock_post.return_value = mock_response
 
-        # Get initial token
         oauth_client_credentials.authenticate()
 
         # Manually expire the token
@@ -136,7 +124,6 @@ class TestOAuthStrategy:
 
     @patch("httpx.post")
     def test_failed_token_request(self, mock_post, oauth_client_credentials):
-        """Test handling of failed token request."""
         import httpx
 
         mock_response = Mock()
@@ -161,7 +148,6 @@ class TestOAuthStrategy:
     def test_expiry_buffer_enforcement(
         self, mock_post, oauth_client_credentials, mock_oauth_token_response
     ):
-        """Test that 60-second expiry buffer is enforced."""
         mock_response = Mock()
         mock_response.status_code = 200
         mock_response.json.return_value = mock_oauth_token_response()
@@ -176,36 +162,32 @@ class TestOAuthStrategy:
         assert oauth_client_credentials.is_expired() is True
 
     def test_grant_type_accepts_string(self):
-        """Test that grant_type accepts string values."""
-        # Test with string
         auth_string = OAuth2Authenticator(
             token_url="https://auth.example.com/token",
             client_id="test_client",
-            client_secret=SecretStr("test_secret"),
+            client_secret="test_secret",
             grant_type="password",
             username="testuser",
-            password=SecretStr("testpass"),
+            password="testpass",
         )
 
         assert auth_string.grant_type == OAuth2GrantType.PASSWORD
 
-        # Test with enum
         auth_enum = OAuth2Authenticator(
             token_url="https://auth.example.com/token",
             client_id="test_client",
-            client_secret=SecretStr("test_secret"),
+            client_secret="test_secret",
             grant_type=OAuth2GrantType.CLIENT_CREDENTIALS,
         )
 
         assert auth_enum.grant_type == OAuth2GrantType.CLIENT_CREDENTIALS
 
     def test_grant_type_invalid_string(self):
-        """Test that invalid grant_type string raises ValueError."""
         with pytest.raises(ValueError) as exc_info:
             OAuth2Authenticator(
                 token_url="https://auth.example.com/token",
                 client_id="test_client",
-                client_secret=SecretStr("test_secret"),
+                client_secret="test_secret",
                 grant_type="invalid_grant_type",
             )
 
@@ -213,25 +195,22 @@ class TestOAuthStrategy:
         assert "invalid_grant_type" in str(exc_info.value)
 
     def test_grant_type_invalid_type(self):
-        """Test that invalid grant_type type (not string or enum) raises TypeError."""
-        # Test with int
         with pytest.raises(TypeError) as exc_info:
             OAuth2Authenticator(
                 token_url="https://auth.example.com/token",
                 client_id="test_client",
-                client_secret=SecretStr("test_secret"),
+                client_secret="test_secret",
                 grant_type=123,  # type: ignore
             )
 
         assert "Invalid type for parameter 'grant_type'" in str(exc_info.value)
         assert "int" in str(exc_info.value)
 
-        # Test with list
         with pytest.raises(TypeError) as exc_info:
             OAuth2Authenticator(
                 token_url="https://auth.example.com/token",
                 client_id="test_client",
-                client_secret=SecretStr("test_secret"),
+                client_secret="test_secret",
                 grant_type=["password"],  # type: ignore
             )
 
@@ -239,11 +218,9 @@ class TestOAuthStrategy:
         assert "list" in str(exc_info.value)
 
 
-class TestNoAuthStrategy:
-    """Test NoAuthAuthenticator - default for open APIs."""
+class TestNoAuthAuthenticator:
 
     def test_no_auth_returns_empty_headers(self):
-        """Test that NoAuth returns empty authentication headers."""
         auth = NoAuthAuthenticator()
         headers = auth.authenticate()
 

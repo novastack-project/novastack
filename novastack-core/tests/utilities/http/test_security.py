@@ -3,7 +3,6 @@ from datetime import datetime, timedelta
 from unittest.mock import Mock, patch
 
 import pytest
-from novastack.core.bridge.pydantic import SecretStr
 from novastack.core.utilities.http import HttpService
 from novastack.core.utilities.http.authenticators import (
     BasicAuthenticator,
@@ -14,12 +13,10 @@ from novastack.core.utilities.http.exceptions import HttpAuthenticationError
 
 
 class TestCredentialMasking:
-    """Test that credentials are not exposed."""
 
     def test_basic_auth_password_masked(self):
-        """Test that password is masked in string representation."""
         auth = BasicAuthenticator(
-            username="testuser", password=SecretStr("supersecret")
+            username="testuser", password="supersecret"
         )
 
         auth_str = str(auth)
@@ -30,11 +27,10 @@ class TestCredentialMasking:
         assert "supersecret" not in auth_repr
 
     def test_oauth_client_secret_masked(self):
-        """Test that client secret is masked in string representation."""
         oauth = OAuth2Authenticator(
             token_url="https://auth.example.com/token",
             client_id="test_client",
-            client_secret=SecretStr("supersecret"),
+            client_secret="supersecret",
             grant_type=OAuth2GrantType.CLIENT_CREDENTIALS,
         )
 
@@ -47,11 +43,10 @@ class TestCredentialMasking:
 
     @patch("httpx.Client.post")
     def test_credentials_not_in_error_messages(self, mock_post):
-        """Test that credentials don't appear in error messages."""
         oauth = OAuth2Authenticator(
             token_url="https://auth.example.com/token",
             client_id="test_client",
-            client_secret=SecretStr("supersecret"),
+            client_secret="supersecret",
             grant_type=OAuth2GrantType.CLIENT_CREDENTIALS,
         )
 
@@ -68,10 +63,8 @@ class TestCredentialMasking:
 
 
 class TestSSLVerification:
-    """Test SSL certificate verification."""
 
     def test_ssl_verification_enabled_by_default(self):
-        """Test that SSL verification is enabled by default."""
         service = HttpService(base_url="https://api.example.com")
 
         assert service.verify_ssl is True
@@ -79,7 +72,6 @@ class TestSSLVerification:
         service.close()
 
     def test_ssl_verification_can_be_disabled(self):
-        """Test that SSL verification can be explicitly disabled."""
         service = HttpService(
             base_url="https://api.example.com",
             verify_ssl=False,
@@ -91,16 +83,14 @@ class TestSSLVerification:
 
 
 class TestTokenExpiryEnforcement:
-    """Test that token expiry is properly enforced."""
 
     @patch("httpx.post")
     @patch("httpx.Client.get")
     def test_expired_token_not_used(self, mock_get, mock_httpx_post):
-        """Test that expired tokens trigger refresh."""
         oauth = OAuth2Authenticator(
             token_url="https://auth.example.com/token",
             client_id="test_client",
-            client_secret=SecretStr("test_secret"),
+            client_secret="test_secret",
             grant_type=OAuth2GrantType.CLIENT_CREDENTIALS,
         )
 
@@ -148,19 +138,3 @@ class TestTokenExpiryEnforcement:
         assert mock_httpx_post.call_count > initial_token_calls
 
         service.close()
-
-    def test_token_expiry_buffer_enforced(self):
-        """Test that 60-second expiry buffer is enforced."""
-        oauth = OAuth2Authenticator(
-            token_url="https://auth.example.com/token",
-            client_id="test_client",
-            client_secret=SecretStr("test_secret"),
-            grant_type=OAuth2GrantType.CLIENT_CREDENTIALS,
-        )
-
-        # Set token to expire in 30 seconds (within buffer)
-        oauth._access_token = "test_token"
-        oauth._expires_at = datetime.now() + timedelta(seconds=30)
-
-        # Should be considered expired due to buffer
-        assert oauth.is_expired() is True

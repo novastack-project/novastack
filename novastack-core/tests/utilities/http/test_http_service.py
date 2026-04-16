@@ -10,11 +10,9 @@ from novastack.core.utilities.http.exceptions import (
 from novastack.core.utilities.http.types import HttpResponse
 
 
-class TestHTTPServiceCore:
-    """Test core HttpService functionality."""
+class TestHttpServiceCore:
 
     def test_init_without_auth(self):
-        """Test initialization without authentication."""
         service = HttpService(base_url="https://api.example.com")
 
         assert service.base_url == "https://api.example.com"
@@ -25,7 +23,6 @@ class TestHTTPServiceCore:
         service.close()
 
     def test_init_with_auth(self, basic_auth):
-        """Test initialization with authentication."""
         service = HttpService(
             base_url="https://api.example.com",
             authenticator=basic_auth,
@@ -37,7 +34,6 @@ class TestHTTPServiceCore:
 
     @patch("httpx.Client.get")
     def test_get_success(self, mock_get, http_service_no_auth, mock_httpx_response):
-        """Test successful GET request."""
         mock_get.return_value = mock_httpx_response()
 
         response = http_service_no_auth.get("/users")
@@ -48,7 +44,6 @@ class TestHTTPServiceCore:
 
     @patch("httpx.Client.post")
     def test_post_with_json(self, mock_post, http_service_no_auth, mock_httpx_response):
-        """Test POST request with JSON data."""
         mock_post.return_value = mock_httpx_response(status_code=201)
 
         json_data = {"name": "John"}
@@ -61,7 +56,6 @@ class TestHTTPServiceCore:
     async def test_aget_success(
         self, mock_get, http_service_no_auth, mock_httpx_response
     ):
-        """Test successful async GET request."""
         mock_get.return_value = mock_httpx_response()
 
         response = await http_service_no_auth.aget("/users")
@@ -70,12 +64,10 @@ class TestHTTPServiceCore:
         assert response.status_code == 200
 
 
-class TestHTTPServiceErrorHandling:
-    """Test critical error handling."""
+class TestHttpServiceErrorHandling:
 
     @patch("httpx.Client.get")
     def test_timeout_error(self, mock_get, http_service_no_auth):
-        """Test timeout error handling."""
         mock_get.side_effect = httpx.TimeoutException("Request timed out")
 
         with pytest.raises(HttpRequestTimeoutError):
@@ -83,21 +75,18 @@ class TestHTTPServiceErrorHandling:
 
     @patch("httpx.Client.get")
     def test_connection_error(self, mock_get, http_service_no_auth):
-        """Test connection error handling."""
         mock_get.side_effect = httpx.ConnectError("Connection failed")
 
         with pytest.raises(HttpConnectionError):
             http_service_no_auth.get("/users")
 
 
-class TestHTTPServiceAuthentication:
-    """Test authentication integration."""
+class TestHttpServiceAuthentication:
 
     @patch("httpx.Client.get")
     def test_basic_auth_headers(
         self, mock_get, http_service_basic_auth, mock_httpx_response
     ):
-        """Test that basic auth headers are included."""
         mock_get.return_value = mock_httpx_response()
 
         http_service_basic_auth.get("/users")
@@ -117,8 +106,6 @@ class TestHTTPServiceAuthentication:
         mock_httpx_response,
         mock_oauth_token_response,
     ):
-        """Test that OAuth headers are included."""
-        # Mock OAuth token response
         mock_token_response = Mock()
         mock_token_response.status_code = 200
         mock_token_response.json.return_value = mock_oauth_token_response()
@@ -135,11 +122,9 @@ class TestHTTPServiceAuthentication:
         assert headers["Authorization"].startswith("Bearer ")
 
 
-class TestResponseWrapper:
-    """Test Response wrapper critical methods."""
+class TestHttpResponseWrapper:
 
     def test_json_content(self):
-        """Test JSON content parsing."""
         response = HttpResponse(
             status_code=200,
             headers={},
@@ -151,7 +136,6 @@ class TestResponseWrapper:
         assert json_data == {"name": "John"}
 
     def test_is_success(self):
-        """Test is_success for success and error codes."""
         success_response = HttpResponse(
             status_code=200,
             headers={},
