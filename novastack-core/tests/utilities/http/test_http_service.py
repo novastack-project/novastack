@@ -11,7 +11,6 @@ from novastack.core.utilities.http.types import HttpResponse
 
 
 class TestHttpServiceCore:
-
     def test_init_without_auth(self):
         service = HttpService(base_url="https://api.example.com")
 
@@ -65,7 +64,6 @@ class TestHttpServiceCore:
 
 
 class TestHttpServiceErrorHandling:
-
     @patch("httpx.Client.get")
     def test_timeout_error(self, mock_get, http_service_no_auth):
         mock_get.side_effect = httpx.TimeoutException("Request timed out")
@@ -82,7 +80,6 @@ class TestHttpServiceErrorHandling:
 
 
 class TestHttpServiceAuthentication:
-
     @patch("httpx.Client.get")
     def test_basic_auth_headers(
         self, mock_get, http_service_basic_auth, mock_httpx_response
@@ -123,7 +120,6 @@ class TestHttpServiceAuthentication:
 
 
 class TestHttpResponseWrapper:
-
     def test_json_content(self):
         response = HttpResponse(
             status_code=200,

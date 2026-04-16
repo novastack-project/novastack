@@ -13,7 +13,6 @@ from novastack.core.utilities.http.exceptions import HttpAuthenticationError
 
 
 class TestBasicAuthAuthenticator:
-
     def test_initialization(self):
         auth = BasicAuthenticator(username="testuser", password="testpass")
 
@@ -37,7 +36,6 @@ class TestBasicAuthAuthenticator:
 
 
 class TestOAuth2Authenticator:
-
     def test_initialization(self, oauth_client_credentials):
         from novastack.core.utilities.http.authenticators.oauth2_authenticator import (
             OAuth2GrantType,
@@ -219,7 +217,6 @@ class TestOAuth2Authenticator:
 
 
 class TestNoAuthAuthenticator:
-
     def test_no_auth_returns_empty_headers(self):
         auth = NoAuthAuthenticator()
         headers = auth.authenticate()

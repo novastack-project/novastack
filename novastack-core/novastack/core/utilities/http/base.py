@@ -305,7 +305,7 @@ class HttpService(BaseModel):
         try:
             prepared_headers = self._prepare_headers(headers)
             response = await self._async_client.post(
-                url, data=data, json=json,params=params, headers=prepared_headers
+                url, data=data, json=json, params=params, headers=prepared_headers
             )
             return self._handle_response(response)
         except httpx.TimeoutException as e:
@@ -344,7 +344,7 @@ class HttpService(BaseModel):
         try:
             prepared_headers = self._prepare_headers(headers)
             response = await self._async_client.put(
-                url, data=data, json=json,params=params, headers=prepared_headers
+                url, data=data, json=json, params=params, headers=prepared_headers
             )
             return self._handle_response(response)
         except httpx.TimeoutException as e:

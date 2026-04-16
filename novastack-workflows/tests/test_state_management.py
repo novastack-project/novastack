@@ -26,7 +26,6 @@ class StateWorkflow(Workflow):
     async def initialize(
         self, ctx: Context[RunState], ev: StartEvent
     ) -> IncrementEvent:
-
         async with ctx.store.edit_state() as state:
             state.counter = 0
             state.items = ["initialized"]

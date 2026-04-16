@@ -13,11 +13,8 @@ from novastack.core.utilities.http.exceptions import HttpAuthenticationError
 
 
 class TestCredentialMasking:
-
     def test_basic_auth_password_masked(self):
-        auth = BasicAuthenticator(
-            username="testuser", password="supersecret"
-        )
+        auth = BasicAuthenticator(username="testuser", password="supersecret")
 
         auth_str = str(auth)
         auth_repr = repr(auth)
@@ -63,7 +60,6 @@ class TestCredentialMasking:
 
 
 class TestSSLVerification:
-
     def test_ssl_verification_enabled_by_default(self):
         service = HttpService(base_url="https://api.example.com")
 
@@ -83,7 +79,6 @@ class TestSSLVerification:
 
 
 class TestTokenExpiryEnforcement:
-
     @patch("httpx.post")
     @patch("httpx.Client.get")
     def test_expired_token_not_used(self, mock_get, mock_httpx_post):
