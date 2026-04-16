@@ -135,6 +135,7 @@ class HttpService(BaseModel):
         url: str,
         data: dict[str, Any] | None = None,
         json: dict[str, Any] | None = None,
+        params: dict[str, Any] | None = None,
         headers: dict[str, str] | None = None,
     ) -> HttpResponse:
         """
@@ -144,6 +145,7 @@ class HttpService(BaseModel):
             url: Request url (relative to base_url)
             data: Form data
             json: JSON data
+            params: Query parameters
             headers: Additional headers
 
         Returns:
@@ -157,7 +159,7 @@ class HttpService(BaseModel):
         try:
             prepared_headers = self._prepare_headers(headers)
             response = self._client.post(
-                url, data=data, json=json, headers=prepared_headers
+                url, data=data, json=json, params=params, headers=prepared_headers
             )
             return self._handle_response(response)
         except httpx.TimeoutException as e:
@@ -172,6 +174,7 @@ class HttpService(BaseModel):
         url: str,
         data: dict[str, Any] | None = None,
         json: dict[str, Any] | None = None,
+        params: dict[str, Any] | None = None,
         headers: dict[str, str] | None = None,
     ) -> HttpResponse:
         """
@@ -181,6 +184,7 @@ class HttpService(BaseModel):
             url: Request url (relative to base_url)
             data: Form data
             json: JSON data
+            params: Query parameters
             headers: Additional headers
 
         Returns:
@@ -194,7 +198,7 @@ class HttpService(BaseModel):
         try:
             prepared_headers = self._prepare_headers(headers)
             response = self._client.put(
-                url, data=data, json=json, headers=prepared_headers
+                url, data=data, json=json, params=params, headers=prepared_headers
             )
             return self._handle_response(response)
         except httpx.TimeoutException as e:
@@ -277,6 +281,7 @@ class HttpService(BaseModel):
         url: str,
         data: dict[str, Any] | None = None,
         json: dict[str, Any] | None = None,
+        params: dict[str, Any] | None = None,
         headers: dict[str, str] | None = None,
     ) -> HttpResponse:
         """
@@ -286,6 +291,7 @@ class HttpService(BaseModel):
             url: Request url (relative to base_url)
             data: Form data
             json: JSON data
+            params: Query parameters
             headers: Additional headers
 
         Returns:
@@ -299,7 +305,7 @@ class HttpService(BaseModel):
         try:
             prepared_headers = self._prepare_headers(headers)
             response = await self._async_client.post(
-                url, data=data, json=json, headers=prepared_headers
+                url, data=data, json=json,params=params, headers=prepared_headers
             )
             return self._handle_response(response)
         except httpx.TimeoutException as e:
@@ -314,6 +320,7 @@ class HttpService(BaseModel):
         url: str,
         data: dict[str, Any] | None = None,
         json: dict[str, Any] | None = None,
+        params: dict[str, Any] | None = None,
         headers: dict[str, str] | None = None,
     ) -> HttpResponse:
         """
@@ -323,6 +330,7 @@ class HttpService(BaseModel):
             url: Request url (relative to base_url)
             data: Form data
             json: JSON data
+            params: Query parameters
             headers: Additional headers
 
         Returns:
@@ -336,7 +344,7 @@ class HttpService(BaseModel):
         try:
             prepared_headers = self._prepare_headers(headers)
             response = await self._async_client.put(
-                url, data=data, json=json, headers=prepared_headers
+                url, data=data, json=json,params=params, headers=prepared_headers
             )
             return self._handle_response(response)
         except httpx.TimeoutException as e:

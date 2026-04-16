@@ -1,5 +1,4 @@
 import pytest
-from novastack.core.bridge.pydantic import SecretStr
 from novastack.core.utilities.http import HttpService
 from novastack.core.utilities.http.authenticators import (
     BasicAuthenticator,
@@ -11,7 +10,7 @@ from novastack.core.utilities.http.authenticators import (
 @pytest.fixture
 def basic_auth():
     """Fixture for BasicAuthenticator instance."""
-    return BasicAuthenticator(username="testuser", password=SecretStr("testpass"))
+    return BasicAuthenticator(username="testuser", password="testpass")
 
 
 @pytest.fixture
@@ -20,7 +19,7 @@ def oauth_client_credentials():
     return OAuth2Authenticator(
         token_url="https://auth.example.com/token",
         client_id="test_client_id",
-        client_secret=SecretStr("test_client_secret"),
+        client_secret="test_client_secret",
         grant_type=OAuth2GrantType.CLIENT_CREDENTIALS,
     )
 
@@ -31,10 +30,10 @@ def oauth_password_grant():
     return OAuth2Authenticator(
         token_url="https://auth.example.com/token",
         client_id="test_client_id",
-        client_secret=SecretStr("test_client_secret"),
+        client_secret="test_client_secret",
         grant_type=OAuth2GrantType.PASSWORD,
         username="testuser",
-        password=SecretStr("testpass"),
+        password="testpass",
     )
 
 
