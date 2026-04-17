@@ -1,9 +1,10 @@
 from typing import Any
 
-import requests
 from novastack.core.bridge.pydantic import Field, PrivateAttr
 from novastack.core.guardrails import BaseGuardrail, GuardrailResponse
 from novastack.core.prompts import PromptTemplate
+from novastack.core.utilities.http import HttpService
+from novastack.core.utilities.http.authenticators import IBMIAMAuthenticator
 from novastack.guardrails.watsonx.supporting_classes.enums import Direction, Region
 
 
@@ -50,56 +51,90 @@ class WatsonxGuardrail(BaseGuardrail):
         description="The region where watsonx.governance is hosted when using IBM Cloud",
     )
 
-    _token_manager: Any = PrivateAttr(default=None)
+    _guardrail_manager: Any = PrivateAttr(default=None)
 
     def model_post_init(self, __context):  # noqa: PYI063
-        from ibm_cloud_sdk_core.authenticators import IAMAuthenticator
-
         self.region = Region.from_value(self.region)
-        authenticator = IAMAuthenticator(apikey=self.api_key)
-        self._token_manager = authenticator.token_manager
+        self._guardrail_manager = HttpService(
+            base_url=self.region.openscale,
+            timeout=10,
+            headers={"x-governance-instance-id": self.instance_id},
+            authenticator=IBMIAMAuthenticator(api_key=self.api_key),
+        )
 
-    def _get_token(self) -> str:
-        """Get authentication token."""
-        return self._token_manager.get_token()
+    def _get_policy_detectors(self) -> dict[str, Any]:
+        result = self._guardrail_manager.get(
+            url=f"/guardrails_manager/v2/policies/{self.policy_id}",
+            params={"inventory_id": self.inventory_id},
+        )
 
-    def _http_post(
+        entity = result.json_dump().get("entity", {})
+
+        def _build_detectors_map(items):
+            result = {}
+            for item in items:
+                detector_name = item.get("detector")
+                if detector_name:
+                    result[detector_name] = {}
+            return result
+
+        return {
+            "input": _build_detectors_map(entity.get("input", [])),
+            "output": _build_detectors_map(entity.get("output", [])),
+        }
+
+    def _validate_detector_requirements(
         self,
-        url: str,
-        path: str,
-        payload: dict[str, Any],
-        token: str | None = None,
-        timeout: int = 10,
-        headers: dict[str, str] | None = None,
-        params: dict[str, str] | None = None,
-    ) -> dict[str, Any]:
-        url = f"{url.rstrip('/')}/{path.lstrip('/')}"
-        base_headers = {"Content-Type": "application/json"}
+        direction: str,
+        detectors: dict,
+        prompt_template: PromptTemplate | None,
+        context: list,
+    ) -> None:
+        """
+        Validates that required parameters are provided based on the direction and active detectors.
 
-        # Add API token header if provided
-        if token:
-            base_headers["Authorization"] = f"Bearer {token}"
+        Args:
+            direction (str): The direction value ("input" or "output").
+            prompt_template (PromptTemplate | None): The prompt template.
+            context (list): List of context documents.
 
-        # Merge custom headers
-        if headers:
-            base_headers.update(headers)
+        Raises:
+            ValueError: If required parameters are missing for active detectors.
+        """
+        input_detectors = detectors.get("input", {})
+        output_detectors = detectors.get("output", {})
 
-        try:
-            response = requests.post(
-                url, json=payload, headers=base_headers, timeout=timeout, params=params
-            )
-        except requests.RequestException as e:
-            raise RuntimeError(
-                f"Unable to complete the HTTP request. Underlying error: {str(e)}"  # noqa: RUF010
-            ) from e
+        if direction == Direction.INPUT.value:
+            # Check if prompt_safety_risk or topic_relevance detectors are active
+            if (
+                "prompt_safety_risk" in input_detectors
+                or "topic_relevance" in input_detectors
+            ):
+                if prompt_template is None:
+                    raise ValueError(
+                        "prompt_template cannot be None when direction is 'input' and "
+                        "'prompt_safety_risk' or 'topic_relevance' detectors are active in the policy"
+                    )
 
-        if not response.ok:
-            raise RuntimeError(
-                f"Received unexpected HTTP status code {response.status_code}. "
-                f"Service response: {response.text}"
-            )
+        elif direction == Direction.OUTPUT.value:
+            # Check if answer_relevance detector is active
+            if "answer_relevance" in output_detectors:
+                if prompt_template is None:
+                    raise ValueError(
+                        "prompt_template cannot be None when direction is 'output' and "
+                        "'answer_relevance' detector is active in the policy"
+                    )
 
-        return response.json()
+            # Check if context_relevance or groundedness detectors are active
+            if (
+                "context_relevance" in output_detectors
+                or "groundedness" in output_detectors
+            ):
+                if not context or context is None:
+                    raise ValueError(
+                        "context cannot be None or empty when direction is 'output' and "
+                        "'context_relevance' or 'groundedness' detectors are active in the policy"
+                    )
 
     def enforce(
         self,
@@ -129,39 +164,53 @@ class WatsonxGuardrail(BaseGuardrail):
         """
         prompt_template = PromptTemplate.from_value(prompt_template)
         direction = Direction.from_value(direction).value
-        access_token = self._get_token()
+
+        # Validate detector requirements before proceeding
+        detectors = self._get_policy_detectors()
+        self._validate_detector_requirements(
+            direction, detectors, prompt_template, context
+        )
+
+        # Configure detector properties based on direction
+        detector_configs: dict[str, dict[str, Any]] = {}
 
         if direction == Direction.INPUT.value:
-            detectors_properties = {
-                "prompt_safety_risk": {"system_prompt": prompt_template.template},
-                "topic_relevance": {"system_prompt": prompt_template.template},
+            detector_configs = {
+                "prompt_safety_risk": {"system_prompt": prompt_template.template}
+                if prompt_template
+                else {},
+                "topic_relevance": {"system_prompt": prompt_template.template}
+                if prompt_template
+                else {},
             }
-        if direction == Direction.OUTPUT.value:
-            detectors_properties = {
+        else:  # Direction.OUTPUT.value
+            detector_configs = {
                 "groundedness": {"context_type": "docs", "context": context},
                 "context_relevance": {"context_type": "docs", "context": context},
                 "answer_relevance": {
-                    "prompt": prompt_template.format(context="\n".join(context)),
+                    "prompt": prompt_template.format(context="\n".join(context))
+                    if prompt_template
+                    else "",
                     "generated_text": text,
                 },
             }
 
-        payload = {
-            "text": text,
-            "direction": direction,
-            "detectors_properties": detectors_properties,
-        }
+        # Apply detector properties for active detectors
+        for detector_name, config in detector_configs.items():
+            if detector_name in detectors[direction]:
+                detectors[detector_name] = config
 
-        response = self._http_post(
-            url=self.region.openscale,
-            path=f"/guardrails-manager/v1/enforce/{self.policy_id}",
-            payload=payload,
-            token=access_token,
-            headers={"x-governance-instance-id": self.instance_id},
+        response = self._guardrail_manager.post(
+            url=f"/guardrails_manager/v2/enforce/{self.policy_id}",
             params={"inventory_id": self.inventory_id},
+            json={
+                "text": text,
+                "direction": direction,
+                "detectors_properties": detectors[direction],
+            },
         )
 
         return GuardrailResponse(
-            text=response.get("entity", {}).get("text", ""),
-            raw=response,
+            text=response.json_dump().get("entity", {}).get("text", ""),
+            raw=response.json_dump(),
         )
