@@ -39,7 +39,6 @@ class TestHttpServiceCore:
 
         assert isinstance(response, HttpResponse)
         assert response.status_code == 200
-        assert response.is_success()
 
     @patch("httpx.Client.post")
     def test_post_with_json(self, mock_post, http_service_no_auth, mock_httpx_response):
@@ -128,22 +127,5 @@ class TestHttpResponseWrapper:
             url="https://api.example.com/users/1",
         )
 
-        json_data = response.json_content()
+        json_data = response.json_dump()
         assert json_data == {"name": "John"}
-
-    def test_is_success(self):
-        success_response = HttpResponse(
-            status_code=200,
-            headers={},
-            content=b"",
-            url="https://api.example.com/test",
-        )
-        assert success_response.is_success() is True
-
-        error_response = HttpResponse(
-            status_code=404,
-            headers={},
-            content=b"",
-            url="https://api.example.com/test",
-        )
-        assert error_response.is_success() is False

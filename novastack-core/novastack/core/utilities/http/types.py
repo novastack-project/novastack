@@ -26,7 +26,7 @@ class HttpResponse(BaseModel):
     content: bytes = Field(default=b"", description="Raw Response Content")
     url: str = Field(...)
 
-    def json_content(self) -> Any:
+    def json_dump(self) -> Any:
         """
         Parse response content as JSON.
 
@@ -42,21 +42,3 @@ class HttpResponse(BaseModel):
             return json.loads(self.content.decode("utf-8"))
         except (json.JSONDecodeError, UnicodeDecodeError) as e:
             raise ValueError(f"Failed to parse response as JSON: {e}")
-
-    def text(self) -> str:
-        """
-        Get response content as text.
-
-        Returns:
-            Response content as string
-        """
-        return self.content.decode("utf-8")
-
-    def is_success(self) -> bool:
-        """
-        Check if response indicates success.
-
-        Returns:
-            True if status code is 2xx, False otherwise
-        """
-        return 200 <= self.status_code < 300
