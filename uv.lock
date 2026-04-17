@@ -928,7 +928,7 @@ wheels = [
 
 [[package]]
 name = "novastack"
-version = "1.0.0"
+version = "1.1.1"
 source = { editable = "." }
 dependencies = [
     { name = "novastack-core" },
@@ -946,7 +946,7 @@ dev = [
 
 [package.metadata]
 requires-dist = [
-    { name = "novastack-core", specifier = ">=1.0.0,<2.0.0" },
+    { name = "novastack-core", specifier = ">=1.1.1,<2.0.0" },
     { name = "novastack-embeddings-huggingface", specifier = ">=1.0.0,<2.0.0" },
     { name = "novastack-llms-litellm", specifier = ">=1.0.0,<2.0.0" },
     { name = "novastack-loaders-file", specifier = ">=1.0.0,<2.0.0" },
@@ -958,18 +958,19 @@ provides-extras = ["dev"]
 
 [[package]]
 name = "novastack-core"
-version = "1.0.0"
+version = "1.1.1"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "deprecated" },
+    { name = "httpx" },
     { name = "nltk" },
     { name = "numpy" },
     { name = "pydantic" },
     { name = "tiktoken" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/9c/b8/200dff4ef9896033acf74f57a4537b3d93cebfc13ab073aaa5cf80cc3dba/novastack_core-1.0.0.tar.gz", hash = "sha256:e6e6ff80323c9b40a96a7fec3aee40261cb8966db047be441b8a92662766299c", size = 18013, upload-time = "2026-04-09T21:20:01.864Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/20/e9/b8f55c705a14b969f0b6778ee10adc9616a420b6889301e2520559acf913/novastack_core-1.1.1.tar.gz", hash = "sha256:3e33317034c8ef62fdb4247f442e65ca71adc18e7936b19534ad52c81c162f94", size = 22810, upload-time = "2026-04-17T11:39:06.036Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/b3/56/4f404c6ba697c0f48c9f17a9e6ad88523b1da38e8ab227635c3d4227acbb/novastack_core-1.0.0-py3-none-any.whl", hash = "sha256:410330f8029c58b3a9322e1590e098a9c4e81f4072a6a1b4809c05fa5fa895fc", size = 33060, upload-time = "2026-04-09T21:20:03.419Z" },
+    { url = "https://files.pythonhosted.org/packages/d6/7d/3d6cce27eb73fa901a6f05a1b605acc082b73e0eac23cf957dceca543d6d/novastack_core-1.1.1-py3-none-any.whl", hash = "sha256:626085c43afcc8f50c574849e31750591f9b7d5c8214731663b538f6107956b4", size = 42809, upload-time = "2026-04-17T11:39:07.753Z" },
 ]
 
 [[package]]

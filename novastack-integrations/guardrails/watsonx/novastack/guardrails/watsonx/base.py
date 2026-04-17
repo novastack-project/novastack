@@ -200,7 +200,6 @@ class WatsonxGuardrail(BaseGuardrail):
             if detector_name in detectors[direction]:
                 detectors[detector_name] = config
 
-
         response = self._guardrail_manager.post(
             url=f"/guardrails_manager/v2/enforce/{self.policy_id}",
             params={"inventory_id": self.inventory_id},
