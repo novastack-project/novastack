@@ -1,8 +1,5 @@
-import select
 from typing import Any
-from unittest import result
 
-import requests
 from novastack.core.bridge.pydantic import Field, PrivateAttr
 from novastack.core.guardrails import BaseGuardrail, GuardrailResponse
 from novastack.core.prompts import PromptTemplate
@@ -62,7 +59,7 @@ class WatsonxGuardrail(BaseGuardrail):
             base_url=self.region.openscale,
             timeout=10,
             headers={"x-governance-instance-id": self.instance_id},
-            authenticator=IBMIAMAuthenticator(apikey=self.api_key),
+            authenticator=IBMIAMAuthenticator(api_key=self.api_key),
         )
 
     def _get_policy_detectors(self) -> dict[str, Any]:
@@ -71,7 +68,7 @@ class WatsonxGuardrail(BaseGuardrail):
             params={"inventory_id": self.inventory_id},
         )
 
-        entity = result.content.get("entity", {})
+        entity = result.json_dump().get("entity", {})
 
         def _build_detectors_map(items):
             result = {}
@@ -82,8 +79,8 @@ class WatsonxGuardrail(BaseGuardrail):
             return result
 
         return {
-            "input_detectors": _build_detectors_map(entity.get("input", [])),
-            "output_detectors": _build_detectors_map(entity.get("output", [])),
+            "input": _build_detectors_map(entity.get("input", [])),
+            "output": _build_detectors_map(entity.get("output", [])),
         }
 
     def _validate_detector_requirements(
@@ -104,8 +101,8 @@ class WatsonxGuardrail(BaseGuardrail):
         Raises:
             ValueError: If required parameters are missing for active detectors.
         """
-        input_detectors = detectors.get("input_detectors", {})
-        output_detectors = detectors.get("output_detectors", {})
+        input_detectors = detectors.get("input", {})
+        output_detectors = detectors.get("output", {})
 
         if direction == Direction.INPUT.value:
             # Check if prompt_safety_risk or topic_relevance detectors are active
@@ -186,7 +183,6 @@ class WatsonxGuardrail(BaseGuardrail):
                 if prompt_template
                 else {},
             }
-            detector_key = "input_detectors"
         else:  # Direction.OUTPUT.value
             detector_configs = {
                 "groundedness": {"context_type": "docs", "context": context},
@@ -198,12 +194,12 @@ class WatsonxGuardrail(BaseGuardrail):
                     "generated_text": text,
                 },
             }
-            detector_key = "output_detectors"
 
         # Apply detector properties for active detectors
         for detector_name, config in detector_configs.items():
-            if detector_name in detectors[detector_key]:
+            if detector_name in detectors[direction]:
                 detectors[detector_name] = config
+
 
         response = self._guardrail_manager.post(
             url=f"/guardrails_manager/v2/enforce/{self.policy_id}",
@@ -211,11 +207,11 @@ class WatsonxGuardrail(BaseGuardrail):
             json={
                 "text": text,
                 "direction": direction,
-                "detectors_properties": detectors,
+                "detectors_properties": detectors[direction],
             },
         )
 
         return GuardrailResponse(
-            text=response.content.get("entity", {}).get("text", ""),
-            raw=response.content,
+            text=response.json_dump().get("entity", {}).get("text", ""),
+            raw=response.json_dump(),
         )
