@@ -31,10 +31,9 @@ class PromptObservability(BaseObservability):
 
     @model_validator(mode="before")
     @classmethod
-    def _validate_prompt_template(cls, data):
-        """Convert prompt_template value using PromptTemplate.from_value."""
+    def _normalize_prompt_template(cls, data):
         if isinstance(data, dict) and "prompt_template" in data:
-            data["prompt_template"] = PromptTemplate.from_value(data["prompt_template"])
+            data["prompt_template"] = PromptTemplate.model_validate_input(data["prompt_template"])
         return data
 
     @classmethod

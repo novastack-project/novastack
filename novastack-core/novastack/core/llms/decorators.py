@@ -38,7 +38,7 @@ async def _process_chat_callback(
             input_chat_messages = args[0]
         elif "messages" in kwargs:
             input_chat_messages = [
-                ChatMessage.from_value(msg) for msg in kwargs["messages"]
+                ChatMessage.model_validate(msg) for msg in kwargs["messages"]
             ]
         else:
             raise ValueError("No messages provided in positional or keyword arguments")

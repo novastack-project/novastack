@@ -4,7 +4,7 @@ from typing import Literal
 import numpy as np
 from novastack.core.document import Document
 from novastack.core.embeddings import BaseEmbedding
-from novastack.core.embeddings.base import similarity
+from novastack.core.embeddings.base import compute_similarity
 from novastack.core.embeddings.enums import SimilarityMode
 from novastack.core.text_chunkers.base import BaseTextChunker
 
@@ -33,13 +33,12 @@ class SemanticChunker(BaseTextChunker):
         ```
     """
 
+    model_config = {"arbitrary_types_allowed": True}
+
     embed_model: BaseEmbedding
     buffer_size: int = 1
     breakpoint_threshold_amount: int = 95
     device: Literal["cpu", "cuda"] = "cpu"
-
-    class Config:
-        arbitrary_types_allowed = True
 
     def _combine_sentences(self, sentences: list[dict]) -> list[dict]:
         """Combine sentences with neighbors based on buffer size."""
@@ -84,7 +83,7 @@ class SemanticChunker(BaseTextChunker):
             embedding_current = sentences[i]["combined_sentence_embedding"]
             embedding_next = sentences[i + 1]["combined_sentence_embedding"]
 
-            similarity_score = similarity(
+            similarity_score = compute_similarity(
                 embedding_current, embedding_next, SimilarityMode.COSINE
             )
 

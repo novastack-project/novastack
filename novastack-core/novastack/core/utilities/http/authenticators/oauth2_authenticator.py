@@ -29,26 +29,6 @@ class OAuth2GrantType(str, Enum):
     AUTHORIZATION_CODE = "authorization_code"
     REFRESH_TOKEN = "refresh_token"
 
-    @classmethod
-    def from_value(cls, value: Union[str, "OAuth2GrantType"]) -> "OAuth2GrantType":
-        if isinstance(value, cls):
-            return value
-
-        if isinstance(value, str):
-            try:
-                return cls(value)
-            except ValueError:
-                valid_values = [item.value for item in cls]
-                raise ValueError(
-                    f"Invalid value for parameter 'grant_type'. Received: '{value}'. "
-                    f"Valid values are: {valid_values}."
-                )
-
-        raise TypeError(
-            f"Invalid type for parameter 'grant_type'. Expected str or OAuth2GrantType, "
-            f"but received {type(value).__name__}."
-        )
-
 
 class OAuth2Authenticator(BaseAuthenticator):
     """
@@ -60,7 +40,7 @@ class OAuth2Authenticator(BaseAuthenticator):
     token_url: str = Field(..., description="OAuth2 token endpoint URL")
     client_id: str = Field(..., min_length=1, description="OAuth2 client ID")
     client_secret: SecretStr = Field(..., description="OAuth2 client secret")
-    grant_type: OAuth2GrantType | str = Field(
+    grant_type: OAuth2GrantType = Field(
         default=OAuth2GrantType.CLIENT_CREDENTIALS, description="OAuth2 grant type"
     )
     username: str | None = Field(
@@ -77,12 +57,6 @@ class OAuth2Authenticator(BaseAuthenticator):
     _token_type: str = PrivateAttr(default="Bearer")
     _expires_at: datetime | None = PrivateAttr(default=None)
     _refresh_token: str | None = PrivateAttr(default=None)
-
-    @field_validator("grant_type", mode="before")
-    @classmethod
-    def validate_grant_type(cls, v: OAuth2GrantType | str) -> OAuth2GrantType:
-        """Validate and convert grant_type using OAuth2GrantType.from_value()."""
-        return OAuth2GrantType.from_value(v)
 
     def model_post_init(self, __context: Any) -> None:  # noqa: PYI063
         if self.grant_type == OAuth2GrantType.PASSWORD:

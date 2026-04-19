@@ -4,8 +4,8 @@ from novastack.core.bridge.pydantic import (
     BaseModel,
     ConfigDict,
     Field,
-    field_validator,
 )
+from novastack.core.guardrails.enums import Action
 
 
 class GuardrailResponse(BaseModel):
@@ -31,7 +31,7 @@ class GuardrailResponse(BaseModel):
         description="Generated text response",
         min_length=0,
     )
-    action: str | None = Field(
+    action: Action | None = Field(
         default=None,
         description="Action taken by the guardrail (e.g., 'blocked', 'modified', 'allowed')",
     )
@@ -40,13 +40,3 @@ class GuardrailResponse(BaseModel):
         description="Raw response data from the guardrail service",
         exclude=False,
     )
-
-    @field_validator("action")
-    @classmethod
-    def _validate_action(cls, v: str | None) -> str | None:
-        """Validate and normalize action field."""
-        if v is not None and isinstance(v, str):
-            v = v.strip().lower()
-            if v == "":
-                return None
-        return v

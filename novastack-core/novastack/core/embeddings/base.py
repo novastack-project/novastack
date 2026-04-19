@@ -9,7 +9,7 @@ from novastack.core.schema import TransformerComponent
 Embedding = list[float]
 
 
-def similarity(
+def compute_similarity(
     embedding1: Embedding,
     embedding2: Embedding,
     mode: SimilarityMode = SimilarityMode.COSINE,
@@ -56,6 +56,7 @@ class BaseEmbedding(BaseModel, TransformerComponent, ABC):
     model_config = ConfigDict(
         arbitrary_types_allowed=True,
         validate_assignment=True,
+        use_enum_values=True,
     )
 
     model_name: str = Field(..., description="Name of the embedding model")
@@ -71,7 +72,7 @@ class BaseEmbedding(BaseModel, TransformerComponent, ABC):
         mode: SimilarityMode = SimilarityMode.COSINE,
     ):
         """Get embedding similarity."""
-        return similarity(embedding1, embedding2, mode)
+        return compute_similarity(embedding1, embedding2, mode)
 
     @abstractmethod
     def embed_text(self, input: str | list[str]) -> list[Embedding]:

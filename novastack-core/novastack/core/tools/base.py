@@ -14,11 +14,7 @@ class ToolInputSchema(BaseModel):
         input_type: Type of the input parameter (integer or string).
     """
 
-    model_config = ConfigDict(
-        frozen=False,
-        validate_assignment=True,
-        extra="forbid",
-    )
+    model_config = {"validate_assignment": True}
 
     description: str = Field(
         ...,
