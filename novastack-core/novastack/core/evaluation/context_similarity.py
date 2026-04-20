@@ -2,7 +2,6 @@ from typing import Any
 
 import numpy as np
 from novastack.core.bridge.pydantic import (
-    ConfigDict,
     Field,
 )
 from novastack.core.embeddings import BaseEmbedding, SimilarityMode
@@ -40,8 +39,6 @@ class ContextSimilarityEvaluator(BaseEvaluator):
         evaluator = ContextSimilarityEvaluator(embed_model=embedding)
         ```
     """
-
-    model_config = ConfigDict(arbitrary_types_allowed=True)
 
     embed_model: BaseEmbedding = Field(
         description="Embedding model used to compute vector representations"

@@ -2,7 +2,7 @@ import re
 from abc import ABC, abstractmethod
 from typing import Any, Literal
 
-from novastack.core.bridge.pydantic import BaseModel, ConfigDict, Field, field_validator
+from novastack.core.bridge.pydantic import BaseModel, Field, field_validator
 
 
 class ToolInputSchema(BaseModel):
@@ -41,9 +41,7 @@ class BaseTool(BaseModel, ABC):
         input_schema: Input schema for the tool.
     """
 
-    model_config = ConfigDict(
-        arbitrary_types_allowed=True,
-    )
+    model_config = {"arbitrary_types_allowed": True}
 
     name: str = Field(
         ...,

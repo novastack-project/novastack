@@ -1,7 +1,7 @@
 from abc import ABC, abstractmethod
 
 import numpy as np
-from novastack.core.bridge.pydantic import BaseModel, ConfigDict, Field
+from novastack.core.bridge.pydantic import BaseModel, Field
 from novastack.core.document import Document
 from novastack.core.embeddings.enums import SimilarityMode
 from novastack.core.schema import TransformerComponent
@@ -53,11 +53,11 @@ class BaseEmbedding(BaseModel, TransformerComponent, ABC):
     Abstract base class defining the interface for embedding models.
     """
 
-    model_config = ConfigDict(
-        arbitrary_types_allowed=True,
-        validate_assignment=True,
-        use_enum_values=True,
-    )
+    model_config = {
+        "arbitrary_types_allowed": True,
+        "validate_assignment": True,
+        "use_enum_values":True,
+    }
 
     model_name: str = Field(..., description="Name of the embedding model")
 

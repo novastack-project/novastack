@@ -1,7 +1,7 @@
 from abc import ABC, abstractmethod
 from typing import Any
 
-from novastack.core.bridge.pydantic import BaseModel, ConfigDict, Field, field_validator
+from novastack.core.bridge.pydantic import BaseModel, Field, field_validator
 
 
 class BaseEvaluator(BaseModel, ABC):
@@ -11,10 +11,10 @@ class BaseEvaluator(BaseModel, ABC):
     All evaluators should inherit from this class and implement the evaluate method.
     """
 
-    model_config = ConfigDict(
-        arbitrary_types_allowed=True,
-        validate_assignment=True,
-    )
+    model_config = {
+        "arbitrary_types_allowed": True,
+        "validate_assignment": True,
+    }
 
     score_threshold: float = Field(
         default=0.8,

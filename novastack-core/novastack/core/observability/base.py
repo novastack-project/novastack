@@ -1,6 +1,6 @@
 from abc import ABC, abstractmethod
 
-from novastack.core.bridge.pydantic import BaseModel, ConfigDict, Field, model_validator
+from novastack.core.bridge.pydantic import BaseModel, Field, model_validator
 from novastack.core.observability.types import PayloadRecord
 from novastack.core.prompts import PromptTemplate
 
@@ -21,9 +21,10 @@ class PromptObservability(BaseObservability):
         prompt_template: Template for formatting prompts
     """
 
-    model_config = ConfigDict(
-        arbitrary_types_allowed=True,
-    )
+    model_config = {
+        "arbitrary_types_allowed": True,
+        "use_enum_values": True
+    }
 
     prompt_template: PromptTemplate | None = Field(
         default=None, description="Template for formatting prompts"

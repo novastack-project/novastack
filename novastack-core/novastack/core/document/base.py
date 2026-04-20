@@ -6,7 +6,6 @@ from typing import Any
 import numpy as np
 from novastack.core.bridge.pydantic import (
     BaseModel,
-    ConfigDict,
     Field,
     computed_field,
     field_validator,
@@ -16,10 +15,10 @@ from novastack.core.bridge.pydantic import (
 class BaseDocument(BaseModel, ABC):
     """Abstract base class defining the interface for retrievable documents."""
 
-    model_config = ConfigDict(
-        arbitrary_types_allowed=True,
-        validate_assignment=True,
-    )
+    model_config = {
+        "arbitrary_types_allowed": True,
+        "validate_assignment": True
+    }
 
     id_: str = Field(
         default_factory=lambda: str(uuid.uuid4()),
@@ -81,10 +80,10 @@ class Document(BaseDocument):
 class DocumentWithScore(BaseModel):
     """Document with associated relevance score."""
 
-    model_config = ConfigDict(
-        arbitrary_types_allowed=True,
-        validate_assignment=True,
-    )
+    model_config = {
+        "arbitrary_types_allowed": True,
+        "validate_assignment": True
+    }
 
     document: BaseDocument
     score: float | None = Field(

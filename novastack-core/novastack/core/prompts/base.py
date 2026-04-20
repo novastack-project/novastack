@@ -5,7 +5,6 @@ from typing import Any
 
 from novastack.core.bridge.pydantic import (
     BaseModel,
-    ConfigDict,
     Field,
 )
 from novastack.core.prompts.utils import SafeFormatter
@@ -33,9 +32,7 @@ class PromptTemplate(BaseModel):
         ```
     """
 
-    model_config = ConfigDict(
-        validate_assignment=True,
-    )
+    model_config = {"validate_assignment": True}
 
     template: str = Field(
         description="Prompt template string with placeholders in {variable} format",
