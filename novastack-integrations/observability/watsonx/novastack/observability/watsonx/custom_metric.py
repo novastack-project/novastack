@@ -55,9 +55,7 @@ class WatsonxCustomMetricsManager(BaseModel):
         ```
     """
 
-    model_config = {
-        "use_enum_values": True
-    }
+    model_config = {"use_enum_values": True}
 
     api_key: SecretStr | None = None
     region: Region = Region.US_SOUTH

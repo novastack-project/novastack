@@ -42,7 +42,9 @@ class PromptTemplate(BaseModel):
         super().__init__(template=template)
 
     @classmethod
-    def model_validate_input(cls, value: str | PromptTemplate | None) -> PromptTemplate | None:
+    def model_validate_input(
+        cls, value: str | PromptTemplate | None
+    ) -> PromptTemplate | None:
         """Creates a PromptTemplate from different input types."""
         if value is None:
             return None

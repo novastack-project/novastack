@@ -11,10 +11,7 @@ class BaseAuthenticator(BaseModel, ABC):
     to provide authentication headers for HTTP requests.
     """
 
-    model_config = {
-        "arbitrary_types_allowed": True,
-        "use_enum_values": True
-    }
+    model_config = {"arbitrary_types_allowed": True, "use_enum_values": True}
 
     @abstractmethod
     def authenticate(self) -> dict[str, str]:

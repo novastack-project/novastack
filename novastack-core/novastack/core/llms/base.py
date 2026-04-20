@@ -9,8 +9,7 @@ from novastack.core.observability import BaseObservability
 class BaseLLM(BaseModel, ABC):
     """Abstract base class defining the interface for LLMs."""
 
-    model_config = {"arbitrary_types_allowed": True,
-                    "use_enum_values": True}
+    model_config = {"arbitrary_types_allowed": True, "use_enum_values": True}
 
     model: str = Field(
         ..., min_length=1, description="Name or identifier of the LLM model to use"

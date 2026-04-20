@@ -21,10 +21,7 @@ class PromptObservability(BaseObservability):
         prompt_template: Template for formatting prompts
     """
 
-    model_config = {
-        "arbitrary_types_allowed": True,
-        "use_enum_values": True
-    }
+    model_config = {"arbitrary_types_allowed": True, "use_enum_values": True}
 
     prompt_template: PromptTemplate | None = Field(
         default=None, description="Template for formatting prompts"
@@ -34,7 +31,9 @@ class PromptObservability(BaseObservability):
     @classmethod
     def _normalize_prompt_template(cls, data):
         if isinstance(data, dict) and "prompt_template" in data:
-            data["prompt_template"] = PromptTemplate.model_validate_input(data["prompt_template"])
+            data["prompt_template"] = PromptTemplate.model_validate_input(
+                data["prompt_template"]
+            )
         return data
 
     @classmethod

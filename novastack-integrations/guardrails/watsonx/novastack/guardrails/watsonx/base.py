@@ -159,7 +159,7 @@ class WatsonxGuardrail(BaseGuardrail):
             guardrails_manager.enforce(
                 text="Hi, How can I help you?",
                 direction=Direction.OUTPUT,
-                prompt="You are a helpful assistant."
+                prompt="You are a helpful assistant.",
             )
             ```
         """
@@ -167,30 +167,22 @@ class WatsonxGuardrail(BaseGuardrail):
 
         # Validate detector requirements before proceeding
         detectors = self._get_policy_detectors()
-        self._validate_detector_requirements(
-            direction, detectors, prompt, context
-        )
+        self._validate_detector_requirements(direction, detectors, prompt, context)
 
         # Configure detector properties based on direction
         detector_configs: dict[str, dict[str, Any]] = {}
 
         if direction == Direction.INPUT.value:
             detector_configs = {
-                "prompt_safety_risk": {"system_prompt": prompt}
-                if prompt
-                else {},
-                "topic_relevance": {"system_prompt": prompt}
-                if prompt
-                else {},
+                "prompt_safety_risk": {"system_prompt": prompt} if prompt else {},
+                "topic_relevance": {"system_prompt": prompt} if prompt else {},
             }
         else:  # Direction.OUTPUT.value
             detector_configs = {
                 "groundedness": {"context_type": "docs", "context": context},
                 "context_relevance": {"context_type": "docs", "context": context},
                 "answer_relevance": {
-                    "prompt": prompt
-                    if prompt
-                    else "",
+                    "prompt": prompt if prompt else "",
                     "generated_text": text,
                 },
             }

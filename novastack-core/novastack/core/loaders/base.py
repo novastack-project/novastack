@@ -11,7 +11,7 @@ class BaseLoader(BaseModel, ABC):
     model_config = {
         "arbitrary_types_allowed": True,
         "validate_assignment": True,
-        "extra":"forbid",
+        "extra": "forbid",
     }
 
     @classmethod
