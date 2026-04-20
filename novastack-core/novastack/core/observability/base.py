@@ -21,7 +21,12 @@ class PromptObservability(BaseObservability):
         prompt_template: Template for formatting prompts
     """
 
-    model_config = {"arbitrary_types_allowed": True, "use_enum_values": True}
+    model_config = {
+        "arbitrary_types_allowed": True,
+        "use_enum_values": True,
+        "validate_assignment": True,
+        "validate_default": True,
+    }
 
     prompt_template: PromptTemplate | None = Field(
         default=None, description="Template for formatting prompts"

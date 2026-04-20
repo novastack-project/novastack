@@ -14,7 +14,12 @@ class ToolInputSchema(BaseModel):
         input_type: Type of the input parameter (integer or string).
     """
 
-    model_config = {"validate_assignment": True}
+    model_config = {
+        "arbitrary_types_allowed": True,
+        "use_enum_values": True,
+        "validate_assignment": True,
+        "validate_default": True,
+    }
 
     description: str = Field(
         ...,

@@ -55,8 +55,9 @@ class BaseEmbedding(BaseModel, TransformerComponent, ABC):
 
     model_config = {
         "arbitrary_types_allowed": True,
-        "validate_assignment": True,
         "use_enum_values": True,
+        "validate_assignment": True,
+        "validate_default": True,
     }
 
     model_name: str = Field(..., description="Name of the embedding model")

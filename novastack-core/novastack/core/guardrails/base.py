@@ -12,7 +12,12 @@ class BaseGuardrail(BaseModel, ABC):
     that can validate and enforce policies on text inputs and outputs.
     """
 
-    model_config = {"arbitrary_types_allowed": True, "use_enum_values": True}
+    model_config = {
+        "arbitrary_types_allowed": True,
+        "use_enum_values": True,
+        "validate_assignment": True,
+        "validate_default": True,
+    }
 
     @classmethod
     def class_name(cls) -> str:

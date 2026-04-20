@@ -32,7 +32,12 @@ class PromptTemplate(BaseModel):
         ```
     """
 
-    model_config = {"validate_assignment": True}
+    model_config = {
+        "arbitrary_types_allowed": True,
+        "use_enum_values": True,
+        "validate_assignment": True,
+        "validate_default": True,
+    }
 
     template: str = Field(
         description="Prompt template string with placeholders in {variable} format",

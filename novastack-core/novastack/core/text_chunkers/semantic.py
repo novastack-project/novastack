@@ -33,8 +33,6 @@ class SemanticChunker(BaseTextChunker):
         ```
     """
 
-    model_config = {"arbitrary_types_allowed": True}
-
     embed_model: BaseEmbedding
     buffer_size: int = 1
     breakpoint_threshold_amount: int = 95

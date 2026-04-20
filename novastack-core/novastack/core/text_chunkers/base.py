@@ -8,7 +8,12 @@ from novastack.core.schema import TransformerComponent
 class BaseTextChunker(BaseModel, TransformerComponent, ABC):
     """Abstract base class defining the interface for text chunker."""
 
-    model_config = {"arbitrary_types_allowed": True}
+    model_config = {
+        "arbitrary_types_allowed": True,
+        "use_enum_values": True,
+        "validate_assignment": True,
+        "validate_default": True,
+    }
 
     @classmethod
     def class_name(cls) -> str:

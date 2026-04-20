@@ -20,7 +20,12 @@ class GuardrailResponse(BaseModel):
         raw: Optional raw response data from the underlying guardrail service.
     """
 
-    model_config = {"arbitrary_types_allowed": True, "use_enum_values": True}
+    model_config = {
+        "arbitrary_types_allowed": True,
+        "use_enum_values": True,
+        "validate_assignment": True,
+        "validate_default": True,
+    }
 
     text: str = Field(
         ...,

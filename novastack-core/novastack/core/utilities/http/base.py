@@ -20,7 +20,12 @@ class HttpService(BaseModel):
     authentication strategies.
     """
 
-    model_config = {"arbitrary_types_allowed": True}
+    model_config = {
+        "arbitrary_types_allowed": True,
+        "use_enum_values": True,
+        "validate_assignment": True,
+        "validate_default": True,
+    }
 
     base_url: str = Field(..., description="Base URL for all requests")
     timeout: float = Field(default=30.0, gt=0, description="Request timeout in seconds")
