@@ -20,7 +20,7 @@ title: watsonx
       show_root_full_path: false
       heading_level: 3
 
-::: novastack.guardrails.core.enums.Direction
+::: novastack.core.guardrails.enums.Direction
     options:
       members_order: source
       show_root_heading: true
