@@ -104,7 +104,7 @@ class WatsonxGuardrail(BaseGuardrail):
         input_detectors = detectors.get("input", {})
         output_detectors = detectors.get("output", {})
 
-        if direction == Direction.INPUT.value:
+        if direction == Direction.INPUT:
             # Check if prompt_safety_risk or topic_relevance detectors are active
             if (
                 "prompt_safety_risk" in input_detectors
@@ -116,7 +116,7 @@ class WatsonxGuardrail(BaseGuardrail):
                         "'prompt_safety_risk' or 'topic_relevance' detectors are active in the policy"
                     )
 
-        elif direction == Direction.OUTPUT.value:
+        elif direction == Direction.OUTPUT:
             # Check if answer_relevance detector is active
             if "answer_relevance" in output_detectors:
                 if prompt is None:
@@ -172,12 +172,12 @@ class WatsonxGuardrail(BaseGuardrail):
         # Configure detector properties based on direction
         detector_configs: dict[str, dict[str, Any]] = {}
 
-        if direction == Direction.INPUT.value:
+        if direction == Direction.INPUT:
             detector_configs = {
                 "prompt_safety_risk": {"system_prompt": prompt} if prompt else {},
                 "topic_relevance": {"system_prompt": prompt} if prompt else {},
             }
-        else:  # Direction.OUTPUT.value
+        else:  # Direction.OUTPUT
             detector_configs = {
                 "groundedness": {"context_type": "docs", "context": context},
                 "context_relevance": {"context_type": "docs", "context": context},

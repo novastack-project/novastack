@@ -265,7 +265,7 @@ class WatsonxExternalPromptMonitor(PromptObservability):
                 "Both were provided: 'project_id' and 'space_id' cannot be set at the same time."
             )
 
-        if task_id == TaskType.RETRIEVAL_AUGMENTED_GENERATION.value:
+        if task_id == TaskType.RETRIEVAL_AUGMENTED_GENERATION:
             if not context_fields or not question_field:
                 raise ValueError(
                     "For 'retrieval_augmented_generation' task, requires non-empty 'context_fields' and 'question_field'."
