@@ -2,10 +2,10 @@ from typing import Any
 
 from novastack.core.bridge.pydantic import Field, PrivateAttr
 from novastack.core.guardrails import BaseGuardrail, GuardrailResponse
-from novastack.core.prompts import PromptTemplate
+from novastack.core.guardrails.enums import Direction
 from novastack.core.utilities.http import HttpService
 from novastack.core.utilities.http.authenticators import IBMIAMAuthenticator
-from novastack.guardrails.watsonx.supporting_classes.enums import Direction, Region
+from novastack.guardrails.watsonx.supporting_classes.enums import Region
 
 
 class WatsonxGuardrail(BaseGuardrail):
@@ -46,7 +46,7 @@ class WatsonxGuardrail(BaseGuardrail):
     policy_id: str = Field(..., description="The policy ID in watsonx.governance")
     inventory_id: str = Field(..., description="The inventory ID in watsonx.governance")
     instance_id: str = Field(..., description="The instance ID in watsonx.governance")
-    region: Region | str = Field(
+    region: Region = Field(
         default=Region.US_SOUTH,
         description="The region where watsonx.governance is hosted when using IBM Cloud",
     )
@@ -54,7 +54,7 @@ class WatsonxGuardrail(BaseGuardrail):
     _guardrail_manager: Any = PrivateAttr(default=None)
 
     def model_post_init(self, __context):  # noqa: PYI063
-        self.region = Region.from_value(self.region)
+        self.region = Region.enum_validate(self.region)
         self._guardrail_manager = HttpService(
             base_url=self.region.openscale,
             timeout=10,
@@ -87,7 +87,7 @@ class WatsonxGuardrail(BaseGuardrail):
         self,
         direction: str,
         detectors: dict,
-        prompt_template: PromptTemplate | None,
+        prompt: str | None,
         context: list,
     ) -> None:
         """
@@ -95,7 +95,7 @@ class WatsonxGuardrail(BaseGuardrail):
 
         Args:
             direction (str): The direction value ("input" or "output").
-            prompt_template (PromptTemplate | None): The prompt template.
+            prompt (str | None): The system prompt.
             context (list): List of context documents.
 
         Raises:
@@ -110,18 +110,18 @@ class WatsonxGuardrail(BaseGuardrail):
                 "prompt_safety_risk" in input_detectors
                 or "topic_relevance" in input_detectors
             ):
-                if prompt_template is None:
+                if prompt is None:
                     raise ValueError(
-                        "prompt_template cannot be None when direction is 'input' and "
+                        "'prompt' cannot be None when direction is 'input' and "
                         "'prompt_safety_risk' or 'topic_relevance' detectors are active in the policy"
                     )
 
         elif direction == Direction.OUTPUT.value:
             # Check if answer_relevance detector is active
             if "answer_relevance" in output_detectors:
-                if prompt_template is None:
+                if prompt is None:
                     raise ValueError(
-                        "prompt_template cannot be None when direction is 'output' and "
+                        "'prompt' cannot be None when direction is 'output' and "
                         "'answer_relevance' detector is active in the policy"
                     )
 
@@ -139,8 +139,8 @@ class WatsonxGuardrail(BaseGuardrail):
     def enforce(
         self,
         text: str,
-        direction: Direction | str,
-        prompt_template: PromptTemplate | str | None = None,
+        direction: Direction,
+        prompt: str | None = None,
         context: list = [],
     ) -> GuardrailResponse:
         """
@@ -149,26 +149,26 @@ class WatsonxGuardrail(BaseGuardrail):
         Args:
             text (str): The input text that needs to be evaluated or processed according to the guardrail policy.
             direction (Direction): Whether the guardrail is processing the input or generated output.
-            prompt_template (PromptTemplate, optional): The prompt template.
+            prompt (str, optional): The prompt.
             context (list, optional): List of context.
 
         Example:
             ```python
-            from novastack.guardrails.watsonx.supporting_classes.enums import Direction
+            from novastack.core.guardrails.enums import Direction
 
             guardrails_manager.enforce(
                 text="Hi, How can I help you?",
                 direction=Direction.OUTPUT,
+                prompt="You are a helpful assistant."
             )
             ```
         """
-        prompt_template = PromptTemplate.from_value(prompt_template)
-        direction = Direction.from_value(direction).value
+        direction = Direction.enum_validate(direction).value
 
         # Validate detector requirements before proceeding
         detectors = self._get_policy_detectors()
         self._validate_detector_requirements(
-            direction, detectors, prompt_template, context
+            direction, detectors, prompt, context
         )
 
         # Configure detector properties based on direction
@@ -176,11 +176,11 @@ class WatsonxGuardrail(BaseGuardrail):
 
         if direction == Direction.INPUT.value:
             detector_configs = {
-                "prompt_safety_risk": {"system_prompt": prompt_template.template}
-                if prompt_template
+                "prompt_safety_risk": {"system_prompt": prompt}
+                if prompt
                 else {},
-                "topic_relevance": {"system_prompt": prompt_template.template}
-                if prompt_template
+                "topic_relevance": {"system_prompt": prompt}
+                if prompt
                 else {},
             }
         else:  # Direction.OUTPUT.value
@@ -188,8 +188,8 @@ class WatsonxGuardrail(BaseGuardrail):
                 "groundedness": {"context_type": "docs", "context": context},
                 "context_relevance": {"context_type": "docs", "context": context},
                 "answer_relevance": {
-                    "prompt": prompt_template.format(context="\n".join(context))
-                    if prompt_template
+                    "prompt": prompt
+                    if prompt
                     else "",
                     "generated_text": text,
                 },

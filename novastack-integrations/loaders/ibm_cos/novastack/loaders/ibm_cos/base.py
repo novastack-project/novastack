@@ -7,7 +7,7 @@ from novastack.core.document import Document
 from novastack.core.loaders import BaseLoader, DirectoryLoader
 
 
-class IBMCOSLoader(BaseLoader):
+class IBMCosLoader(BaseLoader):
     """
     IBM Cloud Object Storage bucket loader.
 
@@ -19,9 +19,9 @@ class IBMCOSLoader(BaseLoader):
 
     Example:
         ```python
-        from novastack.loaders.ibm_cos import IBMCOSLoader
+        from novastack.loaders.ibm_cos import IBMCosLoader
 
-        cos_loader = IBMCOSLoader(
+        cos_loader = IBMCosLoader(
             bucket="your_bucket",
             ibm_api_key_id="your_api_key",
             ibm_service_instance_id="your_instance_id",
