@@ -4,7 +4,7 @@ build-backend = "hatchling.build"
 
 [project]
 name = "novastack-loaders-ibm-cos"
-version = "1.0.0"
+version = "1.0.1"
 description = "novastack integration loaders ibm cloud object storage"
 authors = [{ name = "Leonardo Furnielis", email = "leonardofurnielis@outlook.com" }]
 license = { text = "Apache-2.0" }
@@ -12,7 +12,7 @@ readme = "README.md"
 requires-python = ">=3.11,<3.14"
 dependencies = [
     "ibm-cos-sdk>=2.16.0,<3.0.0",
-    "novastack-core>=1.0.0,<2.0.0",
+    "novastack-core>=1.1.2,<2.0.0",
 ]
 
 [tool.hatch.build.targets.sdist]
