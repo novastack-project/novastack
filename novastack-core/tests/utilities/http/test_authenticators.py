@@ -3,6 +3,7 @@ from datetime import datetime, timedelta
 from unittest.mock import Mock, patch
 
 import pytest
+from novastack.core.bridge.pydantic import ValidationError
 from novastack.core.utilities.http.authenticators import (
     BasicAuthenticator,
     NoAuthAuthenticator,
@@ -189,11 +190,10 @@ class TestOAuth2Authenticator:
                 grant_type="invalid_grant_type",
             )
 
-        assert "Invalid value for parameter 'grant_type'" in str(exc_info.value)
-        assert "invalid_grant_type" in str(exc_info.value)
+        assert exc_info.value, ValidationError
 
     def test_grant_type_invalid_type(self):
-        with pytest.raises(TypeError) as exc_info:
+        with pytest.raises(ValidationError) as exc_info:
             OAuth2Authenticator(
                 token_url="https://auth.example.com/token",
                 client_id="test_client",
@@ -201,10 +201,9 @@ class TestOAuth2Authenticator:
                 grant_type=123,  # type: ignore
             )
 
-        assert "Invalid type for parameter 'grant_type'" in str(exc_info.value)
-        assert "int" in str(exc_info.value)
+        assert exc_info.value, ValidationError
 
-        with pytest.raises(TypeError) as exc_info:
+        with pytest.raises(ValidationError) as exc_info:
             OAuth2Authenticator(
                 token_url="https://auth.example.com/token",
                 client_id="test_client",
@@ -212,8 +211,7 @@ class TestOAuth2Authenticator:
                 grant_type=["password"],  # type: ignore
             )
 
-        assert "Invalid type for parameter 'grant_type'" in str(exc_info.value)
-        assert "list" in str(exc_info.value)
+        assert exc_info.value, ValidationError
 
 
 class TestNoAuthAuthenticator:

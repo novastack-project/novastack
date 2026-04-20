@@ -4,7 +4,7 @@ build-backend = "hatchling.build"
 
 [project]
 name = "novastack"
-version = "1.1.1"
+version = "1.1.2"
 description = "Forge data pipelines, unleash smart AI applications."
 authors = [{ name = "Leonardo Furnielis", email = "leonardofurnielis@outlook.com" }]
 license = { text = "Apache-2.0" }
@@ -18,10 +18,10 @@ classifiers = [
 ]
 
 dependencies = [
-    "novastack-core>=1.1.1,<2.0.0",
+    "novastack-core>=1.1.2,<2.0.0",
     "novastack-embeddings-huggingface>=1.0.0,<2.0.0",
-    "novastack-llms-litellm>=1.0.0,<2.0.0",
-    "novastack-loaders-file>=1.0.0,<2.0.0",
+    "novastack-llms-litellm>=1.0.1,<2.0.0",
+    "novastack-loaders-file>=1.0.1,<2.0.0",
 ]
 
 [project.optional-dependencies]

@@ -1,5 +1,5 @@
 ---
-title: watsonx.ai
+title: watsonx
 ---
 
 `% pip install novastack-embeddings-watsonx`

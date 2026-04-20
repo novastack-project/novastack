@@ -6,7 +6,7 @@ from novastack.core.document import Document
 from novastack.core.loaders import BaseLoader
 
 
-class HTMLLoader(BaseLoader):
+class HtmlLoader(BaseLoader):
     """
     Load a HTML file and extract text from a specific tag.
 

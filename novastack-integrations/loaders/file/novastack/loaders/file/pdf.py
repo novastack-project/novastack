@@ -9,7 +9,7 @@ from novastack.core.loaders import BaseLoader
 logging.getLogger("pypdf").setLevel(logging.ERROR)
 
 
-class PDFLoader(BaseLoader):
+class PdfLoader(BaseLoader):
     """PDF loader using PyPDF."""
 
     def load_data(self, input_file: str, **kwargs: Any) -> list[Document]:

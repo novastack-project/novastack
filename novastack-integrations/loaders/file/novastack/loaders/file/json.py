@@ -7,7 +7,7 @@ from novastack.core.document import Document
 from novastack.core.loaders import BaseLoader
 
 
-class JSONLoader(BaseLoader):
+class JsonLoader(BaseLoader):
     """
     JSON loader.
 

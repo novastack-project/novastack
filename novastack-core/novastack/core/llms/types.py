@@ -9,7 +9,7 @@ class ChatMessage(BaseModel):
 
     model_config = {"use_enum_values": True}
 
-    role: MessageRole | str = Field(
+    role: MessageRole = Field(
         ..., description="Role of the message sender (system, user, assistant, or tool)"
     )
     content: str | None = Field(default=None, description="Content of the message")
@@ -17,24 +17,6 @@ class ChatMessage(BaseModel):
     def to_dict(self) -> dict:
         """Convert ChatMessage to dict."""
         return self.model_dump(exclude_none=True)
-
-    @classmethod
-    def from_value(cls, value: dict) -> "ChatMessage":
-        if value is None:
-            raise ValueError("Unexpected 'ChatMessage', cannot be None")
-
-        if isinstance(value, cls):
-            return value
-
-        if isinstance(value, dict):
-            try:
-                return cls.model_validate(value)
-            except Exception as e:
-                raise ValueError(f"Unexpected 'ChatMessage' dict. Received: '{e}'.")
-
-        raise TypeError(
-            f"Unexpected 'ChatMessage' type. Expected dict or ChatMessage, but received {type(value).__name__}."
-        )
 
 
 class ChatResponse(BaseModel):

@@ -1,7 +1,7 @@
 from typing import Any
 
 from novastack.workflows.enums import WorkflowStatus
-from pydantic import BaseModel, ConfigDict, Field
+from pydantic import BaseModel, Field
 
 
 class DictLikeModel(BaseModel):
@@ -12,10 +12,10 @@ class DictLikeModel(BaseModel):
     attribute access (event.field) and dictionary-style access (event["field"]).
     """
 
-    model_config = ConfigDict(
-        extra="allow",
-        arbitrary_types_allowed=True,
-    )
+    model_config = {
+        "arbitrary_types_allowed": True,
+        "extra": "allow",
+    }
 
     def __getitem__(self, key: str) -> Any:
         """Support event["field"] access."""
@@ -64,7 +64,10 @@ class WorkflowResult(BaseModel):
         error: Error message if the workflow failed, None otherwise.
     """
 
-    model_config = ConfigDict(validate_assignment=True)
+    model_config = {
+        "arbitrary_types_allowed": True,
+        "validate_assignment": True,
+    }
 
     run_id: str = Field(
         ...,

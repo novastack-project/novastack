@@ -4,7 +4,7 @@ build-backend = "hatchling.build"
 
 [project]
 name = "novastack-loaders-file"
-version = "1.0.0"
+version = "1.0.1"
 description = "novastack integration loaders file"
 authors = [{ name = "Leonardo Furnielis", email = "leonardofurnielis@outlook.com" }]
 license = { text = "Apache-2.0" }
@@ -15,7 +15,7 @@ dependencies = [
     "pypdf>=6.7.1,<7.0.0",
     "jq>=1.11.0,<2.0.0",
     "docx2txt>=0.9,<1.0.0",
-    "novastack-core>=1.0.0,<2.0.0",
+    "novastack-core>=1.1.2,<2.0.0",
 ]
 
 [tool.hatch.build.targets.sdist]

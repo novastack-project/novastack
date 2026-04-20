@@ -49,7 +49,7 @@ class Region(str, Enum):
         return _REGION_DATA[self.value]["factsheet"]
 
     @classmethod
-    def from_value(cls, value: str) -> "Region":
+    def enum_validate(cls, value: str) -> "Region":
         if value is None:
             return cls.US_SOUTH
 
@@ -71,7 +71,7 @@ class Region(str, Enum):
         )
 
 
-class TaskType(Enum):
+class TaskType(str, Enum):
     """
     Supported IBM watsonx.governance tasks.
 
@@ -94,7 +94,7 @@ class TaskType(Enum):
     EXTRACTION = "extraction"
 
     @classmethod
-    def from_value(cls, value: str) -> "TaskType":
+    def enum_validate(cls, value: str) -> "TaskType":
         if isinstance(value, cls):
             return value
 
@@ -113,7 +113,7 @@ class TaskType(Enum):
         )
 
 
-class DataSetType(Enum):
+class DataSetType(str, Enum):
     """
     Supported IBM watsonx.governance tasks.
 
@@ -126,7 +126,7 @@ class DataSetType(Enum):
     FEEDBACK = "feedback"
 
     @classmethod
-    def from_value(cls, value: str) -> "DataSetType":
+    def enum_validate(cls, value: str) -> "DataSetType":
         if isinstance(value, cls):
             return value
 

@@ -5,7 +5,6 @@ from typing import Any
 
 from novastack.core.bridge.pydantic import (
     BaseModel,
-    ConfigDict,
     Field,
 )
 from novastack.core.prompts.utils import SafeFormatter
@@ -33,9 +32,12 @@ class PromptTemplate(BaseModel):
         ```
     """
 
-    model_config = ConfigDict(
-        validate_assignment=True,
-    )
+    model_config = {
+        "arbitrary_types_allowed": True,
+        "use_enum_values": True,
+        "validate_assignment": True,
+        "validate_default": True,
+    }
 
     template: str = Field(
         description="Prompt template string with placeholders in {variable} format",
@@ -45,20 +47,20 @@ class PromptTemplate(BaseModel):
         super().__init__(template=template)
 
     @classmethod
-    def from_value(cls, value: str | PromptTemplate | None) -> PromptTemplate | None:
+    def model_validate_input(
+        cls, value: str | PromptTemplate | None
+    ) -> PromptTemplate | None:
         """Creates a PromptTemplate from different input types."""
         if value is None:
             return None
 
-        if isinstance(value, cls):
-            return value
-
         if isinstance(value, str):
             return cls(template=value)
 
-        raise TypeError(
-            f"Invalid type for parameter 'template'. Expected str or PromptTemplate, but received {type(value).__name__}."
-        )
+        if isinstance(value, cls):
+            return value
+
+        return cls.model_validate(value)
 
     def _map_template_vars(self) -> list[str]:
         """

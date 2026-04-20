@@ -2,10 +2,9 @@ from typing import Any
 
 from novastack.core.bridge.pydantic import (
     BaseModel,
-    ConfigDict,
     Field,
-    field_validator,
 )
+from novastack.core.guardrails.enums import Action
 
 
 class GuardrailResponse(BaseModel):
@@ -21,17 +20,19 @@ class GuardrailResponse(BaseModel):
         raw: Optional raw response data from the underlying guardrail service.
     """
 
-    model_config = ConfigDict(
-        validate_assignment=True,
-        use_enum_values=True,
-    )
+    model_config = {
+        "arbitrary_types_allowed": True,
+        "use_enum_values": True,
+        "validate_assignment": True,
+        "validate_default": True,
+    }
 
     text: str = Field(
         ...,
         description="Generated text response",
         min_length=0,
     )
-    action: str | None = Field(
+    action: Action | None = Field(
         default=None,
         description="Action taken by the guardrail (e.g., 'blocked', 'modified', 'allowed')",
     )
@@ -40,13 +41,3 @@ class GuardrailResponse(BaseModel):
         description="Raw response data from the guardrail service",
         exclude=False,
     )
-
-    @field_validator("action")
-    @classmethod
-    def _validate_action(cls, v: str | None) -> str | None:
-        """Validate and normalize action field."""
-        if v is not None and isinstance(v, str):
-            v = v.strip().lower()
-            if v == "":
-                return None
-        return v

@@ -83,7 +83,7 @@ class LiteLLM(BaseLLM):
         """
         all_kwargs = self._get_all_kwargs(**kwargs)
         input_messages_dict = [
-            ChatMessage.from_value(message).to_dict() for message in messages
+            ChatMessage.model_validate(message).to_dict() for message in messages
         ]
 
         response = litellm.completion(

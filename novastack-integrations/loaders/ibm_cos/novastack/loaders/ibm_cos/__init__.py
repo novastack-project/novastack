@@ -1,3 +1,3 @@
-from novastack.loaders.ibm_cos.base import IBMCOSLoader
+from novastack.loaders.ibm_cos.base import IBMCosLoader
 
-__all__ = ["IBMCOSLoader"]
+__all__ = ["IBMCosLoader"]

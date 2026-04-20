@@ -55,15 +55,22 @@ class WatsonxCustomMetricsManager(BaseModel):
         ```
     """
 
+    model_config = {
+        "arbitrary_types_allowed": True,
+        "use_enum_values": True,
+        "validate_assignment": True,
+        "validate_default": True,
+    }
+
     api_key: SecretStr | None = None
-    region: Region | str = Region.US_SOUTH
+    region: Region = Region.US_SOUTH
     cpd_creds: CloudPakforDataCredentials | dict | None = None
     service_instance_id: str | None = None
 
     _wos_client: Any | None = PrivateAttr(default=None)
 
     def model_post_init(self, __context: Any) -> None:  # noqa: PYI063
-        self.region = Region.from_value(self.region)
+        self.region = Region.enum_validate(self.region)
 
         if not self._wos_client:
             self._wos_client = WosClientFactory.create_client(
@@ -94,7 +101,7 @@ class WatsonxCustomMetricsManager(BaseModel):
         name: str,
         metrics: list[WatsonxMetricSpec],
         schedule: bool,
-    ):
+    ) -> str:
         from ibm_watson_openscale.base_classes.watson_open_scale_v2 import (
             ApplicabilitySelection,
             MonitorInstanceSchedule,
@@ -439,7 +446,7 @@ class WatsonxCustomMetricsManager(BaseModel):
         self,
         custom_data_set_id: str,
         reference_data_set_id: str,
-        computed_on: DataSetType | str,
+        computed_on: DataSetType,
         run_id: str,
         request_records: list[dict],
     ):
@@ -471,7 +478,7 @@ class WatsonxCustomMetricsManager(BaseModel):
             )
             ```
         """
-        computed_on = DataSetType.from_value(computed_on).value
+        computed_on = DataSetType.enum_validate(computed_on).value
 
         if request_records:
             for record in request_records:

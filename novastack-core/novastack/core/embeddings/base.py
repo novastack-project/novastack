@@ -1,7 +1,7 @@
 from abc import ABC, abstractmethod
 
 import numpy as np
-from novastack.core.bridge.pydantic import BaseModel, ConfigDict, Field
+from novastack.core.bridge.pydantic import BaseModel, Field
 from novastack.core.document import Document
 from novastack.core.embeddings.enums import SimilarityMode
 from novastack.core.schema import TransformerComponent
@@ -9,7 +9,7 @@ from novastack.core.schema import TransformerComponent
 Embedding = list[float]
 
 
-def similarity(
+def compute_similarity(
     embedding1: Embedding,
     embedding2: Embedding,
     mode: SimilarityMode = SimilarityMode.COSINE,
@@ -53,10 +53,12 @@ class BaseEmbedding(BaseModel, TransformerComponent, ABC):
     Abstract base class defining the interface for embedding models.
     """
 
-    model_config = ConfigDict(
-        arbitrary_types_allowed=True,
-        validate_assignment=True,
-    )
+    model_config = {
+        "arbitrary_types_allowed": True,
+        "use_enum_values": True,
+        "validate_assignment": True,
+        "validate_default": True,
+    }
 
     model_name: str = Field(..., description="Name of the embedding model")
 
@@ -71,7 +73,7 @@ class BaseEmbedding(BaseModel, TransformerComponent, ABC):
         mode: SimilarityMode = SimilarityMode.COSINE,
     ):
         """Get embedding similarity."""
-        return similarity(embedding1, embedding2, mode)
+        return compute_similarity(embedding1, embedding2, mode)
 
     @abstractmethod
     def embed_text(self, input: str | list[str]) -> list[Embedding]:

@@ -27,7 +27,7 @@ class WatsonxLLM(BaseLLM):
 
     model: str
     api_key: str
-    region: Region | str = Region.US_SOUTH
+    region: Region = Region.US_SOUTH
     project_id: str = Field(default=None)
     space_id: str = Field(default=None)
     params: dict[str, Any] = Field(default_factory=dict)
@@ -37,7 +37,7 @@ class WatsonxLLM(BaseLLM):
         from ibm_watsonx_ai import Credentials
         from ibm_watsonx_ai.foundation_models import ModelInference
 
-        self.region = Region.from_value(self.region)
+        self.region = Region.enum_validate(self.region)
 
         if (not (self.project_id or self.space_id)) or (
             self.project_id and self.space_id
@@ -104,7 +104,7 @@ class WatsonxLLM(BaseLLM):
             **kwargs (Any, optional): Additional keyword arguments to customize the LLM completion request.
         """
         input_messages_dict = [
-            ChatMessage.from_value(message).to_dict() for message in messages
+            ChatMessage.model_validate(message).to_dict() for message in messages
         ]
 
         response = self._model_inference.chat(

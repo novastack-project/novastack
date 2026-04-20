@@ -35,7 +35,7 @@ class Region(str, Enum):
         return _REGION_DATA[self.value]["watsonxai"]
 
     @classmethod
-    def from_value(cls, value: str) -> "Region":
+    def enum_validate(cls, value: str) -> "Region":
         if value is None:
             return cls.US_SOUTH
 

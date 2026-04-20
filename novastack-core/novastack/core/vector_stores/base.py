@@ -1,6 +1,6 @@
 from abc import ABC, abstractmethod
 
-from novastack.core.bridge.pydantic import BaseModel, ConfigDict
+from novastack.core.bridge.pydantic import BaseModel
 from novastack.core.document import Document, DocumentWithScore
 
 
@@ -9,9 +9,12 @@ class BaseVectorStore(BaseModel, ABC):
     Abstract base class defining the interface for vector store.
     """
 
-    model_config = ConfigDict(
-        arbitrary_types_allowed=True,
-    )
+    model_config = {
+        "arbitrary_types_allowed": True,
+        "use_enum_values": True,
+        "validate_assignment": True,
+        "validate_default": True,
+    }
 
     @classmethod
     def class_name(cls) -> str:

@@ -7,7 +7,6 @@ import certifi
 from novastack.core.bridge.pydantic import PrivateAttr, SecretStr
 from novastack.core.observability import PromptObservability
 from novastack.core.observability.types import PayloadRecord
-from novastack.core.prompts import PromptTemplate
 from novastack.observability.watsonx.supporting_classes.clients import (
     AIGovFactsClientFactory,
     WMLClientFactory,
@@ -105,7 +104,7 @@ class WatsonxPromptMonitor(PromptObservability):
     api_key: SecretStr | None = None
     space_id: str | None = None
     project_id: str | None = None
-    region: Region | str = Region.US_SOUTH
+    region: Region = Region.US_SOUTH
     cpd_creds: CloudPakforDataCredentials | dict | None = None
     subscription_id: str | None = None
     service_instance_id: str | None = None
@@ -116,7 +115,7 @@ class WatsonxPromptMonitor(PromptObservability):
     _deployment_stage: str | None = PrivateAttr(default=None)
 
     def model_post_init(self, __context: Any) -> None:  # noqa: PYI063
-        self.region = Region.from_value(self.region)
+        self.region = Region.enum_validate(self.region)
 
         # Set container-related attributes
         self._container_id = self.space_id if self.space_id else self.project_id
@@ -194,10 +193,10 @@ class WatsonxPromptMonitor(PromptObservability):
         self,
         name: str,
         model_id: str,
-        task_id: TaskType | str,
+        task_id: TaskType,
         description: str = "",
         model_parameters: dict | None = None,
-        prompt_template: PromptTemplate | str | None = None,
+        prompt_template: str | None = None,
         prompt_variables: list[str] | None = None,
         locale: str = "en",
         context_fields: list[str] | None = None,
@@ -212,7 +211,7 @@ class WatsonxPromptMonitor(PromptObservability):
             task_id (TaskType): The task identifier.
             description (str, optional): A description of the Prompt Template Asset.
             model_parameters (dict, optional): A dictionary of model parameters and their respective values.
-            prompt_template (PromptTemplate, optional): The prompt template.
+            prompt_template (str, optional): The prompt template.
             prompt_variables (list[str], optional): A list of values for prompt input variables.
             locale (str, optional): Locale code for the input/output language. eg. "en", "pt", "es".
             context_fields (list[str], optional): A list of fields that will provide context to the prompt.
@@ -237,10 +236,8 @@ class WatsonxPromptMonitor(PromptObservability):
             )
             ```
         """
-        task_id = TaskType.from_value(task_id).value
+        task_id = TaskType.enum_validate(task_id).value
         rollback_stack = []
-
-        prompt_template = PromptTemplate.from_value(prompt_template)
 
         if (not (self.project_id or self.space_id)) or (
             self.project_id and self.space_id
@@ -250,7 +247,7 @@ class WatsonxPromptMonitor(PromptObservability):
                 "Both were provided: 'project_id' and 'space_id' cannot be set at the same time."
             )
 
-        if task_id == TaskType.RETRIEVAL_AUGMENTED_GENERATION.value:
+        if task_id == TaskType.RETRIEVAL_AUGMENTED_GENERATION:
             if not context_fields or not question_field:
                 raise ValueError(
                     "For 'retrieval_augmented_generation' task, requires non-empty 'context_fields' and 'question_field'."

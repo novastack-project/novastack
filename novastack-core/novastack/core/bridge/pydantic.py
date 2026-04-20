@@ -3,7 +3,6 @@ from pydantic import (
     AnyUrl,
     BaseModel,
     BeforeValidator,
-    ConfigDict,
     Field,
     FilePath,
     GetCoreSchemaHandler,
@@ -36,7 +35,6 @@ from pydantic.json_schema import JsonSchemaValue
 __all__ = [
     "pydantic",
     "BaseModel",
-    "ConfigDict",
     "GetJsonSchemaHandler",
     "GetCoreSchemaHandler",
     "Field",

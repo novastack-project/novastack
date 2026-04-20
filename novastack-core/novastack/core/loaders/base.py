@@ -1,18 +1,20 @@
 from abc import ABC, abstractmethod
 from typing import Any
 
-from novastack.core.bridge.pydantic import BaseModel, ConfigDict
+from novastack.core.bridge.pydantic import BaseModel
 from novastack.core.document import Document
 
 
 class BaseLoader(BaseModel, ABC):
     """Abstract base class defining the interface for document loader."""
 
-    model_config = ConfigDict(
-        arbitrary_types_allowed=True,
-        validate_assignment=True,
-        extra="forbid",
-    )
+    model_config = {
+        "arbitrary_types_allowed": True,
+        "extra": "forbid",
+        "use_enum_values": True,
+        "validate_assignment": True,
+        "validate_default": True,
+    }
 
     @classmethod
     def class_name(cls) -> str:
