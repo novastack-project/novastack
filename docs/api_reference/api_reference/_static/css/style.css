@@ -33,6 +33,11 @@ p {
     overflow: hidden;
 }
 
+/* Header */
+.md-header {
+    background-color: #ebeef2;
+}
+
 /* Left sidebar base styles */
 .md-nav__item .md-nav__link {
     font-size: 14px !important;
