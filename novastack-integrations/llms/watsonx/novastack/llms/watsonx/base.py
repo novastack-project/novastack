@@ -28,8 +28,8 @@ class WatsonxLLM(BaseLLM):
     model: str
     api_key: str
     region: Region = Region.US_SOUTH
-    project_id: str = Field(default=None)
-    space_id: str = Field(default=None)
+    project_id: str | None = Field(default=None)
+    space_id: str | None = Field(default=None)
     params: dict[str, Any] = Field(default_factory=dict)
     additional_kwargs: dict[str, Any] = Field(default_factory=dict)
 

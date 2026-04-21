@@ -64,7 +64,7 @@ class WatsonxCustomMetricsManager(BaseModel):
 
     api_key: SecretStr | None = None
     region: Region = Region.US_SOUTH
-    cpd_creds: CloudPakforDataCredentials | dict | None = None
+    cpd_creds: CloudPakforDataCredentials | None = None
     service_instance_id: str | None = None
 
     _wos_client: Any | None = PrivateAttr(default=None)

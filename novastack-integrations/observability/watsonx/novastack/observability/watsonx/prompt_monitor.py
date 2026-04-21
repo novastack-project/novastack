@@ -105,7 +105,7 @@ class WatsonxPromptMonitor(PromptObservability):
     space_id: str | None = None
     project_id: str | None = None
     region: Region = Region.US_SOUTH
-    cpd_creds: CloudPakforDataCredentials | dict | None = None
+    cpd_creds: CloudPakforDataCredentials | None = None
     subscription_id: str | None = None
     service_instance_id: str | None = None
 
@@ -261,9 +261,7 @@ class WatsonxPromptMonitor(PromptObservability):
         prompt_metadata.pop("locale", None)
 
         # Update name of keys to aigov_facts api
-        prompt_metadata["input"] = getattr(
-            prompt_metadata.pop("prompt_template", None), "template", None
-        )
+        prompt_metadata["input"] = prompt_metadata.pop("prompt_template", None)
 
         # Update list of vars to dict
         prompt_metadata["prompt_variables"] = dict.fromkeys(
