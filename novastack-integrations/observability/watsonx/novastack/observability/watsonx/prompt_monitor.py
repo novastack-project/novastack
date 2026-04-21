@@ -105,7 +105,7 @@ class WatsonxPromptMonitor(PromptObservability):
     space_id: str | None = None
     project_id: str | None = None
     region: Region = Region.US_SOUTH
-    cpd_creds: CloudPakforDataCredentials | dict | None = None
+    cpd_creds: CloudPakforDataCredentials | None = None
     subscription_id: str | None = None
     service_instance_id: str | None = None
 
