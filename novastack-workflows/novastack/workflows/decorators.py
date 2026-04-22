@@ -10,7 +10,7 @@ def step(
     *,
     on: Type[Event],
     timeout: float | None = None,
-    num_retries: int = 0,
+    max_retries: int = 0,
     retry_delay: float = 1.0,
 ) -> Callable:
     """
@@ -22,7 +22,7 @@ def step(
     Args:
         on: The Event class this step handles.
         timeout: Optional timeout in seconds for step execution
-        num_retries: Number of retry attempts on failure (default: 0)
+        max_retries: Number of retry attempts on failure (default: 0)
         retry_delay: Delay in seconds between retry attempts (default: 1)
 
     Note:
@@ -52,7 +52,7 @@ def step(
         f.__step_accepted_events__ = on
         f.__step_name__ = f.__name__
         f.__step_timeout__ = timeout
-        f.__step_num_retries__ = num_retries
+        f.__step_max_retries__ = max_retries
         f.__step_retry_delay__ = retry_delay
 
         @wraps(f)
@@ -64,7 +64,7 @@ def step(
         wrapper.__step_accepted_events__ = on
         wrapper.__step_name__ = f.__name__
         wrapper.__step_timeout__ = timeout
-        wrapper.__step_num_retries__ = num_retries
+        wrapper.__step_max_retries__ = max_retries
         wrapper.__step_retry_delay__ = retry_delay
 
         return wrapper  # type: ignore
@@ -100,11 +100,11 @@ def get_step_timeout(method: Any) -> float | None:
     return getattr(method, "__step_timeout__", None)
 
 
-def get_step_num_retries(method: Any) -> int:
+def get_step_max_retries(method: Any) -> int:
     """
     Get number of retries for a step method.
     """
-    return getattr(method, "__step_num_retries__", 0)
+    return getattr(method, "__step_max_retries__", 0)
 
 
 def get_step_retry_delay(method: Any) -> float:

@@ -4,7 +4,7 @@ from typing import TYPE_CHECKING, Any
 
 from novastack.workflows.context import Context
 from novastack.workflows.decorators import (
-    get_step_num_retries,
+    get_step_max_retries,
     get_step_retry_delay,
     get_step_timeout,
 )
@@ -182,7 +182,7 @@ class WorkflowEngine:
         for step_name, step_method in matching_steps:
             # Get timeout and retry configuration from step metadata
             step_timeout = get_step_timeout(step_method)
-            num_retries = get_step_num_retries(step_method)
+            max_retries = get_step_max_retries(step_method)
             retry_delay = get_step_retry_delay(step_method)
 
             # Execute step with retry logic
@@ -192,7 +192,7 @@ class WorkflowEngine:
                 context,
                 event,
                 step_timeout,
-                num_retries,
+                max_retries,
                 retry_delay,
             )
             tasks.append(task)
@@ -226,7 +226,7 @@ class WorkflowEngine:
         context: Context,
         event: Event,
         timeout: float | None,
-        num_retries: int,
+        max_retries: int,
         retry_delay: float,
     ) -> Event | None:
         """
@@ -234,7 +234,7 @@ class WorkflowEngine:
 
         This method wraps step execution with configurable timeout and retry
         behavior. It will retry the step execution on any exception (including
-        timeout) up to num_retries times, with retry_delay seconds between attempts.
+        timeout) up to `max_retries` times, with retry_delay seconds between attempts.
 
         Args:
             step_method: The step method to execute.
@@ -242,10 +242,10 @@ class WorkflowEngine:
             context: The Context for step execution.
             event: The Event to process.
             timeout: Optional timeout in seconds for step execution.
-            num_retries: Number of retry attempts on failure.
+            max_retries: Number of retry attempts on failure.
             retry_delay: Delay in seconds between retry attempts.
         """
-        for attempt in range(num_retries + 1):
+        for attempt in range(max_retries + 1):
             try:
                 if timeout is not None:
                     result = await asyncio.wait_for(
@@ -260,7 +260,7 @@ class WorkflowEngine:
                 return result
 
             except asyncio.TimeoutError as e:
-                if attempt < num_retries:
+                if attempt < max_retries:
                     await asyncio.sleep(retry_delay)
                     continue
 
@@ -271,7 +271,7 @@ class WorkflowEngine:
                 ) from e
 
             except Exception:
-                if attempt < num_retries:
+                if attempt < max_retries:
                     await asyncio.sleep(retry_delay)
                     continue
 
