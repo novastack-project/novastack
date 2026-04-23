@@ -58,7 +58,7 @@ async def _process_chat_callback(
         system_prompt = "\n".join(top_system_messages) if top_system_messages else None
 
         # Extract template variables values from the prompt template if available
-        template_var_values = (
+        prompt_variables = (
             extract_template_vars(
                 callback_manager_fns.prompt_template.template,
                 (system_prompt or ""),
@@ -68,14 +68,14 @@ async def _process_chat_callback(
         )
 
         if callback_manager_fns.input_field_name:
-            template_var_values[callback_manager_fns.input_field_name] = last_user_message
+            prompt_variables[callback_manager_fns.input_field_name] = last_user_message
 
         callback = callback_manager_fns(
             payload=PayloadRecord(
                 system_prompt=(system_prompt or ""),
                 input_text=last_user_message,
-                prompt_variables=list(template_var_values.keys()),
-                prompt_variable_values=template_var_values,
+                prompt_variables=prompt_variables,
+                prompt_variable_names=list(prompt_variables.keys()),
                 generated_text=llm_return_val.message.content,
                 input_token_count=llm_return_val.raw["usage"]["prompt_tokens"],
                 generated_token_count=llm_return_val.raw["usage"]["completion_tokens"],
@@ -177,7 +177,7 @@ async def _process_completion_callback(
             raise ValueError("No prompt provided in positional or keyword arguments")
 
         # Extract template variables values from the prompt template if available
-        template_var_values = (
+        prompt_variables = (
             extract_template_vars(
                 callback_manager_fns.prompt_template.template,
                 input_prompt or "",
@@ -189,8 +189,8 @@ async def _process_completion_callback(
         callback = callback_manager_fns(
             payload=PayloadRecord(
                 system_prompt=input_prompt or "",
-                prompt_variables=list(template_var_values.keys()),
-                prompt_variable_values=template_var_values,
+                prompt_variables=prompt_variables,
+                prompt_variable_names=list(prompt_variables.keys()),
                 generated_text=llm_return_val.text,
                 input_token_count=llm_return_val.input_token_count,
                 generated_token_count=llm_return_val.generated_token_count,
