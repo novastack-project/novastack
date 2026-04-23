@@ -67,6 +67,9 @@ async def _process_chat_callback(
             else {}
         )
 
+        if callback_manager_fns.input_field_name:
+            template_var_values[callback_manager_fns.input_field_name] = last_user_message
+
         callback = callback_manager_fns(
             payload=PayloadRecord(
                 system_prompt=(system_prompt or ""),
