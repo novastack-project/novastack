@@ -587,10 +587,10 @@ class WatsonxExternalPromptMonitor(PromptObservability):
         self.store_payload_records(
             [
                 {
-                    **payload.prompt_variable_values,
+                    **payload.prompt_variables,
                     **payload.model_dump(
                         exclude_none=True,
-                        exclude={"system_prompt", "prompt_variable_values"},
+                        exclude={"system_prompt", "prompt_variables"},
                     ),
                 }
             ]

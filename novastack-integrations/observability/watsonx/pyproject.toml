@@ -4,7 +4,7 @@ build-backend = "hatchling.build"
 
 [project]
 name = "novastack-observability-watsonx"
-version = "1.0.3"
+version = "1.0.4"
 description = "novastack integration observability watsonx"
 authors = [{ name = "Leonardo Furnielis", email = "leonardofurnielis@outlook.com" }]
 license = { text = "Apache-2.0" }
@@ -16,7 +16,7 @@ dependencies = [
     "ibm-aigov-facts-client>=1.0.105,<1.1.0",
     "ibm-watson-openscale>=3.1.4,<3.2.0",
     "ibm-watsonx-ai>=1.5.5,<1.6.0",
-    "novastack-core>=1.1.3,<2.0.0",
+    "novastack-core>=1.1.4,<2.0.0",
 ]
 
 [tool.hatch.build.targets.sdist]
