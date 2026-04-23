@@ -32,7 +32,8 @@ class PromptObservability(BaseObservability):
     )
 
     input_field_name: str = Field(
-        default="input_text", description="Column name used to store input message content into a structured format. Defaults to 'input_text'."
+        default="input_text",
+        description="Column name used to store input message content into a structured format. Defaults to 'input_text'.",
     )
 
     @model_validator(mode="before")
