@@ -24,9 +24,7 @@ jobs:
         run: uv python install ${{ matrix.python-version }}
 
       - name: Install dependencies
-        working-directory: novastack-workflows
         run: uv sync --extra dev
 
       - name: Run tests
-        working-directory: novastack-workflows
         run: uv run pytest tests/ -v --tb=short
