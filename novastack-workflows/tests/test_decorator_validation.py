@@ -489,4 +489,43 @@ class TestWorkflowValidation:
                 return StopEvent(result="done")
 
         # Should not raise any errors - workflows without StartEvent are valid
-        assert SubWorkflow is not None
+
+    def test_multiple_stop_event_producers_warning(self):
+        """Test that workflow with multiple StopEvent producers emits warning."""
+        from novastack.workflows import Workflow
+
+        with pytest.warns(UserWarning, match="steps that produce StopEvent"):
+
+            class RaceConditionWorkflow(Workflow):
+                @step(depends_on=StartEvent)
+                async def start(self, ctx: Context, ev: StartEvent) -> EventA:
+                    return EventA()
+
+                @step(depends_on=EventA)
+                async def process_a(self, ctx: Context, ev: EventA) -> StopEvent:
+                    return StopEvent(result="A")
+
+                @step(depends_on=EventA)
+                async def process_b(self, ctx: Context, ev: EventA) -> StopEvent:
+                    return StopEvent(result="B")
+
+    def test_single_stop_event_producer_no_warning(self):
+        """Test that workflow with single StopEvent producer does not emit warning."""
+        import warnings
+
+        from novastack.workflows import Workflow
+
+        # Should not emit warning
+        with warnings.catch_warnings():
+            warnings.simplefilter("error")  # Turn warnings into errors
+
+            class SafeWorkflow(Workflow):
+                @step(depends_on=StartEvent)
+                async def start(self, ctx: Context, ev: StartEvent) -> EventA:
+                    return EventA()
+
+                @step(depends_on=EventA)
+                async def process(self, ctx: Context, ev: EventA) -> StopEvent:
+                    return StopEvent(result="done")
+
+        assert SafeWorkflow is not None

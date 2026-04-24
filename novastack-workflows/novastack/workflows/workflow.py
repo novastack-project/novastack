@@ -8,7 +8,7 @@ from novastack.workflows.decorators import (
     is_join_step,
     is_step_method,
 )
-from novastack.workflows.events import Event, StartEvent
+from novastack.workflows.events import Event, StartEvent, StopEvent
 from novastack.workflows.exceptions import (
     WorkflowValidationError,
 )
@@ -111,6 +111,7 @@ class Workflow:
             cls._state_type = DictLikeModel
 
         cls._validate_single_start_step()
+        cls._warn_multiple_stop_event()
 
         # Detect circular dependencies in join steps
         cls._detect_circular_dependencies()
@@ -211,6 +212,25 @@ class Workflow:
             raise WorkflowValidationError(
                 f"Workflow '{cls.__name__}' must have exactly one StartEvent handler. "
                 f"Found {len(start_event_handlers)}: {', '.join(handler_names)}"
+            )
+
+    @classmethod
+    def _warn_multiple_stop_event(cls) -> None:
+        """
+        Warn if multiple steps can produce StopEvent.
+
+        Multiple StopEvent producers can cause race conditions where the first
+        step to complete determines the workflow result, leading to non-deterministic behavior.
+        """
+        event_producers = cls._build_event_producers_map()
+        stop_event_producers = event_producers.get(StopEvent, [])
+
+        if len(stop_event_producers) > 1:
+            warnings.warn(
+                f"Workflow '{cls.__name__}' has {len(stop_event_producers)} steps that produce StopEvent: "
+                f"{', '.join(stop_event_producers)}. This may cause race conditions.",
+                UserWarning,
+                stacklevel=2,
             )
 
     def get_steps_for_event(self, event: Event) -> list[tuple[str, Any]]:

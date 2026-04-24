@@ -198,5 +198,6 @@ class EventBuffer:
             return {}
 
         return {
-            event_type.__name__: True for event_type in self._buffer[step_name].keys()  # noqa: SIM118
+            event_type.__name__: True
+            for event_type in self._buffer[step_name].keys()  # noqa: SIM118
         }
