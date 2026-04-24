@@ -15,7 +15,7 @@ class CounterWorkflow(Workflow):
     - Counter incrementing across runs.
     """
 
-    @step(on=StartEvent)
+    @step(depends_on=StartEvent)
     async def increment_counter(
         self, ctx: Context[CounterState], ev: StartEvent
     ) -> StopEvent:
@@ -44,7 +44,7 @@ class GenericStateWorkflow(Workflow):
     - DictLikeModel allows dynamic field assignment like a dictionary.
     """
 
-    @step(on=StartEvent)
+    @step(depends_on=StartEvent)
     async def start(self, ctx: Context, ev: StartEvent) -> StopEvent:
         async with ctx.store.edit_state() as state:
             state.counter = 1

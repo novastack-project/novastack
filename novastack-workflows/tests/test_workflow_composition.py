@@ -27,13 +27,13 @@ class DataCleaningWorkflow(Workflow):
     - Isolated state (independent from parent).
     """
 
-    @step(on=StartEvent)
+    @step(depends_on=StartEvent)
     async def clean(self, ctx: Context, ev: StartEvent) -> DataCleanEvent:
         raw = ev.get("input_msg", "")
         cleaned = raw.strip().lower()
         return DataCleanEvent(raw_data=cleaned)
 
-    @step(on=DataCleanEvent)
+    @step(depends_on=DataCleanEvent)
     async def finish_cleaning(self, ctx: Context, ev: DataCleanEvent) -> StopEvent:
         return StopEvent(result=ev.raw_data)
 
@@ -45,7 +45,7 @@ class DataValidationWorkflow(Workflow):
     - Isolated state (independent from parent).
     """
 
-    @step(on=StartEvent)
+    @step(depends_on=StartEvent)
     async def validate(self, ctx: Context, ev: StartEvent) -> DataValidateEvent:
         data = ev.get("input_msg", "")
         # Simple validation: check if not empty
@@ -53,7 +53,7 @@ class DataValidationWorkflow(Workflow):
             raise ValueError("Data cannot be empty")
         return DataValidateEvent(cleaned_data=data)
 
-    @step(on=DataValidateEvent)
+    @step(depends_on=DataValidateEvent)
     async def finish_validation(self, ctx: Context, ev: DataValidateEvent) -> StopEvent:
         return StopEvent(result=ev.cleaned_data)
 
@@ -67,7 +67,7 @@ class DataPipelineWorkflow(Workflow):
     - Modular and reusable workflow design.
     """
 
-    @step(on=StartEvent)
+    @step(depends_on=StartEvent)
     async def start_pipeline(self, ctx: Context, ev: StartEvent) -> DataTransformEvent:
         if ctx.state is None:
             ctx._store._state = PipelineState()
@@ -93,7 +93,7 @@ class DataPipelineWorkflow(Workflow):
 
         return DataTransformEvent(validated_data=transformed)
 
-    @step(on=DataTransformEvent)
+    @step(depends_on=DataTransformEvent)
     async def finish_pipeline(self, ctx: Context, ev: DataTransformEvent) -> StopEvent:
         assert ctx.state.cleaning_done is True
         assert ctx.state.validation_done is True

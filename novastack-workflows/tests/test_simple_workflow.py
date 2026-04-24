@@ -10,16 +10,16 @@ class SimpleWorkflow(Workflow):
     """
     - Workflow without state management.
     - Simple event chaining: StartEvent → MyEvent → StopEvent.
-    - Basic decorator usage with @step(on=...).
+    - Basic decorator usage with @step(depends_on=...).
     - Returning events from step methods.
     """
 
-    @step(on=StartEvent)
+    @step(depends_on=StartEvent)
     async def start(self, ctx: Context, ev: StartEvent) -> MyEvent:
         input_msg = ev.get("input_msg", "")
         return MyEvent(message=f"Processed: {input_msg}")
 
-    @step(on=MyEvent)
+    @step(depends_on=MyEvent)
     async def process(self, ctx: Context, ev: MyEvent) -> StopEvent:
         return StopEvent(result=ev.message)
 

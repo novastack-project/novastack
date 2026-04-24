@@ -22,7 +22,7 @@ class StateWorkflow(Workflow):
     - Automatic rollback on errors.
     """
 
-    @step(on=StartEvent)
+    @step(depends_on=StartEvent)
     async def initialize(
         self, ctx: Context[RunState], ev: StartEvent
     ) -> IncrementEvent:
@@ -33,7 +33,7 @@ class StateWorkflow(Workflow):
 
         return IncrementEvent(value=5)
 
-    @step(on=IncrementEvent)
+    @step(depends_on=IncrementEvent)
     async def increment(self, ctx: Context[RunState], ev: IncrementEvent) -> StopEvent:
         async with ctx.store.edit_state() as state:
             state.counter += ev.value

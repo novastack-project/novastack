@@ -29,7 +29,7 @@ class DynamicWorkflow(Workflow):
     - Flexible event patterns with immutable state.
     """
 
-    @step(on=StartEvent)
+    @step(depends_on=StartEvent)
     async def split_tasks(self, ctx: Context, ev: StartEvent) -> None:
         if ctx.state is None:
             ctx._store._state = DynamicState()
@@ -50,12 +50,12 @@ class DynamicWorkflow(Workflow):
         for task in tasks:
             await ctx.emit(TaskEvent(task_id=task["id"], data=task["data"]))
 
-    @step(on=TaskEvent)
+    @step(depends_on=TaskEvent)
     async def process_task(self, ctx: Context, ev: TaskEvent) -> TaskCompleteEvent:
         result = ev.data.upper()
         return TaskCompleteEvent(task_id=ev.task_id, result=result)
 
-    @step(on=TaskCompleteEvent)
+    @step(depends_on=TaskCompleteEvent)
     async def collect_task_results(
         self, ctx: Context, ev: TaskCompleteEvent
     ) -> StopEvent | None:

@@ -3,9 +3,15 @@ import warnings
 from typing import Any, Type, get_args, get_origin
 
 from novastack.workflows.context import Context
-from novastack.workflows.decorators import get_step_event_type, is_step_method
+from novastack.workflows.decorators import (
+    get_step_event_types,
+    is_join_step,
+    is_step_method,
+)
 from novastack.workflows.events import Event, StartEvent
-from novastack.workflows.exceptions import WorkflowValidationError
+from novastack.workflows.exceptions import (
+    WorkflowValidationError,
+)
 from novastack.workflows.runtime.engine import WorkflowEngine
 from novastack.workflows.types import DictLikeModel
 
@@ -14,7 +20,7 @@ class Workflow:
     """
     Event-driven workflow orchestration.
 
-    Workflows are defined by decorating methods with @step(on=EventClass).
+    Workflows are defined by decorating methods with @step(depends_on=EventClass).
     Steps are automatically discovered and registered when the class is defined.
 
     State type consistency is enforced: all steps must use the same Context[StateType].
@@ -22,11 +28,11 @@ class Workflow:
     Example:
         ```python
         class MyWorkflow(Workflow):
-            @step(on=StartEvent)
+            @step(depends_on=StartEvent)
             async def start(self, ctx: Context[MyState], ev: StartEvent) -> MyEvent:
                 return MyEvent(data="processed")
 
-            @step(on=MyEvent)
+            @step(depends_on=MyEvent)
             async def process(self, ctx: Context[MyState], ev: MyEvent) -> StopEvent:
                 return StopEvent(result="done")
 
@@ -48,34 +54,42 @@ class Workflow:
         # Build routing table: Event class -> list of step methods
         cls._step_registry: dict[Type[Event], list[tuple[str, Any]]] = {}
 
+        # Track join steps: step_name -> set of required event types
+        cls._join_step_registry: dict[str, set[Type[Event]]] = {}
+
         # Track state types across steps for consistency validation
         state_types: dict[str, Type] = {}
 
         # Discover all @step decorated methods
         for name, method in inspect.getmembers(cls, predicate=inspect.isfunction):
             if is_step_method(method):
-                event_type = get_step_event_type(method)
-                if event_type:
-                    if event_type not in cls._step_registry:
-                        cls._step_registry[event_type] = []
-                    cls._step_registry[event_type].append((name, method))
+                event_types = get_step_event_types(method)
+                if event_types:
+                    if is_join_step(method):
+                        cls._join_step_registry[name] = set(event_types)
+
+                    # Add to step_registry for each event type
+                    for single_event_type in event_types:
+                        if single_event_type not in cls._step_registry:
+                            cls._step_registry[single_event_type] = []
+                        cls._step_registry[single_event_type].append((name, method))
 
                     # Extract and validate Context state type
+                    # Parameter name is enforced to be 'ctx' by decorator validation
                     sig = inspect.signature(method)
-                    for param_name, param in sig.parameters.items():  # noqa: PERF102
-                        if param.annotation != inspect.Parameter.empty:
-                            origin = get_origin(param.annotation)
-                            if origin is Context:
-                                args = get_args(param.annotation)
-                                if args:
-                                    # Context[StateType] - extract StateType
-                                    state_type = args[0]
-                                else:
-                                    # Context without type - defaults to DictLikeModel
-                                    state_type = DictLikeModel
+                    ctx_param = sig.parameters.get("ctx")
+                    if ctx_param and ctx_param.annotation != inspect.Parameter.empty:
+                        origin = get_origin(ctx_param.annotation)
+                        if origin is Context:
+                            args = get_args(ctx_param.annotation)
+                            if args:
+                                # Context[StateType] - extract StateType
+                                state_type = args[0]
+                            else:
+                                # Context without type - defaults to DictLikeModel
+                                state_type = DictLikeModel
 
-                                state_types[name] = state_type
-                                break
+                            state_types[name] = state_type
 
         # Validate state type consistency across all steps
         if state_types:
@@ -94,8 +108,91 @@ class Workflow:
             # Store the validated state type for the workflow
             cls._state_type = next(iter(unique_types))
         else:
-            # No typed Context found, default to DictLikeModel
             cls._state_type = DictLikeModel
+
+        # Detect circular dependencies in join steps
+        cls._detect_circular_dependencies()
+
+    @classmethod
+    def _extract_produced_events(cls, method) -> set[Type[Event]]:
+        """Extract event types produced by a step method from its return annotation."""
+        produced_events: set[Type[Event]] = set()
+        sig = inspect.signature(method)
+        return_annotation = sig.return_annotation
+
+        if return_annotation != inspect.Parameter.empty:
+            origin = get_origin(return_annotation)
+            if origin is not None:
+                # Handle Union types (Event | None)
+                args = get_args(return_annotation)
+                for arg in args:
+                    if isinstance(arg, type) and issubclass(arg, Event):
+                        produced_events.add(arg)
+            elif isinstance(return_annotation, type) and issubclass(
+                return_annotation, Event
+            ):
+                # Direct Event type
+                produced_events.add(return_annotation)
+
+        return produced_events
+
+    @classmethod
+    def _build_event_producers_map(cls) -> dict[Type[Event], list[str]]:
+        """Build a map of event types to the step names that produce them."""
+        event_producers: dict[Type[Event], list[str]] = {}
+
+        for name, method in inspect.getmembers(cls, predicate=inspect.isfunction):
+            if is_step_method(method):
+                produced_events = cls._extract_produced_events(method)
+                for event_type in produced_events:
+                    if event_type not in event_producers:
+                        event_producers[event_type] = []
+                    event_producers[event_type].append(name)
+
+        return event_producers
+
+    @classmethod
+    def _detect_circular_dependencies(cls) -> None:
+        """
+        Detect circular dependencies in join steps.
+
+        This method builds a dependency graph and checks for cycles where
+        a join step depends on events that can only be produced by
+        steps that depend on this step's output.
+
+        Raises:
+            WorkflowValidationError: If circular dependencies are detected
+        """
+        if not cls._join_step_registry:
+            return
+
+        # Build event producers map
+        event_producers = cls._build_event_producers_map()
+
+        # Check each join step for circular dependencies
+        for step_name, required_events in cls._join_step_registry.items():
+            step_method = getattr(cls, step_name)
+            produced_events = cls._extract_produced_events(step_method)
+
+            # Check if any required event creates a circular dependency
+            for required_event in required_events:
+                if required_event not in event_producers:
+                    continue
+
+                producers = event_producers[required_event]
+
+                # Check if any producer is a join step that requires this step's output
+                for producer_name in producers:
+                    if producer_name in cls._join_step_registry:
+                        producer_required = cls._join_step_registry[producer_name]
+
+                        if produced_events & producer_required:
+                            raise WorkflowValidationError(
+                                f"Circular dependency detected: Step '{step_name}' requires "
+                                f"{required_event.__name__} which is produced by '{producer_name}', "
+                                f"but '{producer_name}' requires events from '{step_name}'. "
+                                f"This creates a deadlock where neither step can execute."
+                            )
 
     def get_steps_for_event(self, event: Event) -> list[tuple[str, Any]]:
         """Get all step methods that handle the given event type."""
@@ -144,7 +241,10 @@ class Workflow:
                 setattr(start_event, key, value)
 
         # Create engine and execute
-        runtime_engine = WorkflowEngine(workflow=self, max_iterations=max_iterations)
+        runtime_engine = WorkflowEngine(
+            workflow=self,
+            max_iterations=max_iterations,
+        )
 
         # Run workflow
         workflow_result = await runtime_engine.run(start_events=start_event, ctx=ctx)

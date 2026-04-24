@@ -22,14 +22,14 @@ class MyEvent(Event):
 
 class SimpleWorkflow(Workflow):
 
-    @step(on=StartEvent)
+    @step(depends_on=StartEvent)
     async def start(self, ctx: Context, ev: StartEvent) -> MyEvent:
         
         input_msg = ev.get("input_msg", "")
         
         return MyEvent(message=f"Processed: {input_msg}")
 
-    @step(on=MyEvent)
+    @step(depends_on=MyEvent)
     async def process(self, ctx: Context, ev: MyEvent) -> StopEvent:
         
         return StopEvent(result=ev.message)
@@ -50,7 +50,7 @@ A workflow is a class that inherits from `Workflow` and contains one or more ste
 
 ### Steps
 
-Steps are methods decorated with `@step(on=EventType)` that define what happens when a specific event is received.
+Steps are methods decorated with `@step(depends_on=EventType)` that define what happens when a specific event is received.
 
 - Steps are asynchronous functions that receive a `Context` and an `Event`
 - Steps can return new events to trigger subsequent steps

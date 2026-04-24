@@ -33,7 +33,7 @@ class ResilientApiWorkflow(Workflow):
     - Thread-safe state tracking with copy-on-write.
     """
 
-    @step(on=StartEvent)
+    @step(depends_on=StartEvent)
     async def start(self, ctx: Context[ApiState], ev: StartEvent) -> ApiCallEvent:
         async with ctx.store.edit_state() as state:
             state.start_time = asyncio.get_event_loop().time()
@@ -41,9 +41,9 @@ class ResilientApiWorkflow(Workflow):
         return ApiCallEvent(endpoint=ev.get("input_msg", "/api/default"))
 
     @step(
-        on=ApiCallEvent,
+        depends_on=ApiCallEvent,
         timeout=5.0,  # 5 second timeout
-        num_retries=3,  # Retry up to 3 times
+        max_retries=3,  # Retry up to 3 times
         retry_delay=1.0,  # 1 second delay between retries
     )
     async def call_flaky_api(
@@ -64,7 +64,7 @@ class ResilientApiWorkflow(Workflow):
 
         return ApiResponseEvent(data=f"Response from {ev.endpoint}", attempts=attempt)
 
-    @step(on=ApiResponseEvent, timeout=2.0)
+    @step(depends_on=ApiResponseEvent, timeout=2.0)
     async def process_response(
         self, ctx: Context[ApiState], ev: ApiResponseEvent
     ) -> ApiProcessedEvent:
@@ -73,7 +73,7 @@ class ResilientApiWorkflow(Workflow):
         processed = ev.data.upper()
         return ApiProcessedEvent(result=processed)
 
-    @step(on=ApiProcessedEvent)
+    @step(depends_on=ApiProcessedEvent)
     async def finish(self, ctx: Context[ApiState], ev: ApiProcessedEvent) -> StopEvent:
         elapsed = asyncio.get_event_loop().time() - ctx.state.start_time
         total_attempts = ctx.state.api_attempts

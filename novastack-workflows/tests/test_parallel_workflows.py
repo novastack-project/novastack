@@ -27,7 +27,7 @@ class ParallelWorkflow(Workflow):
     - Natural parallelism with immutable state.
     """
 
-    @step(on=StartEvent)
+    @step(depends_on=StartEvent)
     async def fetch_data(self, ctx: Context, ev: StartEvent) -> DataFetchedEvent:
         if ctx.state is None:
             ctx._store._state = ParallelState()
@@ -40,17 +40,17 @@ class ParallelWorkflow(Workflow):
         data_id = ev.get("data_id", 1)
         return DataFetchedEvent(data_id=data_id)
 
-    @step(on=DataFetchedEvent)
+    @step(depends_on=DataFetchedEvent)
     async def process_a(self, ctx: Context, ev: DataFetchedEvent) -> ProcessedEvent:
         result = f"Processed by A: {ev.data_id * 2}"
         return ProcessedEvent(processor="A", result=result)
 
-    @step(on=DataFetchedEvent)
+    @step(depends_on=DataFetchedEvent)
     async def process_b(self, ctx: Context, ev: DataFetchedEvent) -> ProcessedEvent:
         result = f"Processed by B: {ev.data_id * 3}"
         return ProcessedEvent(processor="B", result=result)
 
-    @step(on=ProcessedEvent)
+    @step(depends_on=ProcessedEvent)
     async def collect_results(
         self, ctx: Context, ev: ProcessedEvent
     ) -> StopEvent | None:
