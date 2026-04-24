@@ -69,11 +69,8 @@ def test_no_circular_dependency_valid_chain():
     class ValidWorkflow(Workflow):
         @step(depends_on=StartEvent)
         async def start(self, ctx: Context, ev: StartEvent) -> EventA:
+            await ctx.emit(EventB())
             return EventA()
-
-        @step(depends_on=StartEvent)
-        async def start2(self, ctx: Context, ev: StartEvent) -> EventB:
-            return EventB()
 
         @step(depends_on=[EventA, EventB])
         async def join_ab(self, ctx: Context, events: dict) -> EventC:

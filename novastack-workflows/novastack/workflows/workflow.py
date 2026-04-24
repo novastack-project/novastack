@@ -110,6 +110,8 @@ class Workflow:
         else:
             cls._state_type = DictLikeModel
 
+        cls._validate_single_start_step()
+
         # Detect circular dependencies in join steps
         cls._detect_circular_dependencies()
 
@@ -193,6 +195,23 @@ class Workflow:
                                 f"but '{producer_name}' requires events from '{step_name}'. "
                                 f"This creates a deadlock where neither step can execute."
                             )
+
+    @classmethod
+    def _validate_single_start_step(cls) -> None:
+        """
+        Validate that workflow has exactly one StartEvent handler.
+
+        Raises:
+            WorkflowValidationError: If workflow has multiple StartEvent handlers
+        """
+        start_event_handlers = cls._step_registry.get(StartEvent, [])
+
+        if len(start_event_handlers) > 1:
+            handler_names = [name for name, _ in start_event_handlers]
+            raise WorkflowValidationError(
+                f"Workflow '{cls.__name__}' must have exactly one StartEvent handler. "
+                f"Found {len(start_event_handlers)}: {', '.join(handler_names)}"
+            )
 
     def get_steps_for_event(self, event: Event) -> list[tuple[str, Any]]:
         """Get all step methods that handle the given event type."""

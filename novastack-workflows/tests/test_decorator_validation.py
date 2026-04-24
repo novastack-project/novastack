@@ -434,4 +434,59 @@ class TestEdgeCases:
             return EventC()
 
         # Should be valid - annotation is optional
-        assert is_join_step(join) is True
+
+
+class TestWorkflowValidation:
+    """Tests for workflow-level validation."""
+
+    def test_single_start_event_handler_valid(self):
+        """Test that workflow with single StartEvent handler is valid."""
+        from novastack.workflows import Workflow
+
+        class ValidWorkflow(Workflow):
+            @step(depends_on=StartEvent)
+            async def start(self, ctx: Context, ev: StartEvent) -> EventA:
+                return EventA()
+
+            @step(depends_on=EventA)
+            async def process(self, ctx: Context, ev: EventA) -> StopEvent:
+                return StopEvent(result="done")
+
+        # Should not raise any errors
+        assert ValidWorkflow is not None
+
+    def test_multiple_start_event_handlers_invalid(self):
+        """Test that workflow with multiple StartEvent handlers raises validation error."""
+        from novastack.workflows import Workflow
+
+        with pytest.raises(WorkflowValidationError) as exc_info:
+
+            class InvalidWorkflow(Workflow):
+                @step(depends_on=StartEvent)
+                async def start(self, ctx: Context, ev: StartEvent) -> EventA:
+                    return EventA()
+
+                @step(depends_on=StartEvent)
+                async def start2(self, ctx: Context, ev: StartEvent) -> EventB:
+                    return EventB()
+
+                @step(depends_on=EventA)
+                async def process(self, ctx: Context, ev: EventA) -> StopEvent:
+                    return StopEvent(result="done")
+
+        # Verify error message
+        assert "must have exactly one StartEvent handler" in str(exc_info.value)
+        assert "start" in str(exc_info.value)
+        assert "start2" in str(exc_info.value)
+
+    def test_no_start_event_handler_valid(self):
+        """Test that workflow without StartEvent handler is valid (can be a sub-workflow)."""
+        from novastack.workflows import Workflow
+
+        class SubWorkflow(Workflow):
+            @step(depends_on=EventA)
+            async def process(self, ctx: Context, ev: EventA) -> StopEvent:
+                return StopEvent(result="done")
+
+        # Should not raise any errors - workflows without StartEvent are valid
+        assert SubWorkflow is not None

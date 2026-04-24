@@ -113,11 +113,11 @@ class WorkflowEngine:
             await event_queue.put(event)
 
         # Process event queue
-        iteration = 0
+        iteration_count = 0
         result: Any = None
 
         try:
-            while self._max_iterations == 0 or iteration < self._max_iterations:
+            while self._max_iterations == 0 or iteration_count < self._max_iterations:
                 try:
                     # Get next event with timeout
                     event = await asyncio.wait_for(
@@ -140,10 +140,10 @@ class WorkflowEngine:
                 # Process the event
                 await self._process_event(event, ctx)
 
-                iteration += 1
+                iteration_count += 1
 
             # Check if max iterations reached (only if not unlimited)
-            if self._max_iterations > 0 and iteration >= self._max_iterations:
+            if self._max_iterations > 0 and iteration_count >= self._max_iterations:
                 raise WorkflowRuntimeError(
                     f"Execution workflow maximum iterations: ({self._max_iterations})."
                 )
@@ -157,7 +157,7 @@ class WorkflowEngine:
         # Return workflow result
         return WorkflowResult(
             run_id=run_id,
-            num_iterations=iteration,
+            num_iterations=iteration_count,
             status=WorkflowStatus.COMPLETED,
             result=result,
         )
@@ -204,7 +204,7 @@ class WorkflowEngine:
                     await self._event_buffer.add_event(step_name, event)
                 except Exception as e:
                     raise WorkflowRuntimeError(
-                        f"Failed to buffer event {event_type.__name__} for step '{step_name}': {str(e)}"
+                        f"Failed to buffer event {event_type.__name__} for step '{step_name}': {e!s}"
                     ) from e
 
                 required_events = self._workflow._join_step_registry[step_name]
@@ -369,7 +369,7 @@ class WorkflowEngine:
                     )
                     event_names = [et.__name__ for et in required_events]
                     raise WorkflowRuntimeError(
-                        f"Join step '{step_name}' failed: {str(e)}\n"
+                        f"Join step '{step_name}' failed: {e!s}\n"
                         f"Required events: {event_names}\n"
                         f"Attempt {attempt + 1}/{max_retries + 1}"
                     ) from e
