@@ -30,17 +30,13 @@ class WatsonxCustomMetricsManager(BaseModel):
 
     Example:
         ```python
-        from novastack.observability.watsonx.supporting_classes.enums import Region
-
         from novastack.observability.watsonx import (
             WatsonxCustomMetricsManager,
             CloudPakforDataCredentials,
         )
 
         # watsonx.governance (IBM Cloud)
-        wxgov_client = WatsonxCustomMetricsManager(
-            api_key="API_KEY", region=Region.US_SOUTH
-        )
+        wxgov_client = WatsonxCustomMetricsManager(api_key="API_KEY", region="us-south")
 
         # watsonx.governance (CP4D)
         cpd_creds = CloudPakforDataCredentials(
@@ -57,7 +53,6 @@ class WatsonxCustomMetricsManager(BaseModel):
 
     model_config = {
         "arbitrary_types_allowed": True,
-        "use_enum_values": True,
         "validate_assignment": True,
         "validate_default": True,
     }

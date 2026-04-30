@@ -7,8 +7,6 @@ from novastack.core.llms.enums import MessageRole
 class ChatMessage(BaseModel):
     """Chat message."""
 
-    model_config = {"use_enum_values": True}
-
     role: MessageRole = Field(
         ..., description="Role of the message sender (system, user, assistant, or tool)"
     )

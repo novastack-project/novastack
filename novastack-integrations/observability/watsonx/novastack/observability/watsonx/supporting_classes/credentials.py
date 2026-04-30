@@ -1,6 +1,6 @@
 from typing import Any, Literal
 
-from novastack.core.bridge.pydantic import BaseModel
+from novastack.core.bridge.pydantic import BaseModel, SecretStr
 
 
 class CloudPakforDataCredentials(BaseModel):
@@ -20,9 +20,9 @@ class CloudPakforDataCredentials(BaseModel):
     """
 
     url: str
-    api_key: str | None = None
+    api_key: SecretStr | None = None
     username: str | None = None
-    password: str | None = None
+    password: SecretStr | None = None
     bedrock_url: str | None = None
     instance_id: Literal["icp", "openshift"] | None = None
     version: str | None = None
@@ -61,7 +61,7 @@ class IntegratedSystemCredentials(BaseModel):
 
     auth_type: Literal["basic", "bearer"]
     username: str | None = None  # basic
-    password: str | None = None  # basic
+    password: SecretStr | None = None  # basic
     token_url: str | None = None  # bearer
     token_method: str | None = "POST"  # bearer
     token_headers: dict | None = {}  # bearer
@@ -84,7 +84,7 @@ class IntegratedSystemCredentials(BaseModel):
 
         if self.auth_type == "basic":
             integrated_system_creds["username"] = self.username
-            integrated_system_creds["password"] = self.password
+            integrated_system_creds["password"] = self.password.get_secret_value()
         elif self.auth_type == "bearer":
             integrated_system_creds["token_info"] = {
                 "url": self.token_url,
