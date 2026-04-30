@@ -36,9 +36,7 @@ class WatsonxCustomMetricsManager(BaseModel):
         )
 
         # watsonx.governance (IBM Cloud)
-        wxgov_client = WatsonxCustomMetricsManager(
-            api_key="API_KEY", region="us-south"
-        )
+        wxgov_client = WatsonxCustomMetricsManager(api_key="API_KEY", region="us-south")
 
         # watsonx.governance (CP4D)
         cpd_creds = CloudPakforDataCredentials(

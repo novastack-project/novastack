@@ -184,7 +184,7 @@ class WMLClientFactory:
 
     @staticmethod
     def create_client(
-        api_key: SecretStr  | None = None,
+        api_key: SecretStr | None = None,
         region: Region = Region.US_SOUTH,
         cpd_creds: CloudPakforDataCredentials | dict | None = None,
         space_id: str | None = None,
