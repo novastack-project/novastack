@@ -1,6 +1,6 @@
 from enum import Enum
 
-_REGION_DATA = {
+_REGION_DATA: dict = {
     "us-south": {
         "openscale": "https://api.aiopenscale.cloud.ibm.com",
     },

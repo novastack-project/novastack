@@ -201,14 +201,14 @@ class OAuth2Authenticator(BaseAuthenticator):
             }
         elif self.grant_type == OAuth2GrantType.PASSWORD:
             data = {
-                "grant_type": self.grant_type,
+                "grant_type": self.grant_type.value,
                 "username": self.username,
                 "password": self.password.get_secret_value() if self.password else None,
                 **base_data,
             }
         else:
             data = {
-                "grant_type": self.grant_type,
+                "grant_type": self.grant_type.value,
                 **base_data,
             }
 

@@ -51,7 +51,7 @@ class WatsonxLLM(BaseLLM):
             model_id=self.model,
             credentials=Credentials(
                 api_key=self.api_key,
-                url=self.region.watsonxai,
+                url=self.region.watsonx,
             ),
             project_id=self.project_id,
             space_id=self.space_id,

@@ -75,8 +75,6 @@ class WatsonxExternalPromptMonitor(PromptObservability):
 
     Example:
         ```python
-        from novastack.observability.watsonx.supporting_classes.enums import Region
-
         from novastack.observability.watsonx import (
             WatsonxExternalPromptMonitor,
             CloudPakforDataCredentials,
@@ -84,7 +82,7 @@ class WatsonxExternalPromptMonitor(PromptObservability):
 
         # watsonx.governance (IBM Cloud)
         wxgov_client = WatsonxExternalPromptMonitor(
-            api_key="API_KEY", space_id="SPACE_ID", region=Region.US_SOUTH
+            api_key="API_KEY", space_id="SPACE_ID", region="us-south"
         )
 
         # watsonx.governance (CP4D)

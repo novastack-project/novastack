@@ -22,7 +22,6 @@ class HttpService(BaseModel):
 
     model_config = {
         "arbitrary_types_allowed": True,
-        "use_enum_values": True,
         "validate_assignment": True,
         "validate_default": True,
     }

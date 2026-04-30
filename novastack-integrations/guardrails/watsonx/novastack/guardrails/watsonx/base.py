@@ -25,8 +25,6 @@ class WatsonxGuardrail(BaseGuardrail):
 
     Example:
         ```python
-        from novastack.guardrails.watsonx.supporting_classes.enums import Region
-
         from novastack.guardrails.watsonx import (
             WatsonxGuardrail,
         )
@@ -37,7 +35,7 @@ class WatsonxGuardrail(BaseGuardrail):
             policy_id="POLICY_ID",
             inventory_id="INVENTORY_ID",
             instance_id="INSTANCE_ID",
-            region=Region.US_SOUTH,
+            region="us-south",
         )
         ```
     """
@@ -154,11 +152,9 @@ class WatsonxGuardrail(BaseGuardrail):
 
         Example:
             ```python
-            from novastack.core.guardrails.enums import Direction
-
             guardrails_manager.enforce(
                 text="Hi, How can I help you?",
-                direction=Direction.OUTPUT,
+                direction="output",
                 prompt="You are a helpful assistant.",
             )
             ```
