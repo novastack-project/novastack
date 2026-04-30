@@ -1,18 +1,18 @@
 from enum import Enum
 
-_REGION_DATA = {
+_REGION_DATA: dict = {
     "us-south": {
-        "watsonxai": "https://us-south.ml.cloud.ibm.com",
+        "watsonx": "https://us-south.ml.cloud.ibm.com",
         "openscale": "https://api.aiopenscale.cloud.ibm.com",
         "factsheet": "dallas",
     },
     "eu-de": {
-        "watsonxai": "https://eu-de.ml.cloud.ibm.com",
+        "watsonx": "https://eu-de.ml.cloud.ibm.com",
         "openscale": "https://eu-de.api.aiopenscale.cloud.ibm.com",
         "factsheet": "frankfurt",
     },
     "au-syd": {
-        "watsonxai": "https://au-syd.ml.cloud.ibm.com",
+        "watsonx": "https://au-syd.ml.cloud.ibm.com",
         "openscale": "https://au-syd.api.aiopenscale.cloud.ibm.com",
         "factsheet": "sydney",
     },
@@ -37,8 +37,8 @@ class Region(str, Enum):
     AU_SYD = "au-syd"
 
     @property
-    def watsonxai(self):
-        return _REGION_DATA[self.value]["watsonxai"]
+    def watsonx(self):
+        return _REGION_DATA[self.value]["watsonx"]
 
     @property
     def openscale(self):

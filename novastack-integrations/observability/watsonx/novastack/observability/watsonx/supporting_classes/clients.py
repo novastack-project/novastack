@@ -215,7 +215,7 @@ class WMLClientFactory:
 
             else:
                 authenticator = Credentials(
-                    url=region.watsonxai,
+                    url=region.watsonx,
                     api_key=api_key.get_secret_value(),
                 )
                 wml_client = APIClient(credentials=authenticator)
