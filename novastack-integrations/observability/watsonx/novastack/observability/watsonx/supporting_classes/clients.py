@@ -1,6 +1,7 @@
 import logging
 from typing import Any
 
+from novastack.core.bridge.pydantic import SecretStr
 from novastack.observability.watsonx.supporting_classes.credentials import (
     CloudPakforDataCredentials,
 )
@@ -15,11 +16,8 @@ def process_cpd_credentials(
     Args:
         cpd_creds: CloudPakforDataCredentials instance or dict with CPD credentials.
     """
-    cpd_dict = (
-        cpd_creds.to_dict()
-        if isinstance(cpd_creds, CloudPakforDataCredentials)
-        else cpd_creds
-    )
+    cpd_creds = CloudPakforDataCredentials.model_validate(cpd_creds)
+    cpd_dict = cpd_creds.to_dict()
 
     # Process credentials for Watson OpenScale
     wos_creds = validate_and_filter_dict(
@@ -67,7 +65,7 @@ class WosClientFactory:
 
     @staticmethod
     def create_client(
-        api_key: str | None = None,
+        api_key: SecretStr | None = None,
         region: Region = Region.US_SOUTH,
         cpd_creds: CloudPakforDataCredentials | dict | None = None,
         service_instance_id: str | None = None,
@@ -127,7 +125,7 @@ class AIGovFactsClientFactory:
 
     @staticmethod
     def create_client(
-        api_key: str | None = None,
+        api_key: SecretStr | None = None,
         container_id: str | None = None,
         container_type: str | None = None,
         region: Region = Region.US_SOUTH,
@@ -186,7 +184,7 @@ class WMLClientFactory:
 
     @staticmethod
     def create_client(
-        api_key: str | None = None,
+        api_key: SecretStr  | None = None,
         region: Region = Region.US_SOUTH,
         cpd_creds: CloudPakforDataCredentials | dict | None = None,
         space_id: str | None = None,
