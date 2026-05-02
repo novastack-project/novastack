@@ -19,9 +19,7 @@ class PayloadRecord(BaseModel):
     system_prompt: str = Field(
         default="", description="System prompt used in the generation"
     )
-    input_text: str = Field(
-        default="", description="Input text provided to the model"
-    )
+    input_text: str = Field(default="", description="Input text provided to the model")
     prompt_variables: dict[str, str] = Field(
         default=dict, description="Dictionary mapping variable names to their values"
     )
@@ -38,4 +36,6 @@ class PayloadRecord(BaseModel):
     generated_token_count: int | None = Field(
         default=None, ge=0, description="Number of tokens generated"
     )
-    response_time: int | None = Field(default=None, ge=0, description="Response time in milliseconds")
+    response_time: int | None = Field(
+        default=None, ge=0, description="Response time in milliseconds"
+    )
