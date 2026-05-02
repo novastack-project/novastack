@@ -1,5 +1,5 @@
 ---
-title: Workflows
+title: Overview
 ---
 
 `% pip install novastack-workflows`

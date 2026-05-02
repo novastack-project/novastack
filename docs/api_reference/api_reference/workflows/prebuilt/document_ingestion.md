@@ -3,7 +3,7 @@ title: Document Ingestion
 
 ---
 
-`% pip install novastack-workflows`
+`% pip install novastack-workflows[prebuilt]`
 
 A prebuilt workflow for document ingestion that handles the complete pipeline of loading, transforming, and storing documents in a vector store.
 
