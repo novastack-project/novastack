@@ -68,7 +68,7 @@ nav:
   - Text Chunkers: text_chunkers/
   - Vector Stores: vector_stores/
   - Workflows:
-    - Overview: workflows/
+    - Overview: workflows/overview.md
     - Prebuilt:
       - Document Ingestion:  workflows/prebuilt/document_ingestion.md
 
