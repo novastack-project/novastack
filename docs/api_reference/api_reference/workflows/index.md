@@ -1,3 +1,7 @@
+---
+title: Workflows
+---
+
 `% pip install novastack-workflows`
 
 A powerful and flexible event-driven workflow engine for Python, designed to build complex asynchronous workflows with ease.
