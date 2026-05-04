@@ -49,15 +49,6 @@ class BaseEvaluator(BaseModel, ABC):
 
         This method should be implemented by all concrete evaluator classes.
         The specific parameters will vary depending on the evaluation type.
-
-        Returns:
-            dict: Dictionary containing evaluation results. Should include at minimum:
-                - score (float): The evaluation score
-                - passing (bool): Whether the evaluation passed a threshold
-                Additional keys can be included for specific evaluation details.
-
-        Raises:
-            NotImplementedError: If the method is not implemented by a subclass.
         """
         raise NotImplementedError(
             f"{self.__class__.__name__} must implement the evaluate() method"

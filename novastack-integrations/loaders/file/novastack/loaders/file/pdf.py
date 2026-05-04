@@ -19,8 +19,14 @@ class PdfLoader(BaseLoader):
         Attributes:
             input_file (str): File path to load.
 
-        Returns:
-            list[Document]: A list of `Document` objects loaded from the file.
+        Example:
+        ```python
+        from novastack.loaders.file import PdfLoader
+
+        # Using default loaders
+        loader = PdfLoader()
+        documents = loader.load_data("/path/to/document")
+        ```
         """
         try:
             import pypdf  # noqa: F401

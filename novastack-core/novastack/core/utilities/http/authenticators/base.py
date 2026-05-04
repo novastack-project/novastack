@@ -19,12 +19,4 @@ class BaseAuthenticator(BaseModel, ABC):
 
     @abstractmethod
     def authenticate(self) -> dict[str, str]:
-        """
-        Authenticate and return headers to be added to requests.
-
-        Returns:
-            Dictionary of authentication headers
-
-        Raises:
-            HttpAuthenticationError: If the provided credentials are missing, invalid, or fail verification during the authentication process.
-        """
+        """Authenticate and return headers to be added to requests."""

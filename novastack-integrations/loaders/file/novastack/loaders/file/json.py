@@ -24,8 +24,14 @@ class JsonLoader(BaseLoader):
         Args:
             input_file (str): File path to load.
 
-        Returns:
-            list[Document]: A list of `Document` objects loaded from the file.
+        Example:
+        ```python
+        from novastack.loaders.file import JsonLoader
+
+        # Using default loaders
+        loader = JsonLoader()
+        documents = loader.load_data("/path/to/document")
+        ```
         """
         try:
             import jq  # noqa: F401

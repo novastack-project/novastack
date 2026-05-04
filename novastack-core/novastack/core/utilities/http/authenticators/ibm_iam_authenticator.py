@@ -30,12 +30,6 @@ class IBMIAMAuthenticator(BaseAuthenticator):
         Get authentication headers with valid access token.
 
         Automatically refreshes token if expired.
-
-        Returns:
-            Dictionary with Authorization header containing access token
-
-        Raises:
-            HttpAuthenticationError: If token acquisition fails
         """
         # Check if token needs refresh
         if self.is_expired():
@@ -44,12 +38,7 @@ class IBMIAMAuthenticator(BaseAuthenticator):
         return {"Authorization": f"{self._token_type} {self._access_token}"}
 
     def is_expired(self) -> bool:
-        """
-        Check if access token is expired.
-
-        Returns:
-            True if token is expired or will expire within 60 seconds, False otherwise
-        """
+        """Check if access token is expired."""
         if not self._access_token or not self._expires_at:
             return True
 
@@ -58,12 +47,7 @@ class IBMIAMAuthenticator(BaseAuthenticator):
         return datetime.now() >= (self._expires_at - buffer)
 
     def _get_access_token(self) -> None:
-        """
-        Get IBM IAM access token.
-
-        Raises:
-            HttpAuthenticationError: If token acquisition fails
-        """
+        """Get IBM IAM access token."""
         try:
             data = {
                 "grant_type": "urn:ibm:params:oauth:grant-type:apikey",

@@ -17,15 +17,7 @@ class BasicAuthenticator(BaseAuthenticator):
     password: SecretStr = Field(..., description="Password for authentication")
 
     def authenticate(self) -> dict[str, str]:
-        """
-        Generate Basic authentication header.
-
-        Returns:
-            Dictionary with Authorization header containing Base64-encoded credentials
-
-        Raises:
-            HttpAuthenticationError: If the provided credentials are missing, invalid, or fail verification during the authentication process.
-        """
+        """Generate Basic authentication header."""
         try:
             password_value = self.password.get_secret_value()
 

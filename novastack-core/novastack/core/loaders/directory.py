@@ -100,9 +100,6 @@ class DirectoryLoader(BaseLoader):
 
         Args:
             input_dir (str): Directory path from which to load the documents.
-
-        Returns:
-            list[Document]: A list of documents loaded from the directory.
         """
         if not input_dir:
             raise ValueError("input_dir cannot be empty")

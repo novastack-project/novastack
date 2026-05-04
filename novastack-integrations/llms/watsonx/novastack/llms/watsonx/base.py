@@ -23,6 +23,13 @@ class WatsonxLLM(BaseLLM):
             to the LLM during completion. This allows customization of the request beyond
             the standard parameters.
         callback_manager: (PromptMonitor, optional): The callback manager is used for observability.
+
+    Example:
+        ```python
+        from novastack.llms.watsonx import WatsonxLLM
+
+        llm = WatsonxLLM(model="openai/gpt-oss-120b", api_key="your_api_key_here")
+        ```
     """
 
     model: str

@@ -78,12 +78,6 @@ class WosClientFactory:
             region: The region object containing service URLs.
             cpd_creds: CloudPakforDataCredentials instance or dict with CPD credentials.
             service_instance_id: The service instance ID.
-
-        Returns:
-            An initialized WosAPIClient instance.
-
-        Raises:
-            Exception: If connection to IBM watsonx.governance (openscale) fails.
         """
         from ibm_watson_openscale import APIClient as WosAPIClient  # type: ignore
 
@@ -140,12 +134,6 @@ class AIGovFactsClientFactory:
             container_type: The container type ('space' or 'project').
             region: The region object containing service URLs.
             cpd_creds: CloudPakforDataCredentials instance or dict with CPD credentials.
-
-        Returns:
-            An initialized AIGovFactsClient instance.
-
-        Raises:
-            Exception: If connection to IBM watsonx.governance (factsheets) fails.
         """
         from ibm_aigov_facts_client import (  # type: ignore
             AIGovFactsClient,
@@ -197,12 +185,6 @@ class WMLClientFactory:
             region: The region object containing service URLs.
             cpd_creds: CloudPakforDataCredentials instance or dict with CPD credentials.
             space_id: The space ID to set as default.
-
-        Returns:
-            An initialized APIClient instance with default space set.
-
-        Raises:
-            Exception: If connection to IBM watsonx.ai Runtime fails.
         """
         from ibm_watsonx_ai import APIClient, Credentials  # type: ignore
 

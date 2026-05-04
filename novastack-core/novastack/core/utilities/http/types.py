@@ -27,15 +27,7 @@ class HttpResponse(BaseModel):
     url: str = Field(...)
 
     def json_dump(self) -> Any:
-        """
-        Parse response content as JSON.
-
-        Returns:
-            Parsed JSON content
-
-        Raises:
-            ValueError: If content is not valid JSON
-        """
+        """Parse response content as JSON."""
         import json
 
         try:

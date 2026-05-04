@@ -104,9 +104,6 @@ class SemanticChunker(BaseTextChunker):
 
         Args:
             text (str): Input text to split.
-
-        Returns:
-            list[str]: List of text chunks.
         """
         single_sentences_list = re.split(r"(?<=[.?!])\s+", text)
         distances, sentences = self._calculate_cosine_distances(single_sentences_list)
@@ -138,9 +135,6 @@ class SemanticChunker(BaseTextChunker):
 
         Args:
             documents (list[Document]): List of `Document` objects to split.
-
-        Returns:
-            list[Document]: List of chunked documents objects.
         """
         chunks = []
 

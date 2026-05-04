@@ -70,12 +70,6 @@ class OAuth2Authenticator(BaseAuthenticator):
         Get authentication headers with valid access token.
 
         Automatically refreshes token if expired.
-
-        Returns:
-            Dictionary with Authorization header containing access token
-
-        Raises:
-            HttpAuthenticationError: If the provided credentials are missing, invalid, or fail verification during the authentication process.
         """
         # Check if token needs refresh
         if self.is_expired():
@@ -92,9 +86,6 @@ class OAuth2Authenticator(BaseAuthenticator):
         Refresh OAuth2 token.
 
         Attempts to use refresh token if available, otherwise obtains new token.
-
-        Raises:
-            HttpAuthenticationError: If the provided credentials are missing, invalid, or fail verification during the authentication process.
         """
         # If we have a refresh token, try to use it
         if self._refresh_token:
@@ -108,12 +99,7 @@ class OAuth2Authenticator(BaseAuthenticator):
         self._get_access_token()
 
     def is_expired(self) -> bool:
-        """
-        Check if access token is expired.
-
-        Returns:
-            True if token is expired or will expire within 60 seconds, False otherwise
-        """
+        """Check if access token is expired."""
         if not self._access_token or not self._expires_at:
             return True
 
@@ -127,9 +113,6 @@ class OAuth2Authenticator(BaseAuthenticator):
 
         Args:
             use_refresh_token: Whether to use refresh token grant
-
-        Raises:
-            HttpAuthenticationError: If the provided credentials are missing, invalid, or fail verification during the authentication process.
         """
         try:
             # Build request payload
@@ -184,9 +167,6 @@ class OAuth2Authenticator(BaseAuthenticator):
 
         Args:
             use_refresh_token: Whether to use refresh token grant
-
-        Returns:
-            Dictionary containing the token request data
         """
         base_data = {
             "client_id": self.client_id,
