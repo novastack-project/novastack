@@ -56,3 +56,7 @@ workflow = DocumentIngestionWorkflow(
 # Run the workflow
 result = await workflow.run()
 ```
+
+## Workflows
+
+Full workflow documentation [here](https://novastack-project.github.io/novastack/workflows/overview/)
