@@ -27,7 +27,4 @@ class BaseLoader(BaseModel, ABC):
 
         Args:
             input_dir (str): Directory path from which to load the documents.
-
-        Returns:
-            list[Document]: A list of loaded documents.
         """

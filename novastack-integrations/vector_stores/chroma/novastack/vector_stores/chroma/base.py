@@ -103,9 +103,6 @@ class ChromaVectorStore(BaseVectorStore):
         Args:
             query (str): Query text.
             top_k (int, optional): Number of top results to return. Defaults to `4`.
-
-        Returns:
-            list[DocumentWithScore]: List of the most similar documents.
         """
         query_embedding = self.embed_model.embed_text(query)
 

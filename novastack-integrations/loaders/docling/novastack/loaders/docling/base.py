@@ -21,6 +21,15 @@ class DoclingLoader(BaseLoader):
             treats them as individual documents. Default is False.
         export_table_format (str): Format used when exporting tables. Applicable only if `detached_tables` is True.
             Choose between "markdown" or "html". Defaults to "markdown".
+
+    Example:
+        ```python
+        from novastack.loaders.docling import DoclingLoader
+
+        # Using default loaders
+        docling_loader = DoclingLoader()
+        documents = docling_loader.load_data("/path/to/document")
+        ```
     """
 
     detached_tables: bool = False
@@ -32,9 +41,6 @@ class DoclingLoader(BaseLoader):
 
         Args:
             input_file (str): File path to load.
-
-        Returns:
-            list[Document]: A list of `Document` objects loaded from the file.
         """
         from docling.document_converter import DocumentConverter  # noqa: F401
 

@@ -57,9 +57,6 @@ class ContextSimilarityEvaluator(BaseEvaluator):
         Args:
             reference_text: The text to compare against contexts (query or answer)
             contexts: List of context strings
-
-        Returns:
-            Tuple of (individual_scores, mean_score)
         """
         contexts_score: list[float] = []
         reference_embedding = self.embed_model.embed_text(reference_text)[0]
@@ -89,9 +86,6 @@ class ContextSimilarityEvaluator(BaseEvaluator):
         Args:
             query_score: Query-context similarity score
             answer_score: Answer-context similarity score
-
-        Returns:
-            Harmonic mean: 2 * (q * a) / (q + a)
         """
         if query_score + answer_score == 0:
             return 0.0

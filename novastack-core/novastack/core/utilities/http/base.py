@@ -65,9 +65,6 @@ class HttpService(BaseModel):
 
         Args:
             headers: Additional headers to include
-
-        Returns:
-            Combined headers with authentication
         """
         combined_headers = self.headers.copy()
         if headers:
@@ -86,12 +83,6 @@ class HttpService(BaseModel):
 
         Args:
             response: httpx response object
-
-        Returns:
-            HttpResponse object
-
-        Raises:
-            HttpRequestError: For other HTTP errors
         """
         return HttpResponse(
             status_code=response.status_code,
@@ -113,14 +104,6 @@ class HttpService(BaseModel):
             url: Request url
             params: Query parameters
             headers: Additional headers
-
-        Returns:
-            HttpResponse object
-
-        Raises:
-            HttpConnectionError: If connection fails
-            HttpRequestTimeoutError: If request times out
-            HttpRequestError: For other errors
         """
         try:
             prepared_headers = self._prepare_headers(headers)
@@ -151,14 +134,6 @@ class HttpService(BaseModel):
             json: JSON data
             params: Query parameters
             headers: Additional headers
-
-        Returns:
-            HttpResponse object
-
-        Raises:
-            HttpConnectionError: If connection fails
-            HttpRequestTimeoutError: If request times out
-            HttpRequestError: For other errors
         """
         try:
             prepared_headers = self._prepare_headers(headers)
@@ -190,14 +165,6 @@ class HttpService(BaseModel):
             json: JSON data
             params: Query parameters
             headers: Additional headers
-
-        Returns:
-            HttpResponse object
-
-        Raises:
-            HttpConnectionError: If connection fails
-            HttpRequestTimeoutError: If request times out
-            HttpRequestError: For other errors
         """
         try:
             prepared_headers = self._prepare_headers(headers)
@@ -225,14 +192,6 @@ class HttpService(BaseModel):
             url: Request url (relative to base_url)
             params: Query parameters
             headers: Additional headers
-
-        Returns:
-            HttpResponse object
-
-        Raises:
-            HttpConnectionError: If connection fails
-            HttpRequestTimeoutError: If request times out
-            HttpRequestError: For other errors
         """
         try:
             prepared_headers = self._prepare_headers(headers)
@@ -258,14 +217,6 @@ class HttpService(BaseModel):
             url: Request url (relative to base_url)
             params: Query parameters
             headers: Additional headers
-
-        Returns:
-            HttpResponse object
-
-        Raises:
-            HttpConnectionError: If connection fails
-            HttpRequestTimeoutError: If request times out
-            HttpRequestError: For other errors
         """
         try:
             prepared_headers = self._prepare_headers(headers)
@@ -297,14 +248,6 @@ class HttpService(BaseModel):
             json: JSON data
             params: Query parameters
             headers: Additional headers
-
-        Returns:
-            HttpResponse object
-
-        Raises:
-            HttpConnectionError: If connection fails
-            HttpRequestTimeoutError: If request times out
-            HttpRequestError: For other errors
         """
         try:
             prepared_headers = self._prepare_headers(headers)
@@ -336,14 +279,6 @@ class HttpService(BaseModel):
             json: JSON data
             params: Query parameters
             headers: Additional headers
-
-        Returns:
-            HttpResponse object
-
-        Raises:
-            HttpConnectionError: If connection fails
-            HttpRequestTimeoutError: If request times out
-            HttpRequestError: For other errors
         """
         try:
             prepared_headers = self._prepare_headers(headers)
@@ -371,14 +306,6 @@ class HttpService(BaseModel):
             url: Request url (relative to base_url)
             params: Query parameters
             headers: Additional headers
-
-        Returns:
-            HttpResponse object
-
-        Raises:
-            HttpConnectionError: If connection fails
-            HttpRequestTimeoutError: If request times out
-            HttpRequestError: For other errors
         """
         try:
             prepared_headers = self._prepare_headers(headers)

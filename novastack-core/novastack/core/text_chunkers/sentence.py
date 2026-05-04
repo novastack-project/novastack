@@ -62,9 +62,6 @@ class SentenceChunker(BaseTextChunker):
         Args:
             text (str): Input text to split.
 
-        Returns:
-            list[str]: List of text chunks.
-
         Example:
             ```python
             chunks = text_chunker.chunk_text(
@@ -82,9 +79,6 @@ class SentenceChunker(BaseTextChunker):
 
         Args:
             documents (list[Document]): List of `Document` objects to split.
-
-        Returns:
-            list[Document]: List of chunked documents objects.
         """
         chunks = []
 

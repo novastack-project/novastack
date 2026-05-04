@@ -12,7 +12,6 @@ class LiteLLM(BaseLLM):
     A wrapper class for interacting with a LiteLLM-compatible large language model (LLM).
     For more information, see: [https://docs.litellm.ai/](https://docs.litellm.ai/).
 
-
     Attributes:
         model (str): The identifier of the LLM model to use (e.g., "gpt-4", "llama-3").
         temperature (float, optional): Sampling temperature to use. Must be between 0.0 and 1.0.
@@ -24,6 +23,13 @@ class LiteLLM(BaseLLM):
             to the LLM during completion. This allows customization of the request beyond
             the standard parameters.
         callback_manager: (ModelMonitor, optional): The callback manager is used for observability.
+
+    Example:
+        ```python
+        from novastack.llms.litellm import LiteLLM
+
+        llm = LiteLLM(model="gpt-4", api_key="your_api_key_here")
+        ```
     """
 
     model: str

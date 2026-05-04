@@ -23,8 +23,14 @@ class HtmlLoader(BaseLoader):
         Args:
             input_file (str): File path to load.
 
-        Returns:
-            list[Document]: A list of `Document` objects loaded from the file.
+        Example:
+        ```python
+        from novastack.loaders.file import HtmlLoader
+
+        # Using default loaders
+        loader = HtmlLoader()
+        documents = loader.load_data("/path/to/document")
+        ```
         """
         try:
             from bs4 import BeautifulSoup  # noqa: F401

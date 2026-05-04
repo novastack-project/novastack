@@ -95,9 +95,6 @@ class WatsonxGuardrail(BaseGuardrail):
             direction (str): The direction value ("input" or "output").
             prompt (str | None): The system prompt.
             context (list): List of context documents.
-
-        Raises:
-            ValueError: If required parameters are missing for active detectors.
         """
         input_detectors = detectors.get("input", {})
         output_detectors = detectors.get("output", {})

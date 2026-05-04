@@ -7,20 +7,24 @@ title: Document Ingestion
 
 A prebuilt workflow for document ingestion that handles the complete pipeline of loading, transforming, and storing documents in a vector store.
 
-The IngestionWorkflow orchestrates the process of ingesting documents by:
-- Loading documents from various sources using configured loaders
-- Applying transformations to process and prepare the documents
-- Optionally storing the processed documents in a vector store
+This workflow orchestrates the document ingestion pipeline with support for:
+    - Multiple document loaders (e.g., Docx, PDF, S3)
+    - Multiple transformation components (e.g., chunking, embedding)
+    - Deduplication strategies
+    - Vector store integration
 
 This workflow provides a streamlined approach to building document ingestion pipelines with support for custom transformers and flexible document processing strategies.
 
 ## Attributes
 
-- **transformers** (`list[TransformerComponent]`): List of transformer components to apply to the documents. Transformers are applied in sequence to process and modify documents during the ingestion pipeline.
-- **doc_strategy** (`DocStrategy`): Strategy for handling document processing. Defines how documents should be processed and managed throughout the workflow.
-- **post_transformer** (`bool`): Flag indicating whether to apply post-transformation processing. When enabled, additional processing steps are executed after the main transformers.
-- **loaders** (`BaseLoader, optional`): Optional loader component for reading documents from various sources. If not provided, documents must be supplied directly to the workflow.
-- **vector_store** (`BaseVectorStore, optional`): Optional vector store for persisting processed documents. When provided, documents are automatically stored after transformation.
+| Parameter        | Type                         | Description                                                                                                                                                   |
+| ---------------- | ---------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| transformers     | `list[TransformerComponent]` | List of transformer components to apply to the documents. Transformers are applied in sequence to process and modify documents during the ingestion pipeline. |
+| doc_strategy     | `DocStrategy`                | Strategy for handling document processing. Defines how documents should be processed and managed throughout the workflow.                                     |
+| post_transformer | `bool`                       | Flag indicating whether to apply post-transformation processing. When enabled, additional processing steps are executed after the main transformers.          |
+| loaders          | `BaseLoader, optional`       | Optional loader component for reading documents from various sources. If not provided, documents must be supplied directly to the workflow.                   |
+| vector_store     | `BaseVectorStore, optional`  | Optional vector store for persisting processed documents. When provided, documents are automatically stored after transformation.                             |
+
 
 ## Example
 
@@ -52,3 +56,7 @@ workflow = DocumentIngestionWorkflow(
 # Run the workflow
 result = await workflow.run()
 ```
+
+## Workflows
+
+Full workflow documentation [here](https://novastack-project.github.io/novastack/workflows/overview/)
