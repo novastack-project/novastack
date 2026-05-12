@@ -1,8 +1,8 @@
 from datetime import datetime, timedelta
-from enum import Enum
-from typing import Any, Union
+from typing import Any
 
 import httpx
+from novastack.core.base.enum import BaseStrEnum
 from novastack.core.bridge.pydantic import (
     Field,
     PrivateAttr,
@@ -13,7 +13,7 @@ from novastack.core.utilities.http.authenticators.base import BaseAuthenticator
 from novastack.core.utilities.http.exceptions import HttpAuthenticationError
 
 
-class OAuth2GrantType(str, Enum):
+class OAuth2GrantType(BaseStrEnum):
     """
     Supported OAuth2 grant type.
 

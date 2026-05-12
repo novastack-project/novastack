@@ -1,13 +1,13 @@
-from enum import Enum
+from novastack.core.base.enum import BaseStrEnum
 
 
-class Action(str, Enum):
+class Action(BaseStrEnum):
     BLOCKED = "blocked"
     MODIFIED = "modified"
     ALLOWED = "allowed"
 
 
-class Direction(str, Enum):
+class Direction(BaseStrEnum):
     """
     Supported IBM watsonx.governance directions (input/output).
 
@@ -18,22 +18,3 @@ class Direction(str, Enum):
 
     INPUT = "input"
     OUTPUT = "output"
-
-    @classmethod
-    def enum_validate(cls, value: str) -> "Direction":
-        if isinstance(value, cls):
-            return value
-
-        if isinstance(value, str):
-            try:
-                return cls(value.lower())
-            except ValueError:
-                raise ValueError(
-                    "Invalid value for parameter 'direction'. Received: '{}'. Valid values are: {}.".format(
-                        value, [item.value for item in Direction]
-                    )
-                )
-
-        raise TypeError(
-            f"Invalid type for parameter 'direction'. Expected str or Direction, but received {type(value).__name__}."
-        )

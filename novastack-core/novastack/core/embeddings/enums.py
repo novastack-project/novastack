@@ -1,7 +1,7 @@
-from enum import Enum
+from novastack.core.base.enum import BaseStrEnum
 
 
-class SimilarityMode(str, Enum):
+class SimilarityMode(BaseStrEnum):
     """Modes for similarity."""
 
     COSINE = "cosine"

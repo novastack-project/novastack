@@ -1,7 +1,7 @@
-from enum import Enum
+from novastack.core.base.enum import BaseStrEnum
 
 
-class MessageRole(str, Enum):
+class MessageRole(BaseStrEnum):
     ASSISTANT = "assistant"
     SYSTEM = "system"
     USER = "user"
