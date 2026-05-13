@@ -44,7 +44,7 @@ class WatsonxLLM(BaseLLM):
         from ibm_watsonx_ai import Credentials
         from ibm_watsonx_ai.foundation_models import ModelInference
 
-        self.region = Region.enum_validate(self.region)
+        self.region = Region.from_value(self.region)
 
         if (not (self.project_id or self.space_id)) or (
             self.project_id and self.space_id

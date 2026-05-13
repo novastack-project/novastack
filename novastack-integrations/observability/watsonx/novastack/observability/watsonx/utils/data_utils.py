@@ -1,5 +1,7 @@
 def validate_and_filter_dict(
-    original_dict: dict, optional_keys: list, required_keys: list | None = None
+    original_dict: dict,
+    optional_keys: list,
+    required_keys: list | None = None
 ):
     """
     Validates that all required keys are present in a dictionary and returns a filtered dictionary

@@ -1,4 +1,6 @@
-from enum import Enum
+from typing import Any
+
+from novastack.core.base.enum import BaseStrEnum
 
 _REGION_DATA: dict = {
     "us-south": {
@@ -19,7 +21,7 @@ _REGION_DATA: dict = {
 }
 
 
-class Region(str, Enum):
+class Region(BaseStrEnum):
     """
     Supported IBM watsonx.governance regions.
 
@@ -49,9 +51,9 @@ class Region(str, Enum):
         return _REGION_DATA[self.value]["factsheet"]
 
     @classmethod
-    def enum_validate(cls, value: str) -> "Region":
+    def from_value(cls, value: Any) -> "Region":
         if value is None:
-            return cls.US_SOUTH
+            return  cls(Region.US_SOUTH)
 
         if isinstance(value, cls):
             return value
@@ -61,17 +63,19 @@ class Region(str, Enum):
                 return cls(value.lower())
             except ValueError:
                 raise ValueError(
-                    "Invalid value for parameter 'region'. Received: '{}'. Valid values are: {}.".format(
+                    "Invalid value for Region. "
+                    "Received: '{}'. Valid values are: {}.".format(
                         value, [item.value for item in Region]
                     )
                 )
 
         raise TypeError(
-            f"Invalid type for parameter 'region'. Expected str or Region, but received {type(value).__name__}."
+            f"Invalid type for Region. "
+            f"Expected str or Region, but received {type(value).__name__}."
         )
 
 
-class TaskType(str, Enum):
+class TaskType(BaseStrEnum):
     """
     Supported IBM watsonx.governance tasks.
 
@@ -93,27 +97,8 @@ class TaskType(str, Enum):
     CODE = "code"
     EXTRACTION = "extraction"
 
-    @classmethod
-    def enum_validate(cls, value: str) -> "TaskType":
-        if isinstance(value, cls):
-            return value
 
-        if isinstance(value, str):
-            try:
-                return cls(value.lower())
-            except ValueError:
-                raise ValueError(
-                    "Invalid value for parameter 'task_id'. Received: '{}'. Valid values are: {}.".format(
-                        value, [item.value for item in TaskType]
-                    )
-                )
-
-        raise TypeError(
-            f"Invalid type for parameter 'task_id'. Expected str or TaskType, but received {type(value).__name__}."
-        )
-
-
-class DataSetType(str, Enum):
+class DataSetType(BaseStrEnum):
     """
     Supported IBM watsonx.governance tasks.
 
@@ -124,22 +109,3 @@ class DataSetType(str, Enum):
 
     PAYLOAD = "payload"
     FEEDBACK = "feedback"
-
-    @classmethod
-    def enum_validate(cls, value: str) -> "DataSetType":
-        if isinstance(value, cls):
-            return value
-
-        if isinstance(value, str):
-            try:
-                return cls(value.lower())
-            except ValueError:
-                raise ValueError(
-                    "Invalid value. Received: '{}'. Valid values are: {}.".format(
-                        value, [item.value for item in DataSetType]
-                    )
-                )
-
-        raise TypeError(
-            f"Invalid type. Expected str or DataSetType, but received {type(value).__name__}."
-        )
