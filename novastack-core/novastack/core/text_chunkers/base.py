@@ -1,11 +1,10 @@
 from abc import ABC, abstractmethod
 
-from novastack.core.bridge.pydantic import BaseModel
+from novastack.core.base.schema import TransformerComponent
 from novastack.core.document import Document
-from novastack.core.schema import TransformerComponent
 
 
-class BaseTextChunker(BaseModel, TransformerComponent, ABC):
+class BaseTextChunker(TransformerComponent, ABC):
     """Abstract base class defining the interface for text chunker."""
 
     model_config = {
