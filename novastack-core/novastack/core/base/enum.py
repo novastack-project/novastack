@@ -3,6 +3,7 @@ from typing import Any, Type, TypeVar
 
 T = TypeVar("T", bound="BaseStrEnum")
 
+
 class BaseStrEnum(str, Enum):
     @classmethod
     def from_value(cls: Type[T], value: Any) -> T:

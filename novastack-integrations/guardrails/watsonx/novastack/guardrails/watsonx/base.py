@@ -40,7 +40,9 @@ class WatsonxGuardrail(BaseGuardrail):
         ```
     """
 
-    api_key: SecretStr = Field(..., description="The API key for IBM watsonx.governance")
+    api_key: SecretStr = Field(
+        ..., description="The API key for IBM watsonx.governance"
+    )
     policy_id: str = Field(..., description="The policy ID in watsonx.governance")
     inventory_id: str = Field(..., description="The inventory ID in watsonx.governance")
     instance_id: str = Field(..., description="The instance ID in watsonx.governance")

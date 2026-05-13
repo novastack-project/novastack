@@ -62,7 +62,9 @@ class WatsonxEmbedding(BaseEmbedding):
                 "truncate_input_tokens": self.truncate_input_tokens,
                 "return_options": {"input_text": False},
             },
-            "credentials": Credentials(api_key=self.api_key.get_secret_value(), url=self.url),
+            "credentials": Credentials(
+                api_key=self.api_key.get_secret_value(), url=self.url
+            ),
         }
 
         if self.project_id:

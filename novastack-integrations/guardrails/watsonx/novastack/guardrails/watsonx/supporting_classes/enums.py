@@ -39,7 +39,7 @@ class Region(BaseStrEnum):
     @classmethod
     def from_value(cls, value: Any) -> "Region":
         if value is None:
-            return  cls(Region.US_SOUTH)
+            return cls(Region.US_SOUTH)
 
         if isinstance(value, cls):
             return value

@@ -7,6 +7,7 @@ from novastack.core.document import Document
 class BaseComponent(BaseModel):
     """Base component object."""
 
+
 class TransformerComponent(BaseComponent):
     """Abstract base class for document transformer components."""
 
