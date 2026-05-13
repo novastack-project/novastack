@@ -1,6 +1,6 @@
 from typing import Any
 
-from novastack.core.bridge.pydantic import Field
+from novastack.core.bridge.pydantic import Field, SecretStr
 from novastack.core.llms import BaseLLM, ChatMessage, ChatResponse, CompletionResponse
 from novastack.core.llms.decorators import llm_chat_callback, llm_completion_callback
 from novastack.llms.watsonx.supporting_classes.enums import Region
@@ -33,7 +33,7 @@ class WatsonxLLM(BaseLLM):
     """
 
     model: str
-    api_key: str
+    api_key: SecretStr
     region: Region = Region.US_SOUTH
     project_id: str | None = Field(default=None)
     space_id: str | None = Field(default=None)
@@ -57,7 +57,7 @@ class WatsonxLLM(BaseLLM):
             **self.additional_kwargs,
             model_id=self.model,
             credentials=Credentials(
-                api_key=self.api_key,
+                api_key=self.api_key.get_secret_value(),
                 url=self.region.watsonx,
             ),
             project_id=self.project_id,

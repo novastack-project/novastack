@@ -1,6 +1,6 @@
 from typing import Any
 
-from novastack.core.bridge.pydantic import Field
+from novastack.core.bridge.pydantic import Field, SecretStr
 from novastack.core.llms import BaseLLM, ChatMessage, ChatResponse, CompletionResponse
 from novastack.core.llms.decorators import llm_chat_callback, llm_completion_callback
 
@@ -41,7 +41,7 @@ class LiteLLM(BaseLLM):
         "while lower values make it more focused and deterministic.",
     )
     max_tokens: int = Field(ge=0)
-    api_key: str
+    api_key: SecretStr
     additional_kwargs: dict[str, Any] = Field(default_factory=dict)
 
     def _get_all_kwargs(self, **kwargs: Any) -> dict[str, Any]:
@@ -51,7 +51,7 @@ class LiteLLM(BaseLLM):
             **self.additional_kwargs,
             **kwargs,  # Method-provided kwargs override class-level kwargs
             "model": self.model,  # Always enforced from class
-            "api_key": self.api_key,  # Always enforced from class
+            "api_key": self.api_key.get_secret_value(),  # Always enforced from class
         }
 
     @llm_completion_callback()

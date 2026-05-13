@@ -1,7 +1,7 @@
 from logging import getLogger
 from typing import Any
 
-from novastack.core.bridge.pydantic import Field, PrivateAttr
+from novastack.core.bridge.pydantic import Field, PrivateAttr, SecretStr
 from novastack.core.document import Document, DocumentWithScore
 from novastack.core.retrievers import BaseRetriever
 
@@ -34,7 +34,7 @@ class WatsonDiscoveryRetriever(BaseRetriever):
     """
 
     url: str = Field(..., description="Watson Discovery instance URL")
-    api_key: str = Field(..., description="Watson Discovery API key")
+    api_key: SecretStr = Field(..., description="Watson Discovery API key")
     project_id: str = Field(..., description="Watson Discovery project ID")
     version: str = Field(
         default="2023-03-31", description="Watson Discovery API version"
@@ -51,7 +51,7 @@ class WatsonDiscoveryRetriever(BaseRetriever):
         from ibm_watson import DiscoveryV2
 
         try:
-            authenticator = IAMAuthenticator(self.api_key)
+            authenticator = IAMAuthenticator(self.api_key.get_secret_value())
             self._client = DiscoveryV2(
                 authenticator=authenticator, version=self.version
             )

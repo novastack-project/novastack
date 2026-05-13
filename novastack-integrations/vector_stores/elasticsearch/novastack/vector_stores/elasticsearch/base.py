@@ -2,7 +2,7 @@ import uuid
 from logging import getLogger
 from typing import Any, Literal
 
-from novastack.core.bridge.pydantic import Field, PrivateAttr
+from novastack.core.bridge.pydantic import Field, PrivateAttr, SecretStr
 from novastack.core.document import Document, DocumentWithScore
 from novastack.core.embeddings import BaseEmbedding
 from novastack.core.vector_stores import BaseVectorStore
@@ -47,7 +47,7 @@ class ElasticsearchVectorStore(BaseVectorStore):
         ..., description="Embedding model used to compute vectors"
     )
     user: str = Field(default="", description="Elasticsearch username")
-    password: str = Field(default="", description="Elasticsearch password")
+    password: SecretStr = Field(default="", description="Elasticsearch password")
     batch_size: int = Field(
         default=200, description="Batch size for bulk operations", ge=1
     )
@@ -76,7 +76,7 @@ class ElasticsearchVectorStore(BaseVectorStore):
         # TO-DO: Add connections types e.g: cloud
         self._client = Elasticsearch(
             hosts=[self.url],
-            basic_auth=(self.user, self.password),
+            basic_auth=(self.user, self.password.get_secret_value()),
             verify_certs=self.ssl,
             ssl_show_warn=False,
         )
