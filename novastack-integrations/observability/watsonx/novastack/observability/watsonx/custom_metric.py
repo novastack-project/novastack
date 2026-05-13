@@ -65,7 +65,7 @@ class WatsonxCustomMetricsManager(BaseModel):
     _wos_client: Any | None = PrivateAttr(default=None)
 
     def model_post_init(self, __context: Any) -> None:  # noqa: PYI063
-        self.region = Region.enum_validate(self.region)
+        self.region = Region.from_value(self.region)
 
         if not self._wos_client:
             self._wos_client = WosClientFactory.create_client(
@@ -473,7 +473,7 @@ class WatsonxCustomMetricsManager(BaseModel):
             )
             ```
         """
-        computed_on = DataSetType.enum_validate(computed_on).value
+        computed_on = DataSetType.from_value(computed_on).value
 
         if request_records:
             for record in request_records:

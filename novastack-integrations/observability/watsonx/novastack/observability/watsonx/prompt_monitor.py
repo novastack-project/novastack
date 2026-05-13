@@ -113,7 +113,7 @@ class WatsonxPromptMonitor(PromptObservability):
     _deployment_stage: str | None = PrivateAttr(default=None)
 
     def model_post_init(self, __context: Any) -> None:  # noqa: PYI063
-        self.region = Region.enum_validate(self.region)
+        self.region = Region.from_value(self.region)
 
         # Set container-related attributes
         self._container_id = self.space_id if self.space_id else self.project_id
@@ -234,7 +234,7 @@ class WatsonxPromptMonitor(PromptObservability):
             )
             ```
         """
-        task_id = TaskType.enum_validate(task_id).value
+        task_id = TaskType.from_value(task_id).value
         rollback_stack = []
 
         if (not (self.project_id or self.space_id)) or (

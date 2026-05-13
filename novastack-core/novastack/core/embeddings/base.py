@@ -1,10 +1,10 @@
 from abc import ABC, abstractmethod
 
 import numpy as np
-from novastack.core.bridge.pydantic import BaseModel, Field
+from novastack.core.base.schema import TransformerComponent
+from novastack.core.bridge.pydantic import Field
 from novastack.core.document import Document
 from novastack.core.embeddings.enums import SimilarityMode
-from novastack.core.schema import TransformerComponent
 
 Embedding = list[float]
 
@@ -48,7 +48,7 @@ def compute_similarity(
         return float(product / norm)
 
 
-class BaseEmbedding(BaseModel, TransformerComponent, ABC):
+class BaseEmbedding(TransformerComponent, ABC):
     """
     Abstract base class defining the interface for embedding models.
     """

@@ -52,7 +52,7 @@ class WatsonxGuardrail(BaseGuardrail):
     _guardrail_manager: Any = PrivateAttr(default=None)
 
     def model_post_init(self, __context):  # noqa: PYI063
-        self.region = Region.enum_validate(self.region)
+        self.region = Region.from_value(self.region)
         self._guardrail_manager = HttpService(
             base_url=self.region.openscale,
             timeout=10,
@@ -156,7 +156,7 @@ class WatsonxGuardrail(BaseGuardrail):
             )
             ```
         """
-        direction = Direction.enum_validate(direction).value
+        direction = Direction.from_value(direction).value
 
         # Validate detector requirements before proceeding
         detectors = self._get_policy_detectors()
