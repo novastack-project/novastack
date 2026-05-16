@@ -5,12 +5,12 @@ from typing import Any, Type
 
 from novastack.core.bridge.pydantic import Field, field_validator
 from novastack.core.document import Document
-from novastack.core.loaders import BaseLoader
+from novastack.core.loaders import BaseFileLoader, BaseLoader
 
 
-def _get_default_file_loaders() -> dict[str, Type[BaseLoader]]:
+def _get_default_file_loaders() -> dict[str, Type[BaseFileLoader]]:
     try:
-        from novastack.loaders.file import DocxLoader, HTMLLoader, PDFLoader
+        from novastack.loaders.file import DocxLoader, HtmlLoader, PdfLoader
     except ImportError:
         raise ImportError(
             "novastack-loaders-file package not found, please install it with `pip install novastack-loaders-file`",
@@ -18,8 +18,8 @@ def _get_default_file_loaders() -> dict[str, Type[BaseLoader]]:
 
     return {
         ".docx": DocxLoader,
-        ".html": HTMLLoader,
-        ".pdf": PDFLoader,
+        ".html": HtmlLoader,
+        ".pdf": PdfLoader,
     }
 
 
@@ -34,22 +34,24 @@ class DirectoryLoader(BaseLoader):
             Defaults to [".pdf", ".docx", ".html"].
         recursive (bool): Whether to recursively search subdirectories for files.
             Defaults to False.
-        file_loader (dict[str, Type[BaseLoader]] | None): Custom mapping of file extensions
+        file_loader (dict[str, Type[BaseFileLoader]] | None): Custom mapping of file extensions
             to loader classes. If None, default loaders will be used.
+        input_dir (str): Directory path from which to load the documents.
 
     Example:
         ```python
         from novastack.core.loaders import DirectoryLoader
 
         # Using default loaders
-        directory_loader = DirectoryLoader()
-        documents = directory_loader.load_data("/path/to/directory")
+        directory_loader = DirectoryLoader(input_dir="/path/to/directory")
+        documents = directory_loader.load_data()
 
         # Using custom extensions
         directory_loader = DirectoryLoader(
+            input_dir="/path/to/directory",
             required_exts=[".pdf", ".txt"], recursive=True
         )
-        documents = directory_loader.load_data("/path/to/directory")
+        documents = directory_loader.load_data()
         ```
     """
 
@@ -61,9 +63,12 @@ class DirectoryLoader(BaseLoader):
         default=False,
         description="Whether to recursively search subdirectories",
     )
-    file_loader: dict[str, Type[BaseLoader]] | None = Field(
+    file_loader: dict[str, Type[BaseFileLoader]] | None = Field(
         default=None,
         description="Custom mapping of file extensions to loader classes",
+    )
+    input_dir: str = Field(...,
+        description="Directory path from which to load the documents",
     )
 
     @field_validator("required_exts")
@@ -94,23 +99,18 @@ class DirectoryLoader(BaseLoader):
 
         return validated_exts
 
-    def load_data(self, input_dir: str, **kwargs: Any) -> list[Document]:
-        """
-        Loads data from the specified directory.
-
-        Args:
-            input_dir (str): Directory path from which to load the documents.
-        """
-        if not input_dir:
+    def load_data(self) -> list[Document]:
+        """Loads data from the specified directory."""
+        if not self.input_dir:
             raise ValueError("input_dir cannot be empty")
 
-        if not os.path.isdir(input_dir):
-            raise ValueError(f"`{input_dir}` is not a valid directory.")
+        if not os.path.isdir(self.input_dir):
+            raise ValueError(f"`{self.input_dir}` is not a valid directory.")
 
         if self.file_loader is None:
             self.file_loader = _get_default_file_loaders()
 
-        input_dir = str(Path(input_dir))
+        input_dir = str(Path(self.input_dir))
         documents = []
 
         pattern_prefix = "**/*" if self.recursive else ""
@@ -125,8 +125,7 @@ class DirectoryLoader(BaseLoader):
                 loader_cls = self.file_loader.get(extension)
                 if loader_cls:
                     try:
-                        # TODO add `file_loader_kwargs`
-                        doc = loader_cls().load_data(file_dir)
+                        doc = loader_cls(input_file=file_dir).load_data()
                         documents.extend(doc)
                     except Exception as e:
                         raise Exception(f"Error loading {file_dir}: {e}")
