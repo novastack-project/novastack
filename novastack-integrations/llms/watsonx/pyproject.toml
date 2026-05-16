@@ -4,7 +4,7 @@ build-backend = "hatchling.build"
 
 [project]
 name = "novastack-llms-watsonx"
-version = "1.0.3"
+version = "1.0.4"
 description = "novastack integration llms watsonx"
 authors = [{ name = "Leonardo Furnielis", email = "leonardofurnielis@outlook.com" }]
 license = { text = "Apache-2.0" }

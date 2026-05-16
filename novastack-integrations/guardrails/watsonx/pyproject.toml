@@ -4,7 +4,7 @@ build-backend = "hatchling.build"
 
 [project]
 name = "novastack-guardrails-watsonx"
-version = "1.0.3"
+version = "1.0.4"
 description = "novastack integration guardrails watsonx"
 authors = [{ name = "Leonardo Furnielis", email = "leonardofurnielis@outlook.com" }]
 license = { text = "Apache-2.0" }
