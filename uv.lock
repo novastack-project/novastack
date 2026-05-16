@@ -843,7 +843,7 @@ wheels = [
 
 [[package]]
 name = "novastack"
-version = "1.1.5"
+version = "1.1.6"
 source = { editable = "." }
 dependencies = [
     { name = "novastack-core" },
@@ -860,9 +860,9 @@ dev = [
 
 [package.metadata]
 requires-dist = [
-    { name = "novastack-core", specifier = ">=1.1.5,<2.0.0" },
-    { name = "novastack-llms-litellm", specifier = ">=1.0.1,<2.0.0" },
-    { name = "novastack-loaders-file", specifier = ">=1.0.1,<2.0.0" },
+    { name = "novastack-core", specifier = ">=1.1.6,<2.0.0" },
+    { name = "novastack-llms-litellm", specifier = ">=1.0.2,<2.0.0" },
+    { name = "novastack-loaders-file", specifier = ">=1.0.2,<2.0.0" },
     { name = "pytest", marker = "extra == 'dev'", specifier = ">=9.0.3,<10.0.0" },
     { name = "pytest-asyncio", marker = "extra == 'dev'", specifier = ">=1.3.0,<2.0.0" },
     { name = "ruff", marker = "extra == 'dev'", specifier = ">=0.15.8,<1.0.0" },
@@ -871,7 +871,7 @@ provides-extras = ["dev"]
 
 [[package]]
 name = "novastack-core"
-version = "1.1.5"
+version = "1.1.6"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "deprecated" },
@@ -881,27 +881,27 @@ dependencies = [
     { name = "pydantic" },
     { name = "tiktoken" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/17/d2/8f3115c316e330c4206916f2e7390d5f806adfc72cebaee9aeda9e310bc8/novastack_core-1.1.5.tar.gz", hash = "sha256:9715fd31f11c92cb080a5b92e27de4373c03ba8fefa36fb8f4a99ea01b30951c", size = 22386, upload-time = "2026-05-13T01:32:43.441Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/ff/9c/1d830277b3cb3d45c090183615c829373778dd14404238274ab8b195f2ae/novastack_core-1.1.6.tar.gz", hash = "sha256:16d7db8aefadcf9227d17ef5ee89a0ab93d79718ba51a2287d88892b7e195377", size = 22459, upload-time = "2026-05-16T13:17:20.076Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/36/6d/5b99d1e1fbde753a52fd385adebdc7783ef349db7e9f2855b125c8ef45b4/novastack_core-1.1.5-py3-none-any.whl", hash = "sha256:1166af4469dbc1ebf3446d37b487cfaf08faf76dff80fbdb9798738b3352bb4c", size = 42544, upload-time = "2026-05-13T01:32:42.094Z" },
+    { url = "https://files.pythonhosted.org/packages/a5/54/5820bdbbe1a94905106f885a15e0274027268642e46ae7aefc3a12808ff7/novastack_core-1.1.6-py3-none-any.whl", hash = "sha256:f2cf7ce951a9e96730dd913c72a7d977338a37c79a94ef0b63efa3256467b506", size = 42601, upload-time = "2026-05-16T13:17:18.661Z" },
 ]
 
 [[package]]
 name = "novastack-llms-litellm"
-version = "1.0.1"
+version = "1.0.2"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "litellm" },
     { name = "novastack-core" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/7c/cb/a55f2ee873f804ebbe5f0f3ab0a47c3dc3df74d4ba3115f7034494e34a8c/novastack_llms_litellm-1.0.1.tar.gz", hash = "sha256:5f55123984868eaff49b5ccbc82439c026d169994adb5d5534090df8c998b2f6", size = 2932, upload-time = "2026-04-20T21:45:01.154Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/7d/df/b76f1a832257509a93c15dbb9d702a735c7719c32331beae4cd961a4d83a/novastack_llms_litellm-1.0.2.tar.gz", hash = "sha256:7e4fa57d14e57a426b5b3d6e610353c27c0937d1682a6d980279538bafeae31b", size = 3001, upload-time = "2026-05-16T12:15:05.982Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/35/07/dd7252a1ee211977ea78bf09645ceaec26f9fd6438c9da65625292b9408c/novastack_llms_litellm-1.0.1-py3-none-any.whl", hash = "sha256:e42d1384fd7ba58d5ca4a974464c547c6f413af3ca5e1a269074a96d6e50bfe1", size = 2952, upload-time = "2026-04-20T21:44:59.95Z" },
+    { url = "https://files.pythonhosted.org/packages/df/3c/64dddda40efc247a7e9cbd8b5e10a36afd9d732a60f512960f1eb5a2517c/novastack_llms_litellm-1.0.2-py3-none-any.whl", hash = "sha256:ff617d4beb6060f76d34b581f471d5fcb25b724ad37e4460704e32084eae49e5", size = 3033, upload-time = "2026-05-16T12:15:06.825Z" },
 ]
 
 [[package]]
 name = "novastack-loaders-file"
-version = "1.0.1"
+version = "1.0.2"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "beautifulsoup4" },
@@ -910,9 +910,9 @@ dependencies = [
     { name = "novastack-core" },
     { name = "pypdf" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/e1/ea/805a8cd93f67cddc41e533ab43997a72dc01e77de2ac50c695d84cc03c29/novastack_loaders_file-1.0.1.tar.gz", hash = "sha256:d8953d192d1394eca9b68952d1f440dc2fa8b7026ca82427c9490775ed6fd986", size = 3305, upload-time = "2026-04-20T21:47:22.483Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/df/f8/47377f48e55604759e85536bd81404b28815795b85a0dbb66ef90de13cbe/novastack_loaders_file-1.0.2.tar.gz", hash = "sha256:515702ccbb9195ce87b00ee6997149f09c953170fbad8bf214b83f2ed28db822", size = 3329, upload-time = "2026-05-16T13:22:57.075Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/73/c2/bdbc4901368ae8a0eefaa7d76c55f3732493b791cd18550b160ea502e974/novastack_loaders_file-1.0.1-py3-none-any.whl", hash = "sha256:c5d547f7acba835e2094642e9232638bf52ebe99fa0ed60e0fa2844437bb8dd6", size = 5301, upload-time = "2026-04-20T21:47:20.872Z" },
+    { url = "https://files.pythonhosted.org/packages/12/d0/39503313f432676dabfefbc569f5b0cfc92874c7075a2b4f16b1230ed29b/novastack_loaders_file-1.0.2-py3-none-any.whl", hash = "sha256:3a44e694a9abbd22f9c01083c567ba23aa09a905de41f32198a85aa3f12832d7", size = 5315, upload-time = "2026-05-16T13:22:57.846Z" },
 ]
 
 [[package]]
