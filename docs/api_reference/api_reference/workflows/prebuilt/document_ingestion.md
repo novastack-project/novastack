@@ -20,9 +20,9 @@ This workflow provides a streamlined approach to building document ingestion pip
 | Parameter        | Type                         | Description                                                                                                                                                   |
 | ---------------- | ---------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | transformers     | `list[TransformerComponent]` | List of transformer components to apply to the documents. Transformers are applied in sequence to process and modify documents during the ingestion pipeline. |
-| doc_strategy     | `DocStrategy`                | Strategy for handling document processing. Defines how documents should be processed and managed throughout the workflow.                                     |
-| post_transformer | `bool`                       | Flag indicating whether to apply post-transformation processing. When enabled, additional processing steps are executed after the main transformers.          |
-| loaders          | `BaseLoader, optional`       | Optional loader component for reading documents from various sources. If not provided, documents must be supplied directly to the workflow.                   |
+| doc_strategy     | `DocStrategy, optional`                | Strategy for handling document processing. Defines how documents should be processed and managed throughout the workflow.                                     |
+| post_transformer | `bool, optional`                       | Flag indicating whether to apply post-transformation processing. When enabled, additional processing steps are executed after the main transformers.          |
+| loaders          | `list[BaseLoader], optional`       | Optional loader component for reading documents from various sources. If not provided, documents must be supplied directly to the workflow.                   |
 | vector_store     | `BaseVectorStore, optional`  | Optional vector store for persisting processed documents. When provided, documents are automatically stored after transformation.                             |
 
 
@@ -36,7 +36,7 @@ from novastack.vector_stores import ChromaVectorStore
 from novastack.embeddings import HuggingFaceEmbeddings
 
 # Initialize components
-loader = DirectoryLoader(path="./documents")
+dir_loader = DirectoryLoader(input_dir="./documents")
 chunker = TokenChunker(chunk_size=512, chunk_overlap=50)
 embeddings = HuggingFaceEmbeddings(model_name="sentence-transformers/all-MiniLM-L6-v2")
 vector_store = ChromaVectorStore(
@@ -49,7 +49,7 @@ workflow = DocumentIngestionWorkflow(
     transformers=[chunker],
     doc_strategy="merge",
     post_transformer=True,
-    loaders=loader,
+    loaders=[dir_loader],
     vector_store=vector_store
 )
 

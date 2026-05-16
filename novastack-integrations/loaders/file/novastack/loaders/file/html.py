@@ -10,6 +10,7 @@ class HtmlLoader(BaseFileLoader):
     Load a HTML file and extract text from a specific tag.
 
     Attributes:
+        input_file (str): File path to load.
         tag (str): HTML tag to extract. Defaults to `section`.
     """
 
