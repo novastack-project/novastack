@@ -49,7 +49,8 @@ class DirectoryLoader(BaseLoader):
         # Using custom extensions
         directory_loader = DirectoryLoader(
             input_dir="/path/to/directory",
-            required_exts=[".pdf", ".txt"], recursive=True
+            required_exts=[".pdf", ".txt"],
+            recursive=True,
         )
         documents = directory_loader.load_data()
         ```
@@ -67,7 +68,8 @@ class DirectoryLoader(BaseLoader):
         default=None,
         description="Custom mapping of file extensions to loader classes",
     )
-    input_dir: str = Field(...,
+    input_dir: str = Field(
+        ...,
         description="Directory path from which to load the documents",
     )
 

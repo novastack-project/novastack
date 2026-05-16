@@ -23,6 +23,7 @@ class BaseLoader(BaseModel, ABC):
     def load_data(self) -> list[Document]:
         """Loads data and returns a list of documents."""
 
+
 class BaseFileLoader(BaseLoader):
     """
     Abstract base class defining the interface for file-based document loaders.
@@ -31,7 +32,8 @@ class BaseFileLoader(BaseLoader):
         input_file (str): File path to load.
     """
 
-    input_file: str = Field(...,
+    input_file: str = Field(
+        ...,
         description="File path to load",
     )
 
