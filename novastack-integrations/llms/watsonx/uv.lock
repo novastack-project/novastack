@@ -308,7 +308,7 @@ wheels = [
 
 [[package]]
 name = "novastack-llms-watsonx"
-version = "1.0.3"
+version = "1.0.4"
 source = { editable = "." }
 dependencies = [
     { name = "ibm-watsonx-ai" },

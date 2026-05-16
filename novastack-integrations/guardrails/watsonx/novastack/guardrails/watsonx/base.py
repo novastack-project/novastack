@@ -1,6 +1,6 @@
 from typing import Any
 
-from novastack.core.bridge.pydantic import Field, PrivateAttr
+from novastack.core.bridge.pydantic import Field, PrivateAttr, SecretStr
 from novastack.core.guardrails import BaseGuardrail, GuardrailResponse
 from novastack.core.guardrails.enums import Direction
 from novastack.core.utilities.http import HttpService
@@ -40,7 +40,9 @@ class WatsonxGuardrail(BaseGuardrail):
         ```
     """
 
-    api_key: str = Field(..., description="The API key for IBM watsonx.governance")
+    api_key: SecretStr = Field(
+        ..., description="The API key for IBM watsonx.governance"
+    )
     policy_id: str = Field(..., description="The policy ID in watsonx.governance")
     inventory_id: str = Field(..., description="The inventory ID in watsonx.governance")
     instance_id: str = Field(..., description="The instance ID in watsonx.governance")
@@ -57,7 +59,7 @@ class WatsonxGuardrail(BaseGuardrail):
             base_url=self.region.openscale,
             timeout=10,
             headers={"x-governance-instance-id": self.instance_id},
-            authenticator=IBMIAMAuthenticator(api_key=self.api_key),
+            authenticator=IBMIAMAuthenticator(api_key=self.api_key.get_secret_value()),
         )
 
     def _get_policy_detectors(self) -> dict[str, Any]:

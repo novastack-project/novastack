@@ -1,6 +1,6 @@
 from typing import Any
 
-from novastack.core.bridge.pydantic import Field, PrivateAttr
+from novastack.core.bridge.pydantic import Field, PrivateAttr, SecretStr
 from novastack.core.embeddings import BaseEmbedding, Embedding
 
 
@@ -37,7 +37,7 @@ class WatsonxEmbedding(BaseEmbedding):
         default="ibm/slate-30m-english-rtrvr",
         description="Name of the embedding model",
     )
-    api_key: str
+    api_key: SecretStr
     url: str
     truncate_input_tokens: int = 512
     project_id: str | None = None
@@ -62,7 +62,9 @@ class WatsonxEmbedding(BaseEmbedding):
                 "truncate_input_tokens": self.truncate_input_tokens,
                 "return_options": {"input_text": False},
             },
-            "credentials": Credentials(api_key=self.api_key, url=self.url),
+            "credentials": Credentials(
+                api_key=self.api_key.get_secret_value(), url=self.url
+            ),
         }
 
         if self.project_id:
