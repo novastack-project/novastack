@@ -28,7 +28,6 @@ class DoclingLoader(BaseFileLoader):
         ```python
         from novastack.loaders.docling import DoclingLoader
 
-        # Using default loaders
         docling_loader = DoclingLoader(input_file="path/to/file.pdf")
         documents = docling_loader.load_data()
         ```
