@@ -1,36 +1,32 @@
 import json
 import os
 from pathlib import Path
-from typing import Any
 
 from novastack.core.document import Document
-from novastack.core.loaders import BaseLoader
+from novastack.core.loaders import BaseFileLoader
 
 
-class JsonLoader(BaseLoader):
+class JsonLoader(BaseFileLoader):
     """
     JSON loader.
 
     Attributes:
+        input_file (str): File path to load.
         jq_schema (str, optional): jq schema to use to extract the data from the JSON.
     """
 
     jq_schema: str | None = None
 
-    def load_data(self, input_file: str, **kwargs: Any) -> list[Document]:
+    def load_data(self) -> list[Document]:
         """
         Loads data from the specified file.
-
-        Args:
-            input_file (str): File path to load.
 
         Example:
         ```python
         from novastack.loaders.file import JsonLoader
 
-        # Using default loaders
-        loader = JsonLoader()
-        documents = loader.load_data("/path/to/document")
+        loader = JsonLoader(input_file="path/to/file.json")
+        documents = loader.load_data()
         ```
         """
         try:
@@ -40,12 +36,12 @@ class JsonLoader(BaseLoader):
                 "jq package not found, please install it with `pip install jq`",
             )
 
-        if not os.path.isfile(input_file):
+        if not os.path.isfile(self.input_file):
             raise ValueError(
-                f"File not found: the specified file '{input_file}' does not exist."
+                f"File not found: the specified file '{self.input_file}' does not exist."
             )
 
-        _, ext = os.path.splitext(input_file)
+        _, ext = os.path.splitext(self.input_file)
         if ext.lower() not in [".json"]:
             raise TypeError(
                 f"Invalid file type: expected '.json' but received '{ext}'. "
@@ -54,7 +50,7 @@ class JsonLoader(BaseLoader):
 
         documents = []
         jq_compiler = jq.compile(self.jq_schema)
-        json_file = Path(input_file).resolve().read_text(encoding="utf-8")
+        json_file = Path(self.input_file).resolve().read_text(encoding="utf-8")
         json_data = jq_compiler.input(json.loads(json_file))
 
         for content in json_data:
@@ -69,7 +65,7 @@ class JsonLoader(BaseLoader):
                 documents.append(
                     Document(
                         text=content,
-                        metadata={"source": str(Path(input_file).resolve())},
+                        metadata={"source": str(Path(self.input_file).resolve())},
                     ),
                 )
 

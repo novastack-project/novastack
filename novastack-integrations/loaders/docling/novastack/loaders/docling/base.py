@@ -1,15 +1,16 @@
 import logging
 import os
 from pathlib import Path
-from typing import Any, Literal
+from typing import Literal
 
+from novastack.core.bridge.pydantic import Field
 from novastack.core.document import Document
-from novastack.core.loaders import BaseLoader
+from novastack.core.loaders import BaseFileLoader
 
 logging.getLogger("docling-core").setLevel(logging.ERROR)
 
 
-class DoclingLoader(BaseLoader):
+class DoclingLoader(BaseFileLoader):
     """
     A document loader that uses the `docling` library to extract and structure content from various file types
     including PDF, DOCX, and HTML.
@@ -21,33 +22,29 @@ class DoclingLoader(BaseLoader):
             treats them as individual documents. Default is False.
         export_table_format (str): Format used when exporting tables. Applicable only if `detached_tables` is True.
             Choose between "markdown" or "html". Defaults to "markdown".
+        input_file (str): File path to load.
 
     Example:
         ```python
         from novastack.loaders.docling import DoclingLoader
 
         # Using default loaders
-        docling_loader = DoclingLoader()
-        documents = docling_loader.load_data("/path/to/document")
+        docling_loader = DoclingLoader(input_file="path/to/file.pdf")
+        documents = docling_loader.load_data()
         ```
     """
 
     detached_tables: bool = False
     export_table_format: Literal["markdown", "html"] = "markdown"
 
-    def load_data(self, input_file: str, **kwargs: Any) -> list[Document]:
-        """
-        Loads data from the given input file.
-
-        Args:
-            input_file (str): File path to load.
-        """
+    def load_data(self) -> list[Document]:
+        """Loads data from the given input file."""
         from docling.document_converter import DocumentConverter  # noqa: F401
 
-        if not os.path.isfile(input_file):
-            raise ValueError(f"File `{input_file}` does not exist")
+        if not os.path.isfile(self.input_file):
+            raise ValueError(f"File `{self.input_file}` does not exist")
 
-        input_file = str(Path(input_file).resolve())
+        input_file = str(Path(self.input_file).resolve())
         doc_converter = DocumentConverter()
         documents = []
 

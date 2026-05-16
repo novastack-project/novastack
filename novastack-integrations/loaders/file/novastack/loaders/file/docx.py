@@ -1,28 +1,28 @@
 import os
 from pathlib import Path
-from typing import Any
 
 from novastack.core.document import Document
-from novastack.core.loaders import BaseLoader
+from novastack.core.loaders import BaseFileLoader
 
 
-class DocxLoader(BaseLoader):
-    """Microsoft Word (Docx) loader."""
+class DocxLoader(BaseFileLoader):
+    """
+    Microsoft Word (Docx) loader.
 
-    def load_data(self, input_file: str, **kwargs: Any) -> list[Document]:
+    Attributes:
+        input_file (str): File path to load.
+    """
+
+    def load_data(self) -> list[Document]:
         """
         Loads data from the specified file.
-
-        Attributes:
-            input_file (str): File path to load.
 
         Example:
         ```python
         from novastack.loaders.file import DocxLoader
 
-        # Using default loaders
-        loader = DocxLoader()
-        documents = loader.load_data("/path/to/document")
+        loader = DocxLoader(input_file="path/to/file.docx")
+        documents = loader.load_data()
         ```
         """
         try:
@@ -32,19 +32,19 @@ class DocxLoader(BaseLoader):
                 "docx2txt package not found, please install it with `pip install docx2txt`",
             )
 
-        if not os.path.isfile(input_file):
+        if not os.path.isfile(self.input_file):
             raise ValueError(
-                f"File not found: the specified file '{input_file}' does not exist."
+                f"File not found: the specified file '{self.input_file}' does not exist."
             )
 
-        _, ext = os.path.splitext(input_file)
+        _, ext = os.path.splitext(self.input_file)
         if ext.lower() != ".docx":
             raise TypeError(
                 f"Invalid file type: expected '.docx' but received '{ext}'. "
                 "Ensure the input file is a valid Microsoft Word (Docx) document."
             )
 
-        input_file = str(Path(input_file).resolve())
+        input_file = str(Path(self.input_file).resolve())
 
         text = docx2txt.process(input_file)
         metadata = {"source": input_file}

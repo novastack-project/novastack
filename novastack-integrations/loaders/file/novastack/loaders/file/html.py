@@ -1,12 +1,11 @@
 import os
 from pathlib import Path
-from typing import Any
 
 from novastack.core.document import Document
-from novastack.core.loaders import BaseLoader
+from novastack.core.loaders import BaseFileLoader
 
 
-class HtmlLoader(BaseLoader):
+class HtmlLoader(BaseFileLoader):
     """
     Load a HTML file and extract text from a specific tag.
 
@@ -16,20 +15,16 @@ class HtmlLoader(BaseLoader):
 
     tag: str = "section"
 
-    def load_data(self, input_file: str, **kwargs: Any) -> list[Document]:
+    def load_data(self) -> list[Document]:
         """
         Loads data from the specified file.
-
-        Args:
-            input_file (str): File path to load.
 
         Example:
         ```python
         from novastack.loaders.file import HtmlLoader
 
-        # Using default loaders
-        loader = HtmlLoader()
-        documents = loader.load_data("/path/to/document")
+        loader = HtmlLoader(input_file="path/to/file.html")
+        documents = loader.load_data()
         ```
         """
         try:
@@ -39,19 +34,19 @@ class HtmlLoader(BaseLoader):
                 "beautifulsoup4 package not found, please install it with `pip install beautifulsoup4`",
             )
 
-        if not os.path.isfile(input_file):
+        if not os.path.isfile(self.input_file):
             raise ValueError(
-                f"File not found: the specified file '{input_file}' does not exist."
+                f"File not found: the specified file '{self.input_file}' does not exist."
             )
 
-        _, ext = os.path.splitext(input_file)
+        _, ext = os.path.splitext(self.input_file)
         if ext.lower() != ".html":
             raise TypeError(
                 f"Invalid file type: expected '.html' but received '{ext}'. "
                 "Ensure the input file is a valid HTML document."
             )
 
-        input_file = str(Path(input_file).resolve())
+        input_file = str(Path(self.input_file).resolve())
 
         with open(input_file, encoding="utf-8") as html_file:
             soup = BeautifulSoup(html_file, "html.parser")

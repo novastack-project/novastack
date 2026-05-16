@@ -15,7 +15,7 @@ class IBMCosLoader(BaseLoader):
         bucket (str): Name of the bucket.
         api_key (str): IBM Cloud API key.
         service_instance_id (str, optional): Service instance ID for the IBM COS.
-        s3_endpoint_url (str, optional): Endpoint for the IBM Cloud Object Storage service (S3 compatible).
+        s3_endpoint_url (str, optional): Endpoint for the IBM Cloud Object Storage service.
 
     Example:
         ```python
@@ -50,7 +50,7 @@ class IBMCosLoader(BaseLoader):
         self._ibm_boto3 = ibm_boto3
         self._boto_config = Config
 
-    def load_data(self, **kwargs: Any) -> list[Document]:
+    def load_data(self) -> list[Document]:
         """Loads data from the specified bucket."""
         ibm_s3 = self._ibm_boto3.resource(
             "s3",
@@ -70,4 +70,4 @@ class IBMCosLoader(BaseLoader):
 
             # s3_source = re.sub(r"^(https?)://", "", self.s3_endpoint_url)
 
-            return DirectoryLoader().load_data(input_dir=temp_dir)
+            return DirectoryLoader(input_dir=temp_dir).load_data()

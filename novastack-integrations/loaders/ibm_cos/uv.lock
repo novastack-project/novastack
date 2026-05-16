@@ -245,7 +245,7 @@ wheels = [
 
 [[package]]
 name = "novastack-core"
-version = "1.1.5"
+version = "1.1.6"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "deprecated" },
@@ -255,14 +255,14 @@ dependencies = [
     { name = "pydantic" },
     { name = "tiktoken" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/17/d2/8f3115c316e330c4206916f2e7390d5f806adfc72cebaee9aeda9e310bc8/novastack_core-1.1.5.tar.gz", hash = "sha256:9715fd31f11c92cb080a5b92e27de4373c03ba8fefa36fb8f4a99ea01b30951c", size = 22386, upload-time = "2026-05-13T01:32:43.441Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/ff/9c/1d830277b3cb3d45c090183615c829373778dd14404238274ab8b195f2ae/novastack_core-1.1.6.tar.gz", hash = "sha256:16d7db8aefadcf9227d17ef5ee89a0ab93d79718ba51a2287d88892b7e195377", size = 22459, upload-time = "2026-05-16T13:17:20.076Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/36/6d/5b99d1e1fbde753a52fd385adebdc7783ef349db7e9f2855b125c8ef45b4/novastack_core-1.1.5-py3-none-any.whl", hash = "sha256:1166af4469dbc1ebf3446d37b487cfaf08faf76dff80fbdb9798738b3352bb4c", size = 42544, upload-time = "2026-05-13T01:32:42.094Z" },
+    { url = "https://files.pythonhosted.org/packages/a5/54/5820bdbbe1a94905106f885a15e0274027268642e46ae7aefc3a12808ff7/novastack_core-1.1.6-py3-none-any.whl", hash = "sha256:f2cf7ce951a9e96730dd913c72a7d977338a37c79a94ef0b63efa3256467b506", size = 42601, upload-time = "2026-05-16T13:17:18.661Z" },
 ]
 
 [[package]]
 name = "novastack-loaders-ibm-cos"
-version = "1.0.2"
+version = "1.0.3"
 source = { editable = "." }
 dependencies = [
     { name = "ibm-cos-sdk" },
@@ -279,7 +279,7 @@ dev = [
 [package.metadata]
 requires-dist = [
     { name = "ibm-cos-sdk", specifier = ">=2.16.0,<3.0.0" },
-    { name = "novastack-core", specifier = ">=1.1.5,<2.0.0" },
+    { name = "novastack-core", specifier = ">=1.1.6,<2.0.0" },
     { name = "pytest", marker = "extra == 'dev'", specifier = ">=9.0.3,<10.0.0" },
     { name = "pytest-asyncio", marker = "extra == 'dev'", specifier = ">=1.3.0,<2.0.0" },
     { name = "ruff", marker = "extra == 'dev'", specifier = ">=0.15.8,<1.0.0" },
