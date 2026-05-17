@@ -82,7 +82,7 @@ class WatsonxPromptMonitor(PromptObservability):
         )
 
         # watsonx.governance (IBM Cloud)
-        wxgov_client = WatsonxPromptMonitor(
+        prompt_mgr = WatsonxPromptMonitor(
             api_key="API_KEY", space_id="SPACE_ID", region="us-south"
         )
 
@@ -95,7 +95,7 @@ class WatsonxPromptMonitor(PromptObservability):
             instance_id="openshift",
         )
 
-        wxgov_client = WatsonxPromptMonitor(space_id="SPACE_ID", cpd_creds=cpd_creds)
+        prompt_mgr = WatsonxPromptMonitor(space_id="SPACE_ID", cpd_creds=cpd_creds)
         ```
     """
 
@@ -223,7 +223,7 @@ class WatsonxPromptMonitor(PromptObservability):
                 TaskType,
             )
 
-            wxgov_client.create_prompt_monitor(
+            prompt_mgr.create_prompt_monitor(
                 name="IBM prompt template",
                 model_id="ibm/granite-3-2b-instruct",
                 task_id=TaskType.RETRIEVAL_AUGMENTED_GENERATION,
@@ -384,7 +384,7 @@ class WatsonxPromptMonitor(PromptObservability):
 
         Example:
             ```python
-            wxgov_client.store_payload_records(
+            prompt_mgr.store_payload_records(
                 request_records=[
                     {
                         "context1": "value_context1",
@@ -468,7 +468,7 @@ class WatsonxPromptMonitor(PromptObservability):
 
         Example:
             ```python
-            wxgov_client.store_feedback_records(
+            prompt_mgr.store_feedback_records(
                 request_records=[
                     {
                         "context1": "value_context1",
