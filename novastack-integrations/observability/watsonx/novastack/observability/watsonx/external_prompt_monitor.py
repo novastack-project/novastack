@@ -202,6 +202,7 @@ class WatsonxExternalPromptMonitor(PromptObservability):
         model_parameters: dict | None = None,
         detached_model_name: str | None = None,
         detached_model_url: str | None = None,
+        detached_prompt_id: str | None = None,
         detached_prompt_url: str | None = None,
         detached_prompt_additional_info: dict | None = None,
         prompt_template: str | None = None,
@@ -222,6 +223,7 @@ class WatsonxExternalPromptMonitor(PromptObservability):
             model_parameters (dict, optional): Model parameters and their respective values.
             detached_model_name (str, optional): The name of the external model.
             detached_model_url (str, optional): The URL of the external model.
+            detached_prompt_id (str, optional): The ID of the external prompt.
             detached_prompt_url (str, optional): The URL of the external prompt.
             detached_prompt_additional_info (dict, optional): Additional information related to the external prompt.
             prompt_template (str, optional): The prompt template.
@@ -309,7 +311,8 @@ class WatsonxExternalPromptMonitor(PromptObservability):
             ["model_name", "model_url", "prompt_url", "prompt_additional_info"],
             ["model_id", "model_provider"],
         )
-        detached_details["prompt_id"] = "detached_prompt_" + str(uuid.uuid4())
+
+        detached_details["prompt_id"] = detached_prompt_id or str(uuid.uuid4())
 
         prompt_details = validate_and_filter_dict(
             prompt_metadata,
