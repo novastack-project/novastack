@@ -404,7 +404,7 @@ class WatsonxCustomMetricsManager(BaseModel):
         request_records: dict[str, float | int],
     ):
         """
-        Stores computed metrics data to the specified monitor instance.
+        Log computed metrics data to the specified monitor instance.
 
         Args:
             monitor_instance_id (str): The unique ID of the monitor instance.
@@ -485,7 +485,7 @@ class WatsonxCustomMetricsManager(BaseModel):
         request_records: list[dict],
     ):
         """
-        Stores computed metrics data to the specified transaction record.
+        Log computed metrics data to the specified transaction record.
 
         Args:
             custom_data_set_id (str): The ID of the custom metric data set.
