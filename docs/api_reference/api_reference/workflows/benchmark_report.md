@@ -1,14 +1,16 @@
-# NovaStack Workflows - Performance Benchmark Report
+---
+title: Performance Benchmark Report
+---
 
 ## Benchmark Environment
 
-- **Python Version**: 3.11
-- **Machine**: arm64
-- **Processor**: arm
-- **CPU Cores**: 14 cores
-- **CPU Frequency**: 4 MHz
-- **Total Memory**: 36.00 GB
-- **NovaStack Version**: 1.1.2
+**Python Version**: 3.11
+**Machine**: arm64
+**Processor**: arm
+**CPU Cores**: 14 cores
+**CPU Frequency**: 4 MHz
+**Total Memory**: 36.00 GB
+**NovaStack Version**: 1.1.2
 
 ## 1. Scalability Benchmark
 
