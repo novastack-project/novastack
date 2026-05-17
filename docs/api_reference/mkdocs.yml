@@ -69,6 +69,7 @@ nav:
   - Vector Stores: vector_stores/
   - Workflows:
     - Overview: workflows/overview.md
+    - Benchmark: workflows/benchmark_report.md
     - Prebuilt:
       - Document Ingestion:  workflows/prebuilt/document_ingestion.md
 
