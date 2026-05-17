@@ -10,7 +10,7 @@ title: Performance Benchmark Report
 - **CPU Cores**: 14 cores
 - **CPU Frequency**: 4 MHz
 - **Total Memory**: 36.00 GB
-- **NovaStack Version**: 1.1.2
+- **novastack-workflows Version**: 1.1.2
 
 ## 1. 📈 Scalability Benchmark
 
