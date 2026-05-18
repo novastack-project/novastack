@@ -28,7 +28,7 @@ jobs:
       
       - name: Install local packages in editable mode
         run: |
-          uv pip install -e ./novastack-commons
+          uv pip install -e ./novastack-common
           uv pip install -e ./novastack-core
 
       - name: Run tests
