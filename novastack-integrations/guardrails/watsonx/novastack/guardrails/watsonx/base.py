@@ -1,10 +1,10 @@
 from typing import Any
 
+from novastack.common.http import HttpService
+from novastack.common.http.authenticators import IBMIAMAuthenticator
 from novastack.core.bridge.pydantic import Field, PrivateAttr, SecretStr
 from novastack.core.guardrails import BaseGuardrail, GuardrailResponse
 from novastack.core.guardrails.enums import Direction
-from novastack.core.utilities.http import HttpService
-from novastack.core.utilities.http.authenticators import IBMIAMAuthenticator
 from novastack.guardrails.watsonx.supporting_classes.enums import Region
 
 
