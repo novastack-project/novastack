@@ -1,4 +1,4 @@
-from novastack.core.base.enum import BaseStrEnum
+from novastack.common.enums import BaseStrEnum
 
 
 class SimilarityMode(BaseStrEnum):

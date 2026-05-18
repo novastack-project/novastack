@@ -1,4 +1,4 @@
-from novastack.core.utilities.http.base import HttpService
+from novastack.common.http.base import HttpService
 
 __all__ = [
     "HttpService",
