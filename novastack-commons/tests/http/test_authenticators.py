@@ -38,10 +38,6 @@ class TestBasicAuthAuthenticator:
 
 class TestOAuth2Authenticator:
     def test_initialization(self, oauth_client_credentials):
-        from novastack.core.utilities.http.authenticators.oauth2_authenticator import (
-            OAuth2GrantType,
-        )
-
         assert oauth_client_credentials.token_url == "https://auth.example.com/token"
         assert oauth_client_credentials.client_id == "test_client_id"
         assert oauth_client_credentials.grant_type == OAuth2GrantType.CLIENT_CREDENTIALS
