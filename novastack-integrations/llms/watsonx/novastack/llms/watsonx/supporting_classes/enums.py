@@ -1,6 +1,6 @@
 from typing import Any
 
-from novastack.core.base.enum import BaseStrEnum
+from novastack.common.enums import BaseStrEnum
 
 _REGION_DATA: dict = {
     "us-south": {
