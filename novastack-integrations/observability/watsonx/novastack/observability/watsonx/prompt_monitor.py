@@ -489,7 +489,7 @@ class WatsonxPromptMonitor(PromptObservability):
         for i, d in enumerate(request_records):
             d["_original_prediction"] = d.pop("generated_text", None)
             request_records[i] = validate_and_filter_dict(
-                d, [*feature_fields, "_original_prediction"]
+                d, feature_fields, ["_original_prediction"]
             )
 
         feedback_data_set_id = (
