@@ -1,24 +1,21 @@
-import json
 import os
 import uuid
 from typing import Any
 
 import certifi
-from deprecated import deprecated
 from novastack.core.bridge.pydantic import PrivateAttr, SecretStr
 from novastack.core.observability import PromptObservability
 from novastack.core.observability.types import PayloadRecord
 from novastack.observability.watsonx.supporting_classes.clients import (
     AIGovFactsClientFactory,
-    WMLClientFactory,
     WosClientFactory,
 )
 from novastack.observability.watsonx.supporting_classes.credentials import (
     CloudPakforDataCredentials,
 )
+from novastack.observability.watsonx.supporting_classes.data_sets import DataSets
 from novastack.observability.watsonx.supporting_classes.enums import Region, TaskType
 from novastack.observability.watsonx.supporting_classes.utils import (
-    build_payload,
     suppress_output,
     validate_and_filter_dict,
 )
@@ -363,20 +360,6 @@ class WatsonxExternalPromptMonitor(PromptObservability):
             )
             ```
         """
-        from ibm_watson_openscale.supporting_classes.enums import (
-            DataSetTypes,
-            TargetTypes,
-        )
-
-        # Expected behavior: Prefer using fn `subscription_id`.
-        # Fallback to `self.subscription_id` if `subscription_id` None or empty.
-        _subscription_id = subscription_id or self.subscription_id
-
-        if _subscription_id is None or _subscription_id == "":
-            raise ValueError(
-                "Unexpected value for 'subscription_id': Cannot be None or empty string."
-            )
-
         if not self._wos_client:
             self._wos_client = WosClientFactory.create_client(
                 api_key=self.api_key,
@@ -384,36 +367,12 @@ class WatsonxExternalPromptMonitor(PromptObservability):
                 cpd_creds=self.cpd_creds,
                 service_instance_id=self.service_instance_id,
             )
+        data_sets_mgr = DataSets(wos_client=self._wos_client)
 
-        subscription_details = self._wos_client.subscriptions.get(
-            _subscription_id,
-        ).result
-        subscription_details = json.loads(str(subscription_details))
-
-        feature_fields = subscription_details["entity"]["asset_properties"][
-            "feature_fields"
-        ]
-
-        payload_data_set_id = (
-            self._wos_client.data_sets.list(
-                type=DataSetTypes.PAYLOAD_LOGGING,
-                target_target_id=_subscription_id,
-                target_target_type=TargetTypes.SUBSCRIPTION,
-            )
-            .result.data_sets[0]
-            .metadata.id
+        return data_sets_mgr.store_payload_records(
+            request_records=request_records,
+            subscription_id=subscription_id,
         )
-
-        payload_data = build_payload(request_records, feature_fields)
-
-        suppress_output(
-            self._wos_client.data_sets.store_records,
-            data_set_id=payload_data_set_id,
-            request_body=payload_data,
-            background_mode=False,
-        )
-
-        return [data["scoring_id"] + "-1" for data in payload_data]
 
     def store_feedback_records(
         self,
@@ -447,20 +406,6 @@ class WatsonxExternalPromptMonitor(PromptObservability):
             )
             ```
         """
-        from ibm_watson_openscale.supporting_classes.enums import (
-            DataSetTypes,
-            TargetTypes,
-        )
-
-        # Expected behavior: Prefer using fn `subscription_id`.
-        # Fallback to `self.subscription_id` if `subscription_id` None or empty.
-        _subscription_id = subscription_id or self.subscription_id
-
-        if _subscription_id is None or _subscription_id == "":
-            raise ValueError(
-                "Unexpected value for 'subscription_id': Cannot be None or empty string."
-            )
-
         if not self._wos_client:
             self._wos_client = WosClientFactory.create_client(
                 api_key=self.api_key,
@@ -468,42 +413,12 @@ class WatsonxExternalPromptMonitor(PromptObservability):
                 cpd_creds=self.cpd_creds,
                 service_instance_id=self.service_instance_id,
             )
+        data_sets_mgr = DataSets(wos_client=self._wos_client)
 
-        subscription_details = self._wos_client.subscriptions.get(
-            _subscription_id,
-        ).result
-        subscription_details = json.loads(str(subscription_details))
-
-        feature_fields = subscription_details["entity"]["asset_properties"][
-            "feature_fields"
-        ]
-
-        # Rename generated_text to _original_prediction (expected by WOS feedback dataset)
-        # Validate required fields for detached/external monitor
-        for i, d in enumerate(request_records):
-            d["_original_prediction"] = d.pop("generated_text", None)
-            request_records[i] = validate_and_filter_dict(
-                d, feature_fields, ["_original_prediction"]
-            )
-
-        feedback_data_set_id = (
-            self._wos_client.data_sets.list(
-                type=DataSetTypes.FEEDBACK,
-                target_target_id=_subscription_id,
-                target_target_type=TargetTypes.SUBSCRIPTION,
-            )
-            .result.data_sets[0]
-            .metadata.id
+        return data_sets_mgr.store_feedback_records(
+            request_records=request_records,
+            subscription_id=subscription_id,
         )
-
-        suppress_output(
-            self._wos_client.data_sets.store_records,
-            data_set_id=feedback_data_set_id,
-            request_body=request_records,
-            background_mode=False,
-        )
-
-        return {"status": "success"}
 
     def __call__(self, payload: PayloadRecord) -> None:
         self.store_payload_records(
