@@ -11,7 +11,7 @@ from novastack.observability.watsonx.supporting_classes.credentials import (
     CloudPakforDataCredentials,
     IntegratedSystemCredentials,
 )
-from novastack.observability.watsonx.supporting_classes.metric import (
+from novastack.observability.watsonx.supporting_classes.types import (
     WatsonxMetricSpec,
     WatsonxMetricThreshold,
 )

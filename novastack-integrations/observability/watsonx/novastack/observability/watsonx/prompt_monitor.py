@@ -16,43 +16,13 @@ from novastack.observability.watsonx.supporting_classes.credentials import (
     CloudPakforDataCredentials,
 )
 from novastack.observability.watsonx.supporting_classes.enums import Region, TaskType
-from novastack.observability.watsonx.utils.data_utils import validate_and_filter_dict
-from novastack.observability.watsonx.utils.instrumentation import suppress_output
+from novastack.observability.watsonx.supporting_classes.utils import (
+    build_payload,
+    suppress_output,
+    validate_and_filter_dict,
+)
 
 os.environ["REQUESTS_CA_BUNDLE"] = certifi.where()
-
-
-def _convert_payload_format(
-    records: list[dict],
-    feature_fields: list[str],
-) -> list[dict]:
-    payload_data = []
-    response_fields = ["generated_text", "input_token_count", "generated_token_count"]
-
-    for record in records:
-        request = {"parameters": {"template_variables": {}}}
-        results = {}
-
-        request["parameters"]["template_variables"] = {
-            field: str(record.get(field, "")) for field in feature_fields
-        }
-
-        results = {
-            field: record.get(field) for field in response_fields if record.get(field)
-        }
-
-        pl_record = {
-            "request": request,
-            "response": {"results": [results]},
-            "scoring_id": str(uuid.uuid4()),
-        }
-
-        if "response_time" in record:
-            pl_record["response_time"] = record["response_time"]
-
-        payload_data.append(pl_record)
-
-    return payload_data
 
 
 class WatsonxPromptMonitor(PromptObservability):
@@ -363,7 +333,8 @@ class WatsonxPromptMonitor(PromptObservability):
             raise Exception(wos_status.get("failure"))
 
         return {
-            "prompt_template_asset_id": pta_id,
+            "asset_id": pta_id,
+            "asset_type": "prompt_template",
             "deployment_id": deployment_id,
             "subscription_id": generative_ai_monitor_details.get(
                 "subscription_id", None
@@ -440,7 +411,7 @@ class WatsonxPromptMonitor(PromptObservability):
             .metadata.id
         )
 
-        payload_data = _convert_payload_format(request_records, feature_fields)
+        payload_data = build_payload(request_records, feature_fields)
 
         suppress_output(
             self._wos_client.data_sets.store_records,

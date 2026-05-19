@@ -12,10 +12,10 @@ from novastack.observability.watsonx.supporting_classes.credentials import (
     IntegratedSystemCredentials,
 )
 from novastack.observability.watsonx.supporting_classes.enums import DataSetType, Region
-from novastack.observability.watsonx.supporting_classes.metric import (
+from novastack.observability.watsonx.supporting_classes.types import (
     WatsonxMetricSpec,
 )
-from novastack.observability.watsonx.utils.instrumentation import suppress_output
+from novastack.observability.watsonx.supporting_classes.utils import suppress_output
 
 
 class WatsonxCustomMetricsManager(BaseModel):
