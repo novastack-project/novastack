@@ -6,7 +6,9 @@ from novastack.observability.watsonx.supporting_classes.credentials import (
     CloudPakforDataCredentials,
 )
 from novastack.observability.watsonx.supporting_classes.enums import Region
-from novastack.observability.watsonx.utils.data_utils import validate_and_filter_dict
+from novastack.observability.watsonx.supporting_classes.utils import (
+    validate_and_filter_dict,
+)
 
 
 def process_cpd_credentials(

@@ -1,4 +1,3 @@
-import json
 import os
 import uuid
 from typing import Any
@@ -9,55 +8,24 @@ from novastack.core.observability import PromptObservability
 from novastack.core.observability.types import PayloadRecord
 from novastack.observability.watsonx.supporting_classes.clients import (
     AIGovFactsClientFactory,
-    WMLClientFactory,
     WosClientFactory,
 )
 from novastack.observability.watsonx.supporting_classes.credentials import (
     CloudPakforDataCredentials,
 )
+from novastack.observability.watsonx.supporting_classes.data_sets import DataSets
 from novastack.observability.watsonx.supporting_classes.enums import Region, TaskType
-from novastack.observability.watsonx.utils.data_utils import validate_and_filter_dict
-from novastack.observability.watsonx.utils.instrumentation import suppress_output
+from novastack.observability.watsonx.supporting_classes.utils import (
+    suppress_output,
+    validate_and_filter_dict,
+)
 
 os.environ["REQUESTS_CA_BUNDLE"] = certifi.where()
 
 
-def _convert_payload_format(
-    records: list[dict],
-    feature_fields: list[str],
-) -> list[dict]:
-    payload_data = []
-    response_fields = ["generated_text", "input_token_count", "generated_token_count"]
-
-    for record in records:
-        request = {"parameters": {"template_variables": {}}}
-        results = {}
-
-        request["parameters"]["template_variables"] = {
-            field: str(record.get(field, "")) for field in feature_fields
-        }
-
-        results = {
-            field: record.get(field) for field in response_fields if record.get(field)
-        }
-
-        pl_record = {
-            "request": request,
-            "response": {"results": [results]},
-            "scoring_id": str(uuid.uuid4()),
-        }
-
-        if "response_time" in record:
-            pl_record["response_time"] = record["response_time"]
-
-        payload_data.append(pl_record)
-
-    return payload_data
-
-
 class WatsonxExternalPromptMonitor(PromptObservability):
     """
-    Provides functionality to interact with IBM watsonx.governance for monitoring prompts executed on external LLMs.
+    Provides functionality to interact with IBM watsonx.governance for monitoring prompts executed on LLMs.
 
     Note:
         One of the following parameters is required to create a prompt monitor:
@@ -109,6 +77,7 @@ class WatsonxExternalPromptMonitor(PromptObservability):
     service_instance_id: str | None = None
 
     _wos_client: Any | None = PrivateAttr(default=None)
+    _aigov_client: Any | None = PrivateAttr(default=None)
     _container_id: str | None = PrivateAttr(default=None)
     _container_type: str | None = PrivateAttr(default=None)
     _deployment_stage: str | None = PrivateAttr(default=None)
@@ -132,15 +101,16 @@ class WatsonxExternalPromptMonitor(PromptObservability):
             PromptTemplate,
         )
 
-        aigov_client = AIGovFactsClientFactory.create_client(
-            api_key=self.api_key,
-            container_id=self._container_id,
-            container_type=self._container_type,
-            region=self.region,
-            cpd_creds=self.cpd_creds,
-        )
+        if not self._aigov_client:
+            self._aigov_client = AIGovFactsClientFactory.create_client(
+                api_key=self.api_key,
+                container_id=self._container_id,
+                container_type=self._container_type,
+                region=self.region,
+                cpd_creds=self.cpd_creds,
+            )
 
-        created_detached_pta = aigov_client.assets.create_detached_prompt(
+        created_detached_pta = self._aigov_client.assets.create_detached_prompt(
             **detached_asset_details,
             prompt_details=PromptTemplate(**prompt_template_details),
             detached_information=DetachedPromptTemplate(**detached_details),
@@ -148,63 +118,31 @@ class WatsonxExternalPromptMonitor(PromptObservability):
 
         return created_detached_pta.to_dict()["asset_id"]
 
-    def _delete_detached_prompt(self, detached_pta_id: str) -> None:
-        aigov_client = AIGovFactsClientFactory.create_client(
-            api_key=self.api_key,
-            container_id=self._container_id,
-            container_type=self._container_type,
-            region=self.region,
-            cpd_creds=self.cpd_creds,
-        )
+    def _delete_detached_prompt(self, asset_id: str) -> None:
+        if not self._aigov_client:
+            self._aigov_client = AIGovFactsClientFactory.create_client(
+                api_key=self.api_key,
+                container_id=self._container_id,
+                container_type=self._container_type,
+                region=self.region,
+                cpd_creds=self.cpd_creds,
+            )
 
-        suppress_output(aigov_client.assets.delete_prompt_asset, detached_pta_id)
-
-    def _create_deployment_pta(self, asset_id: str, name: str, model_id: str) -> str:
-        wml_client = WMLClientFactory.create_client(
-            api_key=self.api_key,
-            region=self.region,
-            cpd_creds=self.cpd_creds,
-            space_id=self.space_id,
-        )
-
-        meta_props = {
-            wml_client.deployments.ConfigurationMetaNames.PROMPT_TEMPLATE: {
-                "id": asset_id,
-            },
-            wml_client.deployments.ConfigurationMetaNames.DETACHED: {},
-            wml_client.deployments.ConfigurationMetaNames.NAME: name
-            + " "
-            + "deployment",
-            wml_client.deployments.ConfigurationMetaNames.BASE_MODEL_ID: model_id,
-        }
-
-        created_deployment = wml_client.deployments.create(asset_id, meta_props)
-
-        return wml_client.deployments.get_uid(created_deployment)
-
-    def _delete_deployment_pta(self, deployment_id: str) -> None:
-        wml_client = WMLClientFactory.create_client(
-            api_key=self.api_key,
-            region=self.region,
-            cpd_creds=self.cpd_creds,
-            space_id=self.space_id,
-        )
-
-        suppress_output(wml_client.deployments.delete, deployment_id)
+        suppress_output(self._aigov_client.assets.delete_prompt_asset, asset_id)
 
     def create_prompt_monitor(
         self,
         name: str,
         model_id: str,
+        model_provider: str,
         task_id: TaskType,
-        detached_model_provider: str,
         description: str = "",
+        model_name: str | None = None,
         model_parameters: dict | None = None,
-        detached_model_name: str | None = None,
-        detached_model_url: str | None = None,
-        detached_prompt_id: str | None = None,
-        detached_prompt_url: str | None = None,
-        detached_prompt_additional_info: dict | None = None,
+        model_url: str | None = None,
+        prompt_id: str | None = None,
+        prompt_url: str | None = None,
+        prompt_additional_info: dict | None = None,
         prompt_template: str | None = None,
         prompt_variables: list[str] | None = None,
         locale: str = "en",
@@ -218,14 +156,14 @@ class WatsonxExternalPromptMonitor(PromptObservability):
             name (str): The name of the External Prompt Template Asset.
             model_id (str): The ID of the model associated with the prompt.
             task_id (TaskType): The task identifier.
-            detached_model_provider (str): The external model provider.
+            model_provider (str): The model provider.
             description (str, optional): A description of the External Prompt Template Asset.
+            model_name (str, optional): The name of the external model.
             model_parameters (dict, optional): Model parameters and their respective values.
-            detached_model_name (str, optional): The name of the external model.
-            detached_model_url (str, optional): The URL of the external model.
-            detached_prompt_id (str, optional): The ID of the external prompt.
-            detached_prompt_url (str, optional): The URL of the external prompt.
-            detached_prompt_additional_info (dict, optional): Additional information related to the external prompt.
+            model_url (str, optional): The URL of the external model.
+            prompt_id (str, optional): The ID of the external prompt.
+            prompt_url (str, optional): The URL of the external prompt.
+            prompt_additional_info (dict, optional): Additional information related to the external prompt.
             prompt_template (str, optional): The prompt template.
             prompt_variables (list[str], optional): Values for the prompt variables.
             locale (str, optional): Locale code for the input/output language. eg. "en", "pt", "es".
@@ -241,12 +179,12 @@ class WatsonxExternalPromptMonitor(PromptObservability):
             )
 
             prompt_mgr.create_prompt_monitor(
-                name="Detached prompt (model AWS Anthropic)",
+                name="Prompt Template for Retrieval Augmented Generation",
                 model_id="anthropic.claude-v2",
-                task_id=TaskType.RETRIEVAL_AUGMENTED_GENERATION,
-                detached_model_provider="AWS Bedrock",
-                detached_model_name="Anthropic Claude 2.0",
-                detached_model_url="https://docs.aws.amazon.com/bedrock/latest/userguide/model-parameters-claude.html",
+                task_id="retrieval_augmented_generation",
+                model_provider="AWS Bedrock",
+                model_name="Anthropic Claude 2.0",
+                model_url="https://docs.aws.amazon.com/bedrock/latest/userguide/model-parameters-claude.html",
                 prompt_template="You are a helpful AI assistant that provides clear and accurate answers. {context}. Question: {input_query}.",
                 prompt_variables=["context", "input_query"],
                 context_fields=["context"],
@@ -281,18 +219,6 @@ class WatsonxExternalPromptMonitor(PromptObservability):
         # Update name of keys to aigov_facts api
         prompt_metadata["input"] = prompt_metadata.pop("prompt_template", None)
 
-        prompt_metadata["model_provider"] = prompt_metadata.pop(
-            "detached_model_provider",
-            None,
-        )
-        prompt_metadata["model_name"] = prompt_metadata.pop("detached_model_name", None)
-        prompt_metadata["model_url"] = prompt_metadata.pop("detached_model_url", None)
-        prompt_metadata["prompt_url"] = prompt_metadata.pop("detached_prompt_url", None)
-        prompt_metadata["prompt_additional_info"] = prompt_metadata.pop(
-            "detached_prompt_additional_info",
-            None,
-        )
-
         # Update list of vars to dict
         prompt_metadata["prompt_variables"] = dict.fromkeys(
             prompt_metadata["prompt_variables"], ""
@@ -312,7 +238,7 @@ class WatsonxExternalPromptMonitor(PromptObservability):
             ["model_id", "model_provider"],
         )
 
-        detached_details["prompt_id"] = detached_prompt_id or str(uuid.uuid4())
+        detached_details["prompt_id"] = prompt_id or str(uuid.uuid4())
 
         prompt_details = validate_and_filter_dict(
             prompt_metadata,
@@ -333,13 +259,6 @@ class WatsonxExternalPromptMonitor(PromptObservability):
         )
         rollback_stack.append(lambda: self._delete_detached_prompt(detached_pta_id))
 
-        deployment_id = None
-        if self._container_type == "space":
-            deployment_id = suppress_output(
-                self._create_deployment_pta, detached_pta_id, name, model_id
-            )
-            rollback_stack.append(lambda: self._delete_deployment_pta(deployment_id))
-
         monitors = {
             "generative_ai_quality": {
                 "parameters": {"min_sample_size": 10, "metrics_configuration": {}},
@@ -354,7 +273,6 @@ class WatsonxExternalPromptMonitor(PromptObservability):
                     prompt_template_asset_id=detached_pta_id,
                     space_id=self.space_id,
                     project_id=self.project_id,
-                    deployment_id=deployment_id,
                     label_column="reference_output",
                     context_fields=context_fields,
                     question_field=question_field,
@@ -406,8 +324,8 @@ class WatsonxExternalPromptMonitor(PromptObservability):
             raise Exception(wos_status.get("failure"))
 
         return {
-            "detached_prompt_template_asset_id": detached_pta_id,
-            "deployment_id": deployment_id,
+            "asset_id": detached_pta_id,
+            "asset_type": "detached_prompt_template",
             "subscription_id": generative_ai_monitor_details.get(
                 "subscription_id", None
             ),
@@ -442,20 +360,6 @@ class WatsonxExternalPromptMonitor(PromptObservability):
             )
             ```
         """
-        from ibm_watson_openscale.supporting_classes.enums import (
-            DataSetTypes,
-            TargetTypes,
-        )
-
-        # Expected behavior: Prefer using fn `subscription_id`.
-        # Fallback to `self.subscription_id` if `subscription_id` None or empty.
-        _subscription_id = subscription_id or self.subscription_id
-
-        if _subscription_id is None or _subscription_id == "":
-            raise ValueError(
-                "Unexpected value for 'subscription_id': Cannot be None or empty string."
-            )
-
         if not self._wos_client:
             self._wos_client = WosClientFactory.create_client(
                 api_key=self.api_key,
@@ -463,36 +367,12 @@ class WatsonxExternalPromptMonitor(PromptObservability):
                 cpd_creds=self.cpd_creds,
                 service_instance_id=self.service_instance_id,
             )
+        data_sets_mgr = DataSets(wos_client=self._wos_client)
 
-        subscription_details = self._wos_client.subscriptions.get(
-            _subscription_id,
-        ).result
-        subscription_details = json.loads(str(subscription_details))
-
-        feature_fields = subscription_details["entity"]["asset_properties"][
-            "feature_fields"
-        ]
-
-        payload_data_set_id = (
-            self._wos_client.data_sets.list(
-                type=DataSetTypes.PAYLOAD_LOGGING,
-                target_target_id=_subscription_id,
-                target_target_type=TargetTypes.SUBSCRIPTION,
-            )
-            .result.data_sets[0]
-            .metadata.id
+        return data_sets_mgr.store_payload_records(
+            request_records=request_records,
+            subscription_id=subscription_id,
         )
-
-        payload_data = _convert_payload_format(request_records, feature_fields)
-
-        suppress_output(
-            self._wos_client.data_sets.store_records,
-            data_set_id=payload_data_set_id,
-            request_body=payload_data,
-            background_mode=False,
-        )
-
-        return [data["scoring_id"] + "-1" for data in payload_data]
 
     def store_feedback_records(
         self,
@@ -503,7 +383,7 @@ class WatsonxExternalPromptMonitor(PromptObservability):
         Stores records to the feedback logging system.
 
         Info:
-            - Feedback data for external prompt **must include** the model output named `generated_text`.
+            - Feedback data **must include** the model output named `generated_text`.
             - For prompt monitors created using novastack, the label field is `reference_output`.
 
         Args:
@@ -526,20 +406,6 @@ class WatsonxExternalPromptMonitor(PromptObservability):
             )
             ```
         """
-        from ibm_watson_openscale.supporting_classes.enums import (
-            DataSetTypes,
-            TargetTypes,
-        )
-
-        # Expected behavior: Prefer using fn `subscription_id`.
-        # Fallback to `self.subscription_id` if `subscription_id` None or empty.
-        _subscription_id = subscription_id or self.subscription_id
-
-        if _subscription_id is None or _subscription_id == "":
-            raise ValueError(
-                "Unexpected value for 'subscription_id': Cannot be None or empty string."
-            )
-
         if not self._wos_client:
             self._wos_client = WosClientFactory.create_client(
                 api_key=self.api_key,
@@ -547,42 +413,12 @@ class WatsonxExternalPromptMonitor(PromptObservability):
                 cpd_creds=self.cpd_creds,
                 service_instance_id=self.service_instance_id,
             )
+        data_sets_mgr = DataSets(wos_client=self._wos_client)
 
-        subscription_details = self._wos_client.subscriptions.get(
-            _subscription_id,
-        ).result
-        subscription_details = json.loads(str(subscription_details))
-
-        feature_fields = subscription_details["entity"]["asset_properties"][
-            "feature_fields"
-        ]
-
-        # Rename generated_text to _original_prediction (expected by WOS feedback dataset)
-        # Validate required fields for detached/external monitor
-        for i, d in enumerate(request_records):
-            d["_original_prediction"] = d.pop("generated_text", None)
-            request_records[i] = validate_and_filter_dict(
-                d, feature_fields, ["_original_prediction"]
-            )
-
-        feedback_data_set_id = (
-            self._wos_client.data_sets.list(
-                type=DataSetTypes.FEEDBACK,
-                target_target_id=_subscription_id,
-                target_target_type=TargetTypes.SUBSCRIPTION,
-            )
-            .result.data_sets[0]
-            .metadata.id
+        return data_sets_mgr.store_feedback_records(
+            request_records=request_records,
+            subscription_id=subscription_id,
         )
-
-        suppress_output(
-            self._wos_client.data_sets.store_records,
-            data_set_id=feedback_data_set_id,
-            request_body=request_records,
-            background_mode=False,
-        )
-
-        return {"status": "success"}
 
     def __call__(self, payload: PayloadRecord) -> None:
         self.store_payload_records(
