@@ -1,19 +1,21 @@
-from novastack.common.enums import BaseStrEnum
 
+class Action:
+    """
+    Describes supported action types.
 
-class Action(BaseStrEnum):
+    Contains: [BLOCKED, MODIFIED, ALLOWED]
+    """
+
     BLOCKED = "blocked"
     MODIFIED = "modified"
     ALLOWED = "allowed"
 
 
-class Direction(BaseStrEnum):
+class Direction:
     """
-    Supported IBM watsonx.governance directions (input/output).
+    Describes possible directions (input/output).
 
-    Attributes:
-        INPUT (str): "input".
-        OUTPUT (str): "output".
+    Contains: [INPUT, OUTPUT]
     """
 
     INPUT = "input"

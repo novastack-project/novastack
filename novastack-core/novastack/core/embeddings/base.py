@@ -1,18 +1,18 @@
 from abc import ABC, abstractmethod
 
 import numpy as np
+from novastack.common.utils import validate_enum
+from novastack.core.base.enums import SimilarityMode
 from novastack.core.base.schema import TransformerComponent
 from novastack.core.bridge.pydantic import Field
 from novastack.core.document import Document
-from novastack.core.embeddings.enums import SimilarityMode
 
 Embedding = list[float]
 
-
-def compute_similarity(
+def similarity(
     embedding1: Embedding,
     embedding2: Embedding,
-    mode: SimilarityMode = SimilarityMode.COSINE,
+    mode: str = SimilarityMode.COSINE,
 ) -> float:
     """
     Calculate similarity between two embeddings.
@@ -22,6 +22,7 @@ def compute_similarity(
         embedding2: Second embedding vector
         mode: Similarity calculation mode (cosine, dot_product, or euclidean)
     """
+    validate_enum(el=mode, el_name="mode", expected_enum=SimilarityMode)
     # Validate embeddings are not empty
     if len(embedding1) == 0 or len(embedding2) == 0:
         raise ValueError("Embeddings cannot be empty")
@@ -69,10 +70,10 @@ class BaseEmbedding(TransformerComponent, ABC):
     def similarity(
         embedding1: Embedding,
         embedding2: Embedding,
-        mode: SimilarityMode = SimilarityMode.COSINE,
+        mode: str = SimilarityMode.COSINE,
     ):
         """Get embedding similarity."""
-        return compute_similarity(embedding1, embedding2, mode)
+        return similarity(embedding1, embedding2, mode)
 
     @abstractmethod
     def embed_text(self, input: str | list[str]) -> list[Embedding]:

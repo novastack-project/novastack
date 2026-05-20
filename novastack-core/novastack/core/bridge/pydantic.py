@@ -28,6 +28,7 @@ from pydantic import (
     field_validator,
     model_serializer,
     model_validator,
+    validate_call,
 )
 from pydantic.fields import FieldInfo
 from pydantic.json_schema import JsonSchemaValue
@@ -40,7 +41,9 @@ __all__ = [
     "Field",
     "PlainSerializer",
     "PrivateAttr",
+    "model_serializer",
     "model_validator",
+    "validate_call",
     "field_validator",
     "computed_field",
     "create_model",
@@ -59,7 +62,6 @@ __all__ = [
     "field_serializer",
     "Secret",
     "SecretStr",
-    "model_serializer",
     "AnyUrl",
     "FilePath",
     "SerializationInfo",

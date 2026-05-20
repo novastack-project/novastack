@@ -1,10 +1,10 @@
 from typing import Any
 
 import numpy as np
-from novastack.core.bridge.pydantic import (
-    Field,
-)
-from novastack.core.embeddings import BaseEmbedding, SimilarityMode
+from novastack.common.utils import validate_enum
+from novastack.core.base.enums import SimilarityMode
+from novastack.core.bridge.pydantic import Field, field_validator
+from novastack.core.embeddings import BaseEmbedding
 from novastack.core.evaluation.base import BaseEvaluator
 
 
@@ -24,7 +24,7 @@ class ContextSimilarityEvaluator(BaseEvaluator):
 
     Attributes:
         embed_model (BaseEmbedding): The embedding model used to compute vector representations.
-        similarity_mode (SimilarityMode, optional): Similarity strategy to use. Supported options are
+        similarity_mode (str, optional): Similarity strategy to use. Supported options are
             `"cosine"`, `"dot_product"`, and `"euclidean"`. Defaults to `"cosine"`.
         score_threshold (float, optional): Minimum required score for evaluation approval.
             Must be between 0.0 and 1.0. Defaults to `0.8`.
@@ -43,10 +43,15 @@ class ContextSimilarityEvaluator(BaseEvaluator):
     embed_model: BaseEmbedding = Field(
         description="Embedding model used to compute vector representations"
     )
-    similarity_mode: SimilarityMode = Field(
+    similarity_mode: str = Field(
         default=SimilarityMode.COSINE,
         description="Similarity computation method",
     )
+
+    @field_validator("similarity_mode")
+    def _validate_similarity_mode(cls, v):
+        validate_enum(el=v, el_name="similarity_mode", expected_enum=SimilarityMode)
+        return v
 
     def _calculate_similarity(
         self, reference_text: str, contexts: list[str]
@@ -67,8 +72,8 @@ class ContextSimilarityEvaluator(BaseEvaluator):
 
             context_embedding = self.embed_model.embed_text(context)[0]
             score = self.embed_model.similarity(
-                reference_embedding,
-                context_embedding,
+                embedding1=reference_embedding,
+                embedding2=context_embedding,
                 mode=self.similarity_mode,
             )
             contexts_score.append(score)

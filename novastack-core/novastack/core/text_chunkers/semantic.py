@@ -2,10 +2,10 @@ import re
 from typing import Literal
 
 import numpy as np
+from novastack.core.base.enums import SimilarityMode
 from novastack.core.document import Document
 from novastack.core.embeddings import BaseEmbedding
-from novastack.core.embeddings.base import compute_similarity
-from novastack.core.embeddings.enums import SimilarityMode
+from novastack.core.embeddings.base import similarity
 from novastack.core.text_chunkers.base import BaseTextChunker
 
 
@@ -81,8 +81,10 @@ class SemanticChunker(BaseTextChunker):
             embedding_current = sentences[i]["combined_sentence_embedding"]
             embedding_next = sentences[i + 1]["combined_sentence_embedding"]
 
-            similarity_score = compute_similarity(
-                embedding_current, embedding_next, SimilarityMode.COSINE
+            similarity_score = similarity(
+                embedding1=embedding_current,
+                embedding2=embedding_next,
+                mode=SimilarityMode.COSINE,
             )
 
             distance = 1 - similarity_score

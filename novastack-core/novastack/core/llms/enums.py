@@ -1,7 +1,11 @@
-from novastack.common.enums import BaseStrEnum
 
+class MessageRole:
+    """
+     Describes possible message role types.
 
-class MessageRole(BaseStrEnum):
+    Contains: [ASSISTANT, SYSTEM, USER, TOOL]
+    """
+
     ASSISTANT = "assistant"
     SYSTEM = "system"
     USER = "user"
