@@ -70,6 +70,7 @@ class AIGovFactsClientFactory:
 
         try:
             return AIGovFactsClient(
+                experiment_name="novastack-observability-watsonx",
                 authenticator=authenticator,  # type: ignore
                 container_id=container_id,
                 container_type=container_type,
