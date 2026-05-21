@@ -9,6 +9,7 @@ from novastack.core.document import Document
 
 Embedding = list[float]
 
+
 def similarity(
     embedding1: Embedding,
     embedding2: Embedding,

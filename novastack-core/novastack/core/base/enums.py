@@ -1,4 +1,3 @@
-
 class SimilarityMode:
     """
      Describes possible similarity types.

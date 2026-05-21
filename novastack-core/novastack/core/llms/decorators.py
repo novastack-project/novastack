@@ -45,7 +45,9 @@ async def _process_chat_callback(
             raise ValueError("No messages provided in positional or keyword arguments")
 
         # Get the user's latest message after each interaction to chat observability.
-        user_messages = [msg for msg in input_chat_messages if msg.role == MessageRole.USER]
+        user_messages = [
+            msg for msg in input_chat_messages if msg.role == MessageRole.USER
+        ]
         last_user_message = user_messages[-1].content if user_messages else None
 
         # Get the system/instruct (top) messages to chat observability.

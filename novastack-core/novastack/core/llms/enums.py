@@ -1,4 +1,3 @@
-
 class MessageRole:
     """
      Describes possible message role types.

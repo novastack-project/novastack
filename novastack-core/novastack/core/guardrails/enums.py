@@ -1,4 +1,3 @@
-
 class Action:
     """
     Describes supported action types.
