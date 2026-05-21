@@ -13,7 +13,11 @@ def validate_enum(el: str, el_name: str, expected_enum) -> str:
 
 def validate_type(el, el_name: str, expected_type: type | list[type]):
     if type(expected_type) is not type and type(expected_type) is not list:
-        raise TypeError("Invalid expected_type type '{}'. Input should be: ['type', 'list[type]'].".format(expected_type))
+        raise TypeError(
+            "Invalid expected_type type '{}'. Input should be: ['type', 'list[type]'].".format(
+                expected_type
+            )
+        )
 
     if type(expected_type) is list:
         if not any(isinstance(el, t) for t in expected_type):
@@ -25,11 +29,11 @@ def validate_type(el, el_name: str, expected_type: type | list[type]):
             )
         return el
     else:
-        if not isinstance(el, expected_type): # type: ignore
+        if not isinstance(el, expected_type):  # type: ignore
             raise TypeError(
-            "Invalid {} type '{}'. Input should be: '{}'.".format(
-                el_name, type(el).__name__, expected_type.__name__
+                "Invalid {} type '{}'. Input should be: '{}'.".format(
+                    el_name, type(el).__name__, expected_type.__name__
+                )
             )
-        )
 
     return el

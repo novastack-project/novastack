@@ -3,12 +3,12 @@ import uuid
 from typing import Any, Literal
 
 from deprecated import deprecated
-from novastack.core.bridge.pydantic import BaseModel, PrivateAttr, SecretStr
+from ibm_cloud_sdk_core.authenticators import Authenticator as IBMAuthenticator
+from novastack.core.bridge.pydantic import BaseModel, PrivateAttr
 from novastack.observability.watsonx.supporting_classes.clients import (
     WosClientFactory,
 )
 from novastack.observability.watsonx.supporting_classes.credentials import (
-    CloudPakforDataCredentials,
     IntegratedSystemCredentials,
 )
 from novastack.observability.watsonx.supporting_classes.enums import DataSetType, Region
@@ -23,34 +23,36 @@ class WatsonxCustomMetricsManager(BaseModel):
     Provides functionality to set up a custom metric to measure your model's performance with IBM watsonx.governance.
 
     Attributes:
-        api_key (str): The API key for IBM watsonx.governance.
+        authenticator (IBMAuthenticator): The authenticator specifies the authentication mechanism.
         region (Region, optional): The region where watsonx.governance is hosted when using IBM Cloud.
             Defaults to `us-south`.
-        cpd_creds (CloudPakforDataCredentials, optional): IBM Cloud Pak for Data environment credentials.
         service_instance_id (str, optional): The service instance ID.
 
     Example:
         ```python
-        from novastack.observability.watsonx import (
-            WatsonxCustomMetricsManager,
-            CloudPakforDataCredentials,
-        )
+        from novastack.observability.watsonx import WatsonxExternalPromptMonitor
+        from novastack.observability.watsonx.authenticators import IAMAuthenticator
 
         # watsonx.governance (IBM Cloud)
         custom_metric_mgr = WatsonxCustomMetricsManager(
-            api_key="API_KEY", region="us-south"
+            authenticator=IAMAuthenticator(apikey="API_KEY"),
+            space_id="SPACE_ID",
+            region="us-south",
         )
 
         # watsonx.governance (CP4D)
-        cpd_creds = CloudPakforDataCredentials(
-            url="CPD_URL",
-            username="USERNAME",
-            password="PASSWORD",
-            version="5.2",
-            instance_id="openshift",
+        from novastack.observability.watsonx.authenticators import (
+            CloudPakForDataAuthenticator,
         )
 
-        custom_metric_mgr = WatsonxCustomMetricsManager(cpd_creds=cpd_creds)
+        custom_metric_mgr = WatsonxCustomMetricsManager(
+            authenticator=CloudPakForDataAuthenticator(
+                url="CPD_URL",
+                username="USERNAME",
+                password="PASSWORD",
+            ),
+            space_id="SPACE_ID",
+        )
         ```
     """
 
@@ -60,9 +62,8 @@ class WatsonxCustomMetricsManager(BaseModel):
         "validate_default": True,
     }
 
-    api_key: SecretStr | None = None
+    authenticator: IBMAuthenticator
     region: Region = Region.US_SOUTH
-    cpd_creds: CloudPakforDataCredentials | None = None
     service_instance_id: str | None = None
 
     _wos_client: Any | None = PrivateAttr(default=None)
@@ -72,9 +73,8 @@ class WatsonxCustomMetricsManager(BaseModel):
 
         if not self._wos_client:
             self._wos_client = WosClientFactory.create_client(
-                api_key=self.api_key,
+                authenticator=self.authenticator,
                 region=self.region,
-                cpd_creds=self.cpd_creds,
                 service_instance_id=self.service_instance_id,
             )
 
