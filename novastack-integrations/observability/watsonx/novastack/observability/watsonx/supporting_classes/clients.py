@@ -73,6 +73,8 @@ class AIGovFactsClientFactory:
                 authenticator=authenticator,  # type: ignore
                 container_id=container_id,
                 container_type=container_type,
+                set_as_current_experiment=True,
+                enable_autolog=False,
                 disable_tracing=True,
                 region=region.factsheet,
             )
