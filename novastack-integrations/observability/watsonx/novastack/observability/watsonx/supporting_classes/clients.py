@@ -1,7 +1,7 @@
 import logging
 from typing import TYPE_CHECKING, Any
 
-from novastack.common.utils import validate_type
+from novastack.common.utils import validate_enum, validate_type
 from novastack.observability.watsonx.supporting_classes.enums import Region
 
 if TYPE_CHECKING:
@@ -14,7 +14,7 @@ class WosClientFactory:
     @staticmethod
     def create_client(
         authenticator: "IBMAuthenticator",
-        region: Region = Region.US_SOUTH,
+        region: str = Region.US_SOUTH,
         service_instance_id: str | None = None,
     ) -> Any:
         """
@@ -25,6 +25,9 @@ class WosClientFactory:
             region: The region object containing service URLs.
             service_instance_id: The service instance ID.
         """
+        validate_enum(region, "region", Region)
+        region = Region.from_value(region)
+
         from ibm_watson_openscale import APIClient as WosAPIClient  # type: ignore
 
         try:
@@ -49,7 +52,7 @@ class AIGovFactsClientFactory:
         authenticator: "IBMAuthenticator",
         container_id: str | None = None,
         container_type: str | None = None,
-        region: Region = Region.US_SOUTH,
+        region: str = Region.US_SOUTH,
     ) -> Any:
         """
         Create and return an AI Governance Facts API client.
@@ -60,6 +63,9 @@ class AIGovFactsClientFactory:
             container_type: The container type ('space' or 'project').
             region: The region object containing service URLs.
         """
+        validate_enum(region, "region", Region)
+        region = Region.from_value(region)
+
         from ibm_aigov_facts_client import AIGovFactsClient  # type: ignore
 
         try:
@@ -84,7 +90,7 @@ class WMLClientFactory:
     @staticmethod
     def create_client(
         authenticator: "IBMAuthenticator",
-        region: Region = Region.US_SOUTH,
+        region: str = Region.US_SOUTH,
         space_id: str | None = None,
     ) -> Any:
         """
@@ -95,6 +101,9 @@ class WMLClientFactory:
             region: The region object containing service URLs.
             space_id: The space ID to set as default.
         """
+        validate_enum(region, "region", Region)
+        region = Region.from_value(region)
+
         from ibm_watsonx_ai import APIClient, Credentials  # type: ignore
         from novastack.observability.watsonx.authenticators import (
             CloudPakForDataAuthenticator,

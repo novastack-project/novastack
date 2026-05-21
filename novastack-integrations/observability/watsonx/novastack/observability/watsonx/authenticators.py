@@ -35,7 +35,6 @@ class CloudPakForDataAuthenticator(CloudPakForDataAuth):
         headers: dict[str, str] | None = None,
         proxies: dict[str, str] | None = None,
         verify: str | None = None,
-
         instance_id: Literal["icp", "openshift"] | None = None,
         version: str | None = None,
     ) -> None:

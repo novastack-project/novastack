@@ -1,6 +1,6 @@
 class SimilarityMode:
     """
-     Describes possible similarity types.
+    Describes possible similarity types.
 
     Contains: [COSINE, DOT_PRODUCT, EUCLIDEAN]
     """

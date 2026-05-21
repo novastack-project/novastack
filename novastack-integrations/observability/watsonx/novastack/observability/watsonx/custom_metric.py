@@ -4,14 +4,15 @@ from typing import Any, Literal
 
 from deprecated import deprecated
 from ibm_cloud_sdk_core.authenticators import Authenticator as IBMAuthenticator
+from novastack.common.utils import validate_enum
 from novastack.core.bridge.pydantic import BaseModel, PrivateAttr
 from novastack.observability.watsonx.supporting_classes.clients import (
     WosClientFactory,
 )
-from novastack.observability.watsonx.supporting_classes.credentials import (
+from novastack.observability.watsonx.supporting_classes.enums import DataSetType, Region
+from novastack.observability.watsonx.supporting_classes.integrated_system import (
     IntegratedSystemCredentials,
 )
-from novastack.observability.watsonx.supporting_classes.enums import DataSetType, Region
 from novastack.observability.watsonx.supporting_classes.types import (
     WatsonxMetricSpec,
 )
@@ -24,7 +25,7 @@ class WatsonxCustomMetricsManager(BaseModel):
 
     Attributes:
         authenticator (IBMAuthenticator): The authenticator specifies the authentication mechanism.
-        region (Region, optional): The region where watsonx.governance is hosted when using IBM Cloud.
+        region (str, optional): The region where watsonx.governance is hosted when using IBM Cloud.
             Defaults to `us-south`.
         service_instance_id (str, optional): The service instance ID.
 
@@ -63,14 +64,12 @@ class WatsonxCustomMetricsManager(BaseModel):
     }
 
     authenticator: IBMAuthenticator
-    region: Region = Region.US_SOUTH
+    region: str = Region.US_SOUTH
     service_instance_id: str | None = None
 
     _wos_client: Any | None = PrivateAttr(default=None)
 
     def model_post_init(self, __context: Any) -> None:  # noqa: PYI063
-        self.region = Region.from_value(self.region)
-
         if not self._wos_client:
             self._wos_client = WosClientFactory.create_client(
                 authenticator=self.authenticator,
@@ -464,7 +463,7 @@ class WatsonxCustomMetricsManager(BaseModel):
         self,
         custom_data_set_id: str,
         reference_data_set_id: str,
-        computed_on: DataSetType,
+        computed_on: str,
         run_id: str,
         request_records: list[dict],
     ):
@@ -480,7 +479,7 @@ class WatsonxCustomMetricsManager(BaseModel):
         self,
         custom_data_set_id: str,
         reference_data_set_id: str,
-        computed_on: DataSetType,
+        computed_on: str,
         run_id: str,
         request_records: list[dict],
     ):
@@ -490,7 +489,7 @@ class WatsonxCustomMetricsManager(BaseModel):
         Args:
             custom_data_set_id (str): The ID of the custom metric data set.
             reference_data_set_id (str): The dataset ID on which the metric was calculated.
-            computed_on (DataSetType): The dataset on which the metric was calculated (e.g., payload or feedback).
+            computed_on (str): The dataset on which the metric was calculated (e.g., payload or feedback).
             run_id (str): The ID of the monitor run that generated the metrics.
             request_records (list[dict]): A list of dictionaries containing the records to be stored.
 
@@ -512,7 +511,7 @@ class WatsonxCustomMetricsManager(BaseModel):
             )
             ```
         """
-        computed_on = DataSetType.from_value(computed_on).value
+        validate_enum(computed_on, "computed_on", DataSetType)
 
         if request_records:
             for record in request_records:
