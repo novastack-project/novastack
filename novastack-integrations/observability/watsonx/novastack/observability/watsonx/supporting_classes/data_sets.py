@@ -1,5 +1,5 @@
 import json
-from typing import TYPE_CHECKING
+from typing import Any
 
 from novastack.core.bridge.pydantic import BaseModel
 from novastack.observability.watsonx.supporting_classes.utils import (
@@ -7,11 +7,6 @@ from novastack.observability.watsonx.supporting_classes.utils import (
     suppress_output,
     validate_and_filter_dict,
 )
-
-if TYPE_CHECKING:
-    from novastack.observability.watsonx.supporting_classes.clients import (
-        WosClientFactory,
-    )
 
 
 class DataSets(BaseModel):
@@ -23,7 +18,7 @@ class DataSets(BaseModel):
     handling subscription management, data set retrieval, and record formatting.
     """
 
-    wos_client: "WosClientFactory"
+    wos_client: Any
 
     def store_payload_records(
         self,
