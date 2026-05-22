@@ -7,8 +7,7 @@ from novastack.observability.watsonx.external_prompt_monitor import (
 from novastack.observability.watsonx.prompt_monitor import (
     WatsonxPromptMonitor,
 )
-from novastack.observability.watsonx.supporting_classes.credentials import (
-    CloudPakforDataCredentials,
+from novastack.observability.watsonx.supporting_classes.integrated_system import (
     IntegratedSystemCredentials,
 )
 from novastack.observability.watsonx.supporting_classes.types import (
@@ -17,7 +16,6 @@ from novastack.observability.watsonx.supporting_classes.types import (
 )
 
 __all__ = [
-    "CloudPakforDataCredentials",
     "IntegratedSystemCredentials",
     "WatsonxExternalPromptMonitor",
     "WatsonxCustomMetricsManager",

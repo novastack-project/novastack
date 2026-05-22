@@ -6,6 +6,7 @@ from concurrent.futures import ThreadPoolExecutor
 from logging import getLogger
 from typing import Any, Callable
 
+from novastack.core.llms.enums import MessageRole
 from novastack.core.llms.types import ChatMessage, ChatResponse, CompletionResponse
 from novastack.core.observability.types import PayloadRecord
 from novastack.core.prompts.utils import extract_template_vars
@@ -44,13 +45,15 @@ async def _process_chat_callback(
             raise ValueError("No messages provided in positional or keyword arguments")
 
         # Get the user's latest message after each interaction to chat observability.
-        user_messages = [msg for msg in input_chat_messages if msg.role == "user"]
+        user_messages = [
+            msg for msg in input_chat_messages if msg.role == MessageRole.USER
+        ]
         last_user_message = user_messages[-1].content if user_messages else None
 
         # Get the system/instruct (top) messages to chat observability.
         top_system_messages = []
         for msg in input_chat_messages:
-            if msg.role == "system":
+            if msg.role == MessageRole.SYSTEM:
                 top_system_messages.append(msg.content)
             else:
                 break  # stop at the first non-system message

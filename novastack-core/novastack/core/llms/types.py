@@ -1,16 +1,22 @@
 from typing import Any
 
-from novastack.core.bridge.pydantic import BaseModel, Field
+from novastack.common.utils import validate_enum
+from novastack.core.bridge.pydantic import BaseModel, Field, field_validator
 from novastack.core.llms.enums import MessageRole
 
 
 class ChatMessage(BaseModel):
     """Chat message."""
 
-    role: MessageRole = Field(
+    role: str = Field(
         ..., description="Role of the message sender (system, user, assistant, or tool)"
     )
     content: str | None = Field(default=None, description="Content of the message")
+
+    @field_validator("role")
+    def _validate_role(cls, v):
+        validate_enum(el=v, el_name="role", expected_enum=MessageRole)
+        return v
 
     def to_dict(self) -> dict:
         """Convert ChatMessage to dict."""

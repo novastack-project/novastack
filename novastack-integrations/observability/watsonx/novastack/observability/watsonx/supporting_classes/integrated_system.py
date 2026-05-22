@@ -3,43 +3,6 @@ from typing import Any, Literal
 from novastack.core.bridge.pydantic import BaseModel, SecretStr
 
 
-class CloudPakforDataCredentials(BaseModel):
-    """
-    Encapsulates the credentials required for IBM Cloud Pak for Data.
-
-    Attributes:
-        url (str): The host URL of the Cloud Pak for Data environment.
-        api_key (str, optional): The API key for the environment, if IAM is enabled.
-        username (str, optional): The username for the environment.
-        password (str, optional): The password for the environment.
-        bedrock_url (str, optional): The Bedrock URL. Required only when IAM integration is enabled on CP4D 4.0.x clusters.
-        instance_id (str, optional): The instance ID.
-        version (str, optional): The version of Cloud Pak for Data.
-        disable_ssl_verification (bool, optional): Indicates whether to disable SSL certificate verification.
-            Defaults to `True`.
-    """
-
-    url: str
-    api_key: SecretStr | None = None
-    username: str | None = None
-    password: SecretStr | None = None
-    bedrock_url: str | None = None
-    instance_id: Literal["icp", "openshift"] | None = None
-    version: str | None = None
-    disable_ssl_verification: bool = True
-
-    def to_dict(self) -> dict[str, Any]:
-        cpd_creds = dict([(k, v) for k, v in self.__dict__.items()])  # noqa: C404
-
-        if "instance_id" in cpd_creds and self.instance_id.lower() not in [
-            "icp",
-            "openshift",
-        ]:
-            cpd_creds.pop("instance_id")
-
-        return cpd_creds
-
-
 class IntegratedSystemCredentials(BaseModel):
     """
     Encapsulates the credentials for an Integrated System based on the authentication type.

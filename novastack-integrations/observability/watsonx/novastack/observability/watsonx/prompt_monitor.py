@@ -2,16 +2,15 @@ import os
 from typing import Any
 
 import certifi
-from novastack.core.bridge.pydantic import PrivateAttr, SecretStr
+from ibm_cloud_sdk_core.authenticators import Authenticator as IBMAuthenticator
+from novastack.common.utils import validate_enum
+from novastack.core.bridge.pydantic import PrivateAttr
 from novastack.core.observability import PromptObservability
 from novastack.core.observability.types import PayloadRecord
 from novastack.observability.watsonx.supporting_classes.clients import (
     AIGovFactsClientFactory,
     WMLClientFactory,
     WosClientFactory,
-)
-from novastack.observability.watsonx.supporting_classes.credentials import (
-    CloudPakforDataCredentials,
 )
 from novastack.observability.watsonx.supporting_classes.data_sets import DataSets
 from novastack.observability.watsonx.supporting_classes.enums import Region, TaskType
@@ -33,45 +32,48 @@ class WatsonxPromptMonitor(PromptObservability):
         `project_id` or `space_id`, but not both.
 
     Attributes:
-        api_key (str): The API key for IBM watsonx.governance.
+        authenticator (IBMAuthenticator): The authenticator specifies the authentication mechanism.
         space_id (str, optional): The space ID in watsonx.governance.
         project_id (str, optional): The project ID in watsonx.governance.
-        region (Region, optional): The region where watsonx.governance is hosted when using IBM Cloud.
+        region (str, optional): The region where watsonx.governance is hosted when using IBM Cloud.
             Defaults to `us-south`.
-        cpd_creds (CloudPakforDataCredentials, optional): The Cloud Pak for Data environment credentials.
         subscription_id (str, optional): The subscription ID associated with the records being logged.
         service_instance_id (str, optional): The service instance ID.
 
     Example:
         ```python
-        from novastack.observability.watsonx import (
-            WatsonxPromptMonitor,
-            CloudPakforDataCredentials,
-        )
+        from novastack.observability.watsonx import WatsonxPromptMonitor
+        from novastack.observability.watsonx.authenticators import IAMAuthenticator
 
         # watsonx.governance (IBM Cloud)
         prompt_mgr = WatsonxPromptMonitor(
-            api_key="API_KEY", space_id="SPACE_ID", region="us-south"
+            authenticator=IAMAuthenticator(apikey="API_KEY"),
+            region="us-south",
+            space_id="SPACE_ID",
         )
 
         # watsonx.governance (CP4D)
-        cpd_creds = CloudPakforDataCredentials(
-            url="CPD_URL",
-            username="USERNAME",
-            password="PASSWORD",
-            version="5.2",
-            instance_id="openshift",
+        from novastack.observability.watsonx.authenticators import (
+            CloudPakForDataAuthenticator,
         )
 
-        prompt_mgr = WatsonxPromptMonitor(space_id="SPACE_ID", cpd_creds=cpd_creds)
+        prompt_mgr = WatsonxPromptMonitor(
+            authenticator=CloudPakForDataAuthenticator(
+                url="CPD_URL",
+                username="USERNAME",
+                password="PASSWORD",
+                instance_id="openshift",
+                version="5.3",
+            ),
+            space_id="SPACE_ID",
+        )
         ```
     """
 
-    api_key: SecretStr | None = None
+    authenticator: IBMAuthenticator
     space_id: str | None = None
     project_id: str | None = None
-    region: Region = Region.US_SOUTH
-    cpd_creds: CloudPakforDataCredentials | None = None
+    region: str = Region.US_SOUTH
     subscription_id: str | None = None
     service_instance_id: str | None = None
 
@@ -81,8 +83,6 @@ class WatsonxPromptMonitor(PromptObservability):
     _deployment_stage: str | None = PrivateAttr(default=None)
 
     def model_post_init(self, __context: Any) -> None:  # noqa: PYI063
-        self.region = Region.from_value(self.region)
-
         # Set container-related attributes
         self._container_id = self.space_id if self.space_id else self.project_id
         self._container_type = "space" if self.space_id else "project"
@@ -96,11 +96,10 @@ class WatsonxPromptMonitor(PromptObservability):
         from ibm_aigov_facts_client import PromptTemplate
 
         aigov_client = AIGovFactsClientFactory.create_client(
-            api_key=self.api_key,
+            authenticator=self.authenticator,
             container_id=self._container_id,
             container_type=self._container_type,
             region=self.region,
-            cpd_creds=self.cpd_creds,
         )
 
         created_pta = aigov_client.assets.create_prompt(
@@ -113,20 +112,18 @@ class WatsonxPromptMonitor(PromptObservability):
 
     def _delete_prompt(self, pta_id: str) -> None:
         aigov_client = AIGovFactsClientFactory.create_client(
-            api_key=self.api_key,
+            authenticator=self.authenticator,
             container_id=self._container_id,
             container_type=self._container_type,
             region=self.region,
-            cpd_creds=self.cpd_creds,
         )
 
         suppress_output(aigov_client.assets.delete_prompt_asset, pta_id)
 
     def _create_deployment_pta(self, asset_id: str, name: str, model_id: str) -> str:
         wml_client = WMLClientFactory.create_client(
-            api_key=self.api_key,
+            authenticator=self.authenticator,
             region=self.region,
-            cpd_creds=self.cpd_creds,
             space_id=self.space_id,
         )
 
@@ -147,9 +144,8 @@ class WatsonxPromptMonitor(PromptObservability):
 
     def _delete_deployment_pta(self, deployment_id: str) -> None:
         wml_client = WMLClientFactory.create_client(
-            api_key=self.api_key,
+            authenticator=self.authenticator,
             region=self.region,
-            cpd_creds=self.cpd_creds,
             space_id=self.space_id,
         )
 
@@ -159,7 +155,7 @@ class WatsonxPromptMonitor(PromptObservability):
         self,
         name: str,
         model_id: str,
-        task_id: TaskType,
+        task_id: str,
         description: str = "",
         model_parameters: dict | None = None,
         prompt_template: str | None = None,
@@ -174,7 +170,7 @@ class WatsonxPromptMonitor(PromptObservability):
         Args:
             name (str): The name of the Prompt Template Asset.
             model_id (str): The ID of the model associated with the prompt.
-            task_id (TaskType): The task identifier.
+            task_id (str): The task identifier.
             description (str, optional): A description of the Prompt Template Asset.
             model_parameters (dict, optional): A dictionary of model parameters and their respective values.
             prompt_template (str, optional): The prompt template.
@@ -187,14 +183,10 @@ class WatsonxPromptMonitor(PromptObservability):
 
         Example:
             ```python
-            from novastack.observability.watsonx.supporting_classes.enums import (
-                TaskType,
-            )
-
             prompt_mgr.create_prompt_monitor(
                 name="IBM prompt template",
                 model_id="ibm/granite-3-2b-instruct",
-                task_id=TaskType.RETRIEVAL_AUGMENTED_GENERATION,
+                task_id="retrieval_augmented_generation",
                 prompt_template="You are a helpful AI assistant that provides clear and accurate answers. {context}. Question: {input_query}.",
                 prompt_variables=["context", "input_query"],
                 context_fields=["context"],
@@ -202,7 +194,8 @@ class WatsonxPromptMonitor(PromptObservability):
             )
             ```
         """
-        task_id = TaskType.from_value(task_id).value
+        validate_enum(task_id, "task_id", TaskType)
+
         rollback_stack = []
 
         if (not (self.project_id or self.space_id)) or (
@@ -236,9 +229,8 @@ class WatsonxPromptMonitor(PromptObservability):
 
         if not self._wos_client:
             self._wos_client = WosClientFactory.create_client(
-                api_key=self.api_key,
+                authenticator=self.authenticator,
                 region=self.region,
-                cpd_creds=self.cpd_creds,
                 service_instance_id=self.service_instance_id,
             )
 
@@ -370,12 +362,11 @@ class WatsonxPromptMonitor(PromptObservability):
         """
         if not self._wos_client:
             self._wos_client = WosClientFactory.create_client(
-                api_key=self.api_key,
+                authenticator=self.authenticator,
                 region=self.region,
-                cpd_creds=self.cpd_creds,
                 service_instance_id=self.service_instance_id,
             )
-        data_sets_mgr = DataSets(wos_client=self._wos_client)
+        data_sets_mgr = DataSets(wos_client=self._wos_client)  # type: ignore
 
         return data_sets_mgr.store_payload_records(
             request_records=request_records,
@@ -415,12 +406,11 @@ class WatsonxPromptMonitor(PromptObservability):
         """
         if not self._wos_client:
             self._wos_client = WosClientFactory.create_client(
-                api_key=self.api_key,
+                authenticator=self.authenticator,
                 region=self.region,
-                cpd_creds=self.cpd_creds,
                 service_instance_id=self.service_instance_id,
             )
-        data_sets_mgr = DataSets(wos_client=self._wos_client)
+        data_sets_mgr = DataSets(wos_client=self._wos_client)  # type: ignore
 
         return data_sets_mgr.store_feedback_records(
             request_records=request_records,

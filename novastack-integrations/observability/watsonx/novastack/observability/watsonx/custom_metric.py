@@ -3,15 +3,16 @@ import uuid
 from typing import Any, Literal
 
 from deprecated import deprecated
-from novastack.core.bridge.pydantic import BaseModel, PrivateAttr, SecretStr
+from ibm_cloud_sdk_core.authenticators import Authenticator as IBMAuthenticator
+from novastack.common.utils import validate_enum
+from novastack.core.bridge.pydantic import BaseModel, PrivateAttr
 from novastack.observability.watsonx.supporting_classes.clients import (
     WosClientFactory,
 )
-from novastack.observability.watsonx.supporting_classes.credentials import (
-    CloudPakforDataCredentials,
+from novastack.observability.watsonx.supporting_classes.enums import DataSetType, Region
+from novastack.observability.watsonx.supporting_classes.integrated_system import (
     IntegratedSystemCredentials,
 )
-from novastack.observability.watsonx.supporting_classes.enums import DataSetType, Region
 from novastack.observability.watsonx.supporting_classes.types import (
     WatsonxMetricSpec,
 )
@@ -23,34 +24,36 @@ class WatsonxCustomMetricsManager(BaseModel):
     Provides functionality to set up a custom metric to measure your model's performance with IBM watsonx.governance.
 
     Attributes:
-        api_key (str): The API key for IBM watsonx.governance.
-        region (Region, optional): The region where watsonx.governance is hosted when using IBM Cloud.
+        authenticator (IBMAuthenticator): The authenticator specifies the authentication mechanism.
+        region (str, optional): The region where watsonx.governance is hosted when using IBM Cloud.
             Defaults to `us-south`.
-        cpd_creds (CloudPakforDataCredentials, optional): IBM Cloud Pak for Data environment credentials.
         service_instance_id (str, optional): The service instance ID.
 
     Example:
         ```python
-        from novastack.observability.watsonx import (
-            WatsonxCustomMetricsManager,
-            CloudPakforDataCredentials,
-        )
+        from novastack.observability.watsonx import WatsonxExternalPromptMonitor
+        from novastack.observability.watsonx.authenticators import IAMAuthenticator
 
         # watsonx.governance (IBM Cloud)
         custom_metric_mgr = WatsonxCustomMetricsManager(
-            api_key="API_KEY", region="us-south"
+            authenticator=IAMAuthenticator(apikey="API_KEY"),
+            space_id="SPACE_ID",
+            region="us-south",
         )
 
         # watsonx.governance (CP4D)
-        cpd_creds = CloudPakforDataCredentials(
-            url="CPD_URL",
-            username="USERNAME",
-            password="PASSWORD",
-            version="5.2",
-            instance_id="openshift",
+        from novastack.observability.watsonx.authenticators import (
+            CloudPakForDataAuthenticator,
         )
 
-        custom_metric_mgr = WatsonxCustomMetricsManager(cpd_creds=cpd_creds)
+        custom_metric_mgr = WatsonxCustomMetricsManager(
+            authenticator=CloudPakForDataAuthenticator(
+                url="CPD_URL",
+                username="USERNAME",
+                password="PASSWORD",
+            ),
+            space_id="SPACE_ID",
+        )
         ```
     """
 
@@ -60,21 +63,17 @@ class WatsonxCustomMetricsManager(BaseModel):
         "validate_default": True,
     }
 
-    api_key: SecretStr | None = None
-    region: Region = Region.US_SOUTH
-    cpd_creds: CloudPakforDataCredentials | None = None
+    authenticator: IBMAuthenticator
+    region: str = Region.US_SOUTH
     service_instance_id: str | None = None
 
     _wos_client: Any | None = PrivateAttr(default=None)
 
     def model_post_init(self, __context: Any) -> None:  # noqa: PYI063
-        self.region = Region.from_value(self.region)
-
         if not self._wos_client:
             self._wos_client = WosClientFactory.create_client(
-                api_key=self.api_key,
+                authenticator=self.authenticator,
                 region=self.region,
-                cpd_creds=self.cpd_creds,
                 service_instance_id=self.service_instance_id,
             )
 
@@ -464,7 +463,7 @@ class WatsonxCustomMetricsManager(BaseModel):
         self,
         custom_data_set_id: str,
         reference_data_set_id: str,
-        computed_on: DataSetType,
+        computed_on: str,
         run_id: str,
         request_records: list[dict],
     ):
@@ -480,7 +479,7 @@ class WatsonxCustomMetricsManager(BaseModel):
         self,
         custom_data_set_id: str,
         reference_data_set_id: str,
-        computed_on: DataSetType,
+        computed_on: str,
         run_id: str,
         request_records: list[dict],
     ):
@@ -490,7 +489,7 @@ class WatsonxCustomMetricsManager(BaseModel):
         Args:
             custom_data_set_id (str): The ID of the custom metric data set.
             reference_data_set_id (str): The dataset ID on which the metric was calculated.
-            computed_on (DataSetType): The dataset on which the metric was calculated (e.g., payload or feedback).
+            computed_on (str): The dataset on which the metric was calculated (e.g., payload or feedback).
             run_id (str): The ID of the monitor run that generated the metrics.
             request_records (list[dict]): A list of dictionaries containing the records to be stored.
 
@@ -512,7 +511,7 @@ class WatsonxCustomMetricsManager(BaseModel):
             )
             ```
         """
-        computed_on = DataSetType.from_value(computed_on).value
+        validate_enum(computed_on, "computed_on", DataSetType)
 
         if request_records:
             for record in request_records:

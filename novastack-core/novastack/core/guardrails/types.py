@@ -1,9 +1,7 @@
 from typing import Any
 
-from novastack.core.bridge.pydantic import (
-    BaseModel,
-    Field,
-)
+from novastack.common.utils import validate_enum
+from novastack.core.bridge.pydantic import BaseModel, Field, field_validator
 from novastack.core.guardrails.enums import Action
 
 
@@ -31,7 +29,7 @@ class GuardrailResponse(BaseModel):
         description="Generated text response",
         min_length=0,
     )
-    action: Action | None = Field(
+    action: str | None = Field(
         default=None,
         description="Action taken by the guardrail (e.g., 'blocked', 'modified', 'allowed')",
     )
@@ -40,3 +38,8 @@ class GuardrailResponse(BaseModel):
         description="Raw response data from the guardrail service",
         exclude=False,
     )
+
+    @field_validator("action")
+    def _validate_action(cls, v):
+        validate_enum(el=v, el_name="action", expected_enum=Action)
+        return v
