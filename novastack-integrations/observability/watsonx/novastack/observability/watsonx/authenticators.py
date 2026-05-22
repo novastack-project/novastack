@@ -1,12 +1,12 @@
 from typing import Literal
 
 from ibm_cloud_sdk_core.authenticators import (
-    CloudPakForDataAuthenticator as CloudPakForDataAuth,
+    CloudPakForDataAuthenticator as _IBMCloudPakForDataAuthenticator,
 )
 from ibm_cloud_sdk_core.authenticators import IAMAuthenticator, MCSPV2Authenticator
 
 
-class CloudPakForDataAuthenticator(CloudPakForDataAuth):
+class CloudPakForDataAuthenticator(_IBMCloudPakForDataAuthenticator):
     """
     IBM Cloud Pak for Data Authenticator.
 
