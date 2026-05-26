@@ -2,7 +2,10 @@ class Action:
     """
     Describes supported action types.
 
-    Contains: [BLOCKED, MODIFIED, ALLOWED]
+    Attributes:
+        BLOCKED (str): "blocked".
+        MODIFIED (str): "modified".
+        ALLOWED (str): "allowed".
     """
 
     BLOCKED = "blocked"
@@ -14,7 +17,9 @@ class Direction:
     """
     Describes possible directions (input/output).
 
-    Contains: [INPUT, OUTPUT]
+    Attributes:
+        INPUT (str): "input".
+        OUTPUT (str): "output".
     """
 
     INPUT = "input"
