@@ -28,14 +28,7 @@ title: watsonx
       show_root_full_path: false
       heading_level: 3
 
-## Credentials
-::: novastack.observability.watsonx.CloudPakforDataCredentials
-    options:
-      members_order: source
-      show_root_heading: true
-      show_root_full_path: false
-      heading_level: 3
-
+## Supporting Classes
 ::: novastack.observability.watsonx.IntegratedSystemCredentials
     options:
       members_order: source
@@ -43,7 +36,6 @@ title: watsonx
       show_root_full_path: false
       heading_level: 3
 
-## Supporting Classes
 ::: novastack.observability.watsonx.WatsonxMetricSpec
     options:
       members_order: source
