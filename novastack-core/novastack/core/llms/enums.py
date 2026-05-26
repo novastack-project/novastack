@@ -2,7 +2,10 @@ class MessageRole:
     """
      Describes possible message role types.
 
-    Contains: [ASSISTANT, SYSTEM, USER, TOOL]
+    Attributes:
+        ASSISTANT (str): "assistant".
+        SYSTEM (str): "system".
+        USER (str): "user".
     """
 
     ASSISTANT = "assistant"

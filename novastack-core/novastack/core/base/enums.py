@@ -2,7 +2,10 @@ class SimilarityMode:
     """
     Describes possible similarity types.
 
-    Contains: [COSINE, DOT_PRODUCT, EUCLIDEAN]
+    Attributes:
+        COSINE (str): "cosine".
+        DOT_PRODUCT (str): "dot_product".
+        EUCLIDEAN (str): "euclidean".
     """
 
     COSINE = "cosine"

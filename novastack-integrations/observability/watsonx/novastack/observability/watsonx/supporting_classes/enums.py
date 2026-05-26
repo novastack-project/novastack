@@ -45,7 +45,11 @@ class Region:
     Defines the available regions where watsonx.governance SaaS
     services are deployed.
 
-    Contains: [AU_SYD, AWS_AP_SOUTH, EU_DE, US_SOUTH]
+    Attributes:
+        AU_SYD (str): "au-syd".
+        AWS_AP_SOUTH (str): "aws-ap-south".
+        EU_DE (str): "eu-de".
+        US_SOUTH (str): "us-south".
     """
 
     AU_SYD = RegionValue("au-syd")
@@ -80,15 +84,14 @@ class TaskType:
     """
     Supported IBM watsonx.governance tasks.
 
-    Contains: [
-        QUESTION_ANSWERING,
-        SUMMARIZATION,
-        RETRIEVAL_AUGMENTED_GENERATION,
-        CLASSIFICATION,
-        GENERATION,
-        CODE,
-        EXTRACTION,
-    ]
+    Attributes:
+        QUESTION_ANSWERING (str): "question_answering".
+        SUMMARIZATION (str): "summarization".
+        RETRIEVAL_AUGMENTED_GENERATION (str): "retrieval_augmented_generation".
+        CLASSIFICATION (str): "classification".
+        GENERATION (str): "generation".
+        CODE (str): "code".
+        EXTRACTION (str): "extraction".
     """
 
     QUESTION_ANSWERING = "question_answering"
@@ -104,7 +107,9 @@ class DataSetType:
     """
     Supported IBM watsonx.governance tasks.
 
-    Contains: [PAYLOAD, FEEDBACK]
+    Attributes:
+        PAYLOAD (str): "payload".
+        FEEDBACK (str): "feedback".
     """
 
     PAYLOAD = "payload"
