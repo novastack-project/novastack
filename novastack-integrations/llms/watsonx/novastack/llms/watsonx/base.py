@@ -1,6 +1,7 @@
 from typing import Any
 
-from novastack.core.bridge.pydantic import Field, SecretStr
+from novastack.common.utils import validate_enum
+from novastack.core.bridge.pydantic import Field, SecretStr, field_validator
 from novastack.core.llms import BaseLLM, ChatMessage, ChatResponse, CompletionResponse
 from novastack.core.llms.decorators import llm_chat_callback, llm_completion_callback
 from novastack.llms.watsonx.supporting_classes.enums import Region
@@ -15,7 +16,7 @@ class WatsonxLLM(BaseLLM):
     Attributes:
         model (str): The identifier of the LLM model to use (e.g., "openai/gpt-oss-120b", "meta-llama/llama-3-3-70b-instruct").
         api_key (str): API key used for authenticating with the LLM provider.
-        region (Region, optional): The region where watsonx.ai is hosted when using IBM Cloud.
+        region (str, optional): The region where watsonx.ai is hosted when using IBM Cloud.
             Defaults to `us-south`.
         project_id (str, optional): The project ID in watsonx.ai.
         space_id (str, optional): The space ID in watsonx.ai.
@@ -34,11 +35,16 @@ class WatsonxLLM(BaseLLM):
 
     model: str
     api_key: SecretStr
-    region: Region = Region.US_SOUTH
+    region: str = Region.US_SOUTH
     project_id: str | None = Field(default=None)
     space_id: str | None = Field(default=None)
     params: dict[str, Any] = Field(default_factory=dict)
     additional_kwargs: dict[str, Any] = Field(default_factory=dict)
+
+    @field_validator("role")
+    def _validate_role(cls, v):
+        validate_enum(el=v, el_name="region", expected_enum=Region)
+        return v
 
     def model_post_init(self, __context):  # noqa: PYI063
         from ibm_watsonx_ai import Credentials
