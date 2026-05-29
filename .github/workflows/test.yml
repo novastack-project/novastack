@@ -6,7 +6,7 @@ on:
   pull_request:
 
 jobs:
-  test:
+  test-common:
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
@@ -23,13 +23,38 @@ jobs:
       - name: Set up Python ${{ matrix.python-version }}
         run: uv python install ${{ matrix.python-version }}
 
-      - name: Install dependencies
+      - name: Install dependencies for novastack-common
+        working-directory: ./novastack-common
         run: uv sync --extra dev
-      
-      - name: Install local packages in editable mode
-        run: |
-          uv pip install -e ./novastack-common
-          uv pip install -e ./novastack-core
 
-      - name: Run tests
+      - name: Run tests for novastack-common
+        working-directory: ./novastack-common
+        run: uv run pytest -v --tb=short
+
+  test-core:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version: ["3.11"]
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@v6
+
+      - name: Set up Python ${{ matrix.python-version }}
+        run: uv python install ${{ matrix.python-version }}
+
+      - name: Install novastack-common in editable mode
+        run: uv pip install -e ./novastack-common
+
+      - name: Install dependencies for novastack-core
+        working-directory: ./novastack-core
+        run: uv sync --extra dev
+
+      - name: Run tests for novastack-core
+        working-directory: ./novastack-core
         run: uv run pytest -v --tb=short
