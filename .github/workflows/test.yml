@@ -48,9 +48,6 @@ jobs:
       - name: Set up Python ${{ matrix.python-version }}
         run: uv python install ${{ matrix.python-version }}
 
-      - name: Install novastack-common in editable mode
-        run: uv pip install -e ./novastack-common
-
       - name: Install dependencies for novastack-core
         working-directory: ./novastack-core
         run: uv sync --extra dev
