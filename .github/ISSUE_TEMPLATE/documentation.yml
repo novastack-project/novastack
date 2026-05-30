@@ -1,7 +1,7 @@
 name: "📚 Documentation"
 description: Report documentation issues or suggest improvements
 title: "[Docs]: "
-labels: ["documentation"]
+labels: ["docs", triage]
 body:
   - type: markdown
     attributes:
@@ -21,7 +21,7 @@ body:
   - type: dropdown
     id: doc-type
     attributes:
-      label: Documentation Type
+      label: Documentation Issue
       description: What type of documentation issue is this?
       options:
         - Missing documentation

@@ -1,7 +1,7 @@
 name: "\U0001F41B Bug Report"
-description: Report a bug in NovaStack
+description: Report a bug in Novastack
 title: "[Bug]: "
-labels: ["bug"]
+labels: ["bug", "triage"]
 body:
   - type: markdown
     attributes:
@@ -18,14 +18,14 @@ body:
           required: true
         - label: I have read the documentation
           required: true
-        - label: I am using the latest version of NovaStack
+        - label: I am using the latest version of Novastack
           required: false
 
   - type: textarea
     id: description
     attributes:
-      label: What happened?
-      description: Describe the bug, what you expected, and what actually happened
+      label: Bug Description
+      description: Describe what happened?, what you expected, and what actually happened
       placeholder: |
         I'm trying to use `novastack` to do X.
         
@@ -70,13 +70,11 @@ body:
       placeholder: |
         - OS: [e.g., Ubuntu 22.04, macOS 14.0, Windows 11]
         - Python version: [e.g., 3.11.9]
-        - NovaStack version: [e.g., 0.6.1]
-        - Installation method: [e.g., pip, poetry, conda]
+        - Novastack version: [e.g., 0.6.1]
       value: |
         - OS:
         - Python version:
-        - NovaStack version:
-        - Installation method:
+        - Novastack version:
     validations:
       required: true
       

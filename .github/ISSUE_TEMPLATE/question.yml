@@ -1,5 +1,5 @@
 name: "❓ Question"
-description: Ask a question about NovaStack
+description: Ask a question about Novastack
 title: "[Question]: "
 labels: ["question"]
 body:
@@ -26,7 +26,7 @@ body:
       placeholder: |
         How do I...?
         What is the best way to...?
-        Can NovaStack support...?
+        Can Novastack support...?
     validations:
       required: true
 

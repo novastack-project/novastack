@@ -1,7 +1,7 @@
 name: "✨ Feature Request"
 description: Suggest a new feature or enhancement
 title: "[Feature]: "
-labels: ["enhancement"]
+labels: ["enhancement", "triage"]
 body:
   - type: markdown
     attributes:
@@ -22,10 +22,10 @@ body:
   - type: textarea
     id: proposed-feature
     attributes:
-      label: Proposed Feature
+      label: Feature Description
       description: Describe the feature you'd like to see
       placeholder: |
-        I would like NovaStack to support...
+        I would like Novastack to support...
         This could work by...
     validations:
       required: true
