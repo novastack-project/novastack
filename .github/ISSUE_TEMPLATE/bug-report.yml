@@ -26,11 +26,6 @@ body:
     attributes:
       label: Bug Description
       description: Describe what happened?, what you expected, and what actually happened
-      placeholder: |
-        I'm trying to use `novastack` to do X.
-        
-        **Expected:** The function should return Y
-        **Actual:** Instead, it returns Z with error "..."
     validations:
       required: true
 
@@ -39,12 +34,6 @@ body:
     attributes:
       label: Steps to Reproduce
       description: Provide minimal code to reproduce the issue
-      placeholder: |
-        ```python
-        from novastack.llms.litellm import LiteLLM
-        
-        # Your minimal code example here
-        ```
       render: python
     validations:
       required: true
@@ -54,10 +43,6 @@ body:
     attributes:
       label: Logs / Error Messages
       description: Include relevant error messages or stack traces
-      placeholder: |
-        Traceback (most recent call last):
-          File "example.py", line 10, in <module>
-            ...
       render: shell
     validations:
       required: false
@@ -67,14 +52,10 @@ body:
     attributes:
       label: Environment
       description: Please provide your environment details
-      placeholder: |
-        - OS: [e.g., Ubuntu 22.04, macOS 14.0, Windows 11]
-        - Python version: [e.g., 3.11.9]
-        - Novastack version: [e.g., 0.6.1]
       value: |
-        - OS:
-        - Python version:
-        - Novastack version:
+        - OS: 
+        - Python version: 
+        - Novastack version: 
     validations:
       required: true
       

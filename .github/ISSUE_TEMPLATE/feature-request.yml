@@ -24,9 +24,6 @@ body:
     attributes:
       label: Feature Description
       description: Describe the feature you'd like to see
-      placeholder: |
-        I would like Novastack to support...
-        This could work by...
     validations:
       required: true
 
@@ -35,9 +32,6 @@ body:
     attributes:
       label: Use Case
       description: Describe your specific use case and how this feature would benefit you and others
-      placeholder: |
-        In my project, I need to...
-        This would help users who...
     validations:
       required: false
 
@@ -46,12 +40,6 @@ body:
     attributes:
       label: Implementation Ideas
       description: If you have technical suggestions for implementation, share them here
-      placeholder: |
-        This could be implemented by...
-        Potential API design:
-        ```python
-        # Example code
-        ```
     validations:
       required: false
 

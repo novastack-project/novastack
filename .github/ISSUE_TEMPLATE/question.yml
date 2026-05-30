@@ -23,10 +23,6 @@ body:
     attributes:
       label: Question
       description: What would you like to know?
-      placeholder: |
-        How do I...?
-        What is the best way to...?
-        Can Novastack support...?
     validations:
       required: true
 

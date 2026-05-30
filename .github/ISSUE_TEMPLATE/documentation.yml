@@ -47,10 +47,6 @@ body:
     attributes:
       label: Issue Description
       description: Describe what's wrong or missing
-      placeholder: |
-        The documentation for X is unclear because...
-        The example code doesn't work...
-        Missing information about...
     validations:
       required: true
 
@@ -59,10 +55,6 @@ body:
     attributes:
       label: Suggested Improvement
       description: How should the documentation be improved?
-      placeholder: |
-        The documentation should explain...
-        Add an example showing...
-        Update the text to say...
     validations:
       required: false
         
