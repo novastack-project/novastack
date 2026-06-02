@@ -1,4 +1,4 @@
-# NovaStack Common
+# Novastack Common
 
 This library contains common utilities used across various packages.
 
