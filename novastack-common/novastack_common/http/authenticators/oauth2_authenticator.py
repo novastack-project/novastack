@@ -2,15 +2,16 @@ from datetime import datetime, timedelta
 from typing import Any
 
 import httpx
-from novastack.common.enums import BaseStrEnum
-from novastack.common.http.authenticators.base import BaseAuthenticator
-from novastack.common.http.exceptions import HttpAuthenticationError
 from pydantic import (
     Field,
     PrivateAttr,
     SecretStr,
     field_validator,
 )
+
+from novastack_common.enums import BaseStrEnum
+from novastack_common.http.authenticators.base import BaseAuthenticator
+from novastack_common.http.exceptions import HttpAuthenticationError
 
 
 class OAuth2GrantType(BaseStrEnum):

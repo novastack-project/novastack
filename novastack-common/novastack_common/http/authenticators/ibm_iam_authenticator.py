@@ -1,9 +1,10 @@
 from datetime import datetime, timedelta
 
 import httpx
-from novastack.common.http.authenticators.base import BaseAuthenticator
-from novastack.common.http.exceptions import HttpAuthenticationError
 from pydantic import Field, PrivateAttr, SecretStr
+
+from novastack_common.http.authenticators.base import BaseAuthenticator
+from novastack_common.http.exceptions import HttpAuthenticationError
 
 
 class IBMIAMAuthenticator(BaseAuthenticator):

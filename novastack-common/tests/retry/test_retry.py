@@ -1,5 +1,5 @@
 import pytest
-from novastack.common.retry import (
+from novastack_common.retry import (
     retry,
     retry_if_exception,
     stop_after_attempt,

@@ -1,6 +1,6 @@
 import random
 
-from novastack.common.retry.types import RetryState
+from novastack_common.retry.types import RetryState
 
 
 class _BaseRetryCondition:

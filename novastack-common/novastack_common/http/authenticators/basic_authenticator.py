@@ -1,8 +1,9 @@
 import base64
 
-from novastack.common.http.authenticators.base import BaseAuthenticator
-from novastack.common.http.exceptions import HttpAuthenticationError
 from pydantic import Field, SecretStr
+
+from novastack_common.http.authenticators.base import BaseAuthenticator
+from novastack_common.http.exceptions import HttpAuthenticationError
 
 
 class BasicAuthenticator(BaseAuthenticator):

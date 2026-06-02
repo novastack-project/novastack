@@ -27,7 +27,7 @@ dev = [
 Repository = "https://github.com/novastack-project/novastack/tree/main/novastack-common"
 
 [tool.hatch.build.targets.sdist]
-include = ["novastack/"]
+include = ["novastack_common/"]
 
 [tool.hatch.build.targets.wheel]
-include = ["novastack/"]
+include = ["novastack_common/"]

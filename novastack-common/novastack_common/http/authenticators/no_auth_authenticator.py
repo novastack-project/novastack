@@ -1,4 +1,4 @@
-from novastack.common.http.authenticators.base import BaseAuthenticator
+from novastack_common.http.authenticators.base import BaseAuthenticator
 
 
 class NoAuthAuthenticator(BaseAuthenticator):

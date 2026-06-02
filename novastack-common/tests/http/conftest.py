@@ -1,6 +1,6 @@
 import pytest
-from novastack.common.http import HttpService
-from novastack.common.http.authenticators import (
+from novastack_common.http import HttpService
+from novastack_common.http.authenticators import (
     BasicAuthenticator,
     OAuth2Authenticator,
     OAuth2GrantType,

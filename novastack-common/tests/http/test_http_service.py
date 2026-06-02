@@ -2,12 +2,12 @@ from unittest.mock import Mock, patch
 
 import httpx
 import pytest
-from novastack.common.http import HttpService
-from novastack.common.http.exceptions import (
+from novastack_common.http import HttpService
+from novastack_common.http.exceptions import (
     HttpConnectionError,
     HttpRequestTimeoutError,
 )
-from novastack.common.http.types import HttpResponse
+from novastack_common.http.types import HttpResponse
 
 
 class TestHttpServiceCore:

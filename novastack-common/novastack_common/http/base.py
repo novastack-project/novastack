@@ -1,15 +1,16 @@
 from typing import Any
 
 import httpx
-from novastack.common.http.authenticators import NoAuthAuthenticator
-from novastack.common.http.authenticators.base import BaseAuthenticator
-from novastack.common.http.exceptions import (
+from pydantic import BaseModel, Field, PrivateAttr
+
+from novastack_common.http.authenticators import NoAuthAuthenticator
+from novastack_common.http.authenticators.base import BaseAuthenticator
+from novastack_common.http.exceptions import (
     HttpConnectionError,
     HttpRequestError,
     HttpRequestTimeoutError,
 )
-from novastack.common.http.types import HttpResponse
-from pydantic import BaseModel, Field, PrivateAttr
+from novastack_common.http.types import HttpResponse
 
 
 class HttpService(BaseModel):
