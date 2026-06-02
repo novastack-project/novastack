@@ -29,7 +29,7 @@ class DispatcherSpanMixin(ABC):
         """
         Collect method names from base classes that should be decorated
         when overridden in subclasses.
-        
+
         Only collects methods that were explicitly decorated with @dispatcher.span.
         """
         decorated_methods: set[str] = set()
