@@ -2,7 +2,7 @@ from novastack_instrumentation._dispatcher_core import Dispatcher, _DispatcherMa
 
 root_dispatcher: Dispatcher = Dispatcher(
     name="root",
-    callbacks=[],
+    handlers=[],
     propagate=False,
 )
 
