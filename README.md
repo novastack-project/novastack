@@ -1,4 +1,9 @@
-# 🗂️ NovaStack
+<div align="center">
+    <picture>
+      <img alt="Novastack Logo" src=".github/images/logo-light.png" width="50%">
+    </picture>
+  </a>
+</div>
 
 ![PyPI - Version](https://img.shields.io/pypi/v/novastack)
 [![Hatch project](https://img.shields.io/badge/%F0%9F%A5%9A-Hatch-4051b5.svg)](https://github.com/pypa/hatch)
