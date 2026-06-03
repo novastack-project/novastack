@@ -1,4 +1,3 @@
-from novastack_common.http.authenticators.base import BaseAuthenticator
 from novastack_common.http.authenticators.basic_authenticator import (
     BasicAuthenticator,
 )
@@ -14,7 +13,6 @@ from novastack_common.http.authenticators.oauth2_authenticator import (
 )
 
 __all__ = [
-    "BaseAuthenticator",
     "BasicAuthenticator",
     "IBMIAMAuthenticator",
     "NoAuthAuthenticator",
