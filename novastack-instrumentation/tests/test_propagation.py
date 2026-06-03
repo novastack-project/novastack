@@ -21,7 +21,7 @@ class PropagatingObservability(BaseObservability):
 
 def test_capture_propagation_context_basic():
     handler = PropagatingObservability()
-    d = Dispatcher(callbacks=[handler], propagate=False)
+    d = Dispatcher(handlers=[handler], propagate=False)
 
     ctx = d.capture_propagation_context()
 
@@ -31,7 +31,7 @@ def test_capture_propagation_context_basic():
 
 def test_capture_includes_instrument_tags():
     handler = BaseObservability()
-    d = Dispatcher(callbacks=[handler], propagate=False)
+    d = Dispatcher(handlers=[handler], propagate=False)
 
     token = _active_context_metadata.set({"user_id": "u1", "session": "s1"})
     try:
@@ -44,7 +44,7 @@ def test_capture_includes_instrument_tags():
 
 def test_capture_omits_instrument_tags_when_empty():
     handler = BaseObservability()
-    d = Dispatcher(callbacks=[handler], propagate=False)
+    d = Dispatcher(handlers=[handler], propagate=False)
 
     ctx = d.capture_propagation_context()
 
@@ -53,7 +53,7 @@ def test_capture_omits_instrument_tags_when_empty():
 
 def test_restore_propagation_context_basic():
     handler = PropagatingObservability()
-    d = Dispatcher(callbacks=[handler], propagate=False)
+    d = Dispatcher(handlers=[handler], propagate=False)
 
     context = {"test_handler": {"trace_id": "abc123"}}
     d.restore_propagation_context(context)
@@ -63,7 +63,7 @@ def test_restore_propagation_context_basic():
 
 def test_restore_sets_instrument_tags():
     handler = BaseObservability()
-    d = Dispatcher(callbacks=[handler], propagate=False)
+    d = Dispatcher(handlers=[handler], propagate=False)
 
     d.restore_propagation_context({_CONTEXT_METADATA_KEY: {"user_id": "u1"}})
 
@@ -76,10 +76,10 @@ def test_capture_walks_parent_chain():
     parent_handler = PropagatingObservability()
     child_handler = BaseObservability()
 
-    parent = Dispatcher(name="parent", callbacks=[parent_handler], propagate=False)
+    parent = Dispatcher(name="parent", handlers=[parent_handler], propagate=False)
     child = Dispatcher(
         name="child",
-        callbacks=[child_handler],
+        handlers=[child_handler],
         propagate=True,
         parent_name="parent",
     )
@@ -97,10 +97,10 @@ def test_restore_walks_parent_chain():
     parent_handler = PropagatingObservability()
     child_handler = PropagatingObservability()
 
-    parent = Dispatcher(name="parent", callbacks=[parent_handler], propagate=False)
+    parent = Dispatcher(name="parent", handlers=[parent_handler], propagate=False)
     child = Dispatcher(
         name="child",
-        callbacks=[child_handler],
+        handlers=[child_handler],
         propagate=True,
         parent_name="parent",
     )
@@ -120,10 +120,10 @@ def test_capture_stops_at_propagate_false():
     parent_handler = PropagatingObservability()
     child_handler = BaseObservability()
 
-    parent = Dispatcher(name="parent", callbacks=[parent_handler], propagate=False)
+    parent = Dispatcher(name="parent", handlers=[parent_handler], propagate=False)
     child = Dispatcher(
         name="child",
-        callbacks=[child_handler],
+        handlers=[child_handler],
         propagate=False,
         parent_name="parent",
     )
@@ -140,7 +140,7 @@ def test_capture_stops_at_propagate_false():
 def test_roundtrip_capture_restore():
     """Capture from one dispatcher, restore on another — simulates cross-process."""
     source_handler = PropagatingObservability()
-    source = Dispatcher(callbacks=[source_handler], propagate=False)
+    source = Dispatcher(handlers=[source_handler], propagate=False)
 
     token = _active_context_metadata.set({"env": "prod"})
     try:
@@ -149,7 +149,7 @@ def test_roundtrip_capture_restore():
         _active_context_metadata.reset(token)
 
     dest_handler = PropagatingObservability()
-    dest = Dispatcher(callbacks=[dest_handler], propagate=False)
+    dest = Dispatcher(handlers=[dest_handler], propagate=False)
 
     dest.restore_propagation_context(ctx)
 
@@ -159,24 +159,24 @@ def test_roundtrip_capture_restore():
     _active_context_metadata.set({})
 
 
-def test_capture_swallows_callback_exceptions():
+def test_capture_swallows_handler_exceptions():
     class BrokenObservability(BaseObservability):
         def capture_propagation_context(self) -> dict[str, Any]:
             raise RuntimeError("boom")
 
     handler = BrokenObservability()
-    d = Dispatcher(callbacks=[handler], propagate=False)
+    d = Dispatcher(handlers=[handler], propagate=False)
 
     ctx = d.capture_propagation_context()
     assert isinstance(ctx, dict)
 
 
-def test_restore_swallows_callback_exceptions():
+def test_restore_swallows_handler_exceptions():
     class BrokenObservability(BaseObservability):
         def restore_propagation_context(self, context: dict[str, Any]) -> None:
             raise RuntimeError("boom")
 
     handler = BrokenObservability()
-    d = Dispatcher(callbacks=[handler], propagate=False)
+    d = Dispatcher(handlers=[handler], propagate=False)
 
     d.restore_propagation_context({"some": "data"})

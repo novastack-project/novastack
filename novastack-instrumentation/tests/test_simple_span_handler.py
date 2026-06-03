@@ -14,10 +14,10 @@ class SampleEvent(BaseEvent):
         return "SampleEvent"
 
 
-def test_simple_span_callback_basic():
+def test_simple_span_handler_basic():
     """Test basic span tracking with NovastackDebugObservability."""
     handler = NovastackDebugObservability()
-    dispatcher = Dispatcher(callbacks=[handler], propagate=False)
+    dispatcher = Dispatcher(handlers=[handler], propagate=False)
 
     @dispatcher.span
     def parent_func():
@@ -36,10 +36,10 @@ def test_simple_span_callback_basic():
     assert len(handler.dropped_spans) == 0
 
 
-def test_simple_span_callback_tracks_events():
+def test_simple_span_handler_tracks_events():
     """Test that NovastackDebugObservability tracks events."""
     handler = NovastackDebugObservability()
-    dispatcher = Dispatcher(callbacks=[handler], propagate=False)
+    dispatcher = Dispatcher(handlers=[handler], propagate=False)
 
     @dispatcher.span
     def test_func():
@@ -55,10 +55,10 @@ def test_simple_span_callback_tracks_events():
     assert handler.events[1].message == "event2"
 
 
-def test_simple_span_callback_with_error():
+def test_simple_span_handler_with_error():
     """Test span tracking when errors occur."""
     handler = NovastackDebugObservability()
-    dispatcher = Dispatcher(callbacks=[handler], propagate=False)
+    dispatcher = Dispatcher(handlers=[handler], propagate=False)
 
     @dispatcher.span
     def error_func():
@@ -75,7 +75,7 @@ def test_simple_span_callback_with_error():
 def test_print_trace_trees_basic():
     """Test print_trace_trees with basic hierarchy."""
     handler = NovastackDebugObservability()
-    dispatcher = Dispatcher(callbacks=[handler], propagate=False)
+    dispatcher = Dispatcher(handlers=[handler], propagate=False)
 
     @dispatcher.span
     def parent_func():
@@ -97,7 +97,7 @@ def test_print_trace_trees_basic():
 def test_print_trace_trees_with_events():
     """Test print_trace_trees displays events under spans."""
     handler = NovastackDebugObservability()
-    dispatcher = Dispatcher(callbacks=[handler], propagate=False)
+    dispatcher = Dispatcher(handlers=[handler], propagate=False)
 
     @dispatcher.span
     def parent_func():
@@ -141,7 +141,7 @@ def test_print_trace_trees_with_events():
 def test_print_trace_trees_multiple_roots():
     """Test print_trace_trees with multiple root spans."""
     handler = NovastackDebugObservability()
-    dispatcher = Dispatcher(callbacks=[handler], propagate=False)
+    dispatcher = Dispatcher(handlers=[handler], propagate=False)
 
     @dispatcher.span
     def func1():
@@ -165,7 +165,7 @@ def test_print_trace_trees_multiple_roots():
 def test_print_trace_trees_nested():
     """Test print_trace_trees with deeply nested spans."""
     handler = NovastackDebugObservability()
-    dispatcher = Dispatcher(callbacks=[handler], propagate=False)
+    dispatcher = Dispatcher(handlers=[handler], propagate=False)
 
     @dispatcher.span
     def level1():
@@ -194,7 +194,7 @@ def test_print_trace_trees_nested():
 def test_get_trace_trees_returns_trees():
     """Test that _get_trace_trees returns Tree objects."""
     handler = NovastackDebugObservability()
-    dispatcher = Dispatcher(callbacks=[handler], propagate=False)
+    dispatcher = Dispatcher(handlers=[handler], propagate=False)
 
     @dispatcher.span
     def test_func():
@@ -213,10 +213,10 @@ def test_get_trace_trees_returns_trees():
         pytest.skip("treelib not installed")
 
 
-def test_span_callback_parent_child_relationship():
+def test_span_handler_parent_child_relationship():
     """Test that parent-child relationships are correctly tracked."""
     handler = NovastackDebugObservability()
-    dispatcher = Dispatcher(callbacks=[handler], propagate=False)
+    dispatcher = Dispatcher(handlers=[handler], propagate=False)
 
     @dispatcher.span
     def parent_func():
@@ -246,7 +246,7 @@ def test_span_callback_parent_child_relationship():
 def test_print_event_trees():
     """Test print_event_trees displays events grouped by span."""
     handler = NovastackDebugObservability()
-    dispatcher = Dispatcher(callbacks=[handler], propagate=False)
+    dispatcher = Dispatcher(handlers=[handler], propagate=False)
 
     @dispatcher.span
     def test_func():
@@ -272,7 +272,7 @@ def test_print_event_trees():
 def test_print_trace_trees_spans_only():
     """Test print_trace_trees with include_events=False."""
     handler = NovastackDebugObservability()
-    dispatcher = Dispatcher(callbacks=[handler], propagate=False)
+    dispatcher = Dispatcher(handlers=[handler], propagate=False)
 
     @dispatcher.span
     def parent_func():

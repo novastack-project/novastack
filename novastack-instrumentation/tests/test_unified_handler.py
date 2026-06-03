@@ -61,7 +61,7 @@ class UnifiedTestHandler(BaseObservability):
 def test_unified_handler_receives_events():
     """Test that unified handlers receive events."""
     handler = UnifiedTestHandler()
-    dispatcher = Dispatcher(callbacks=[handler], propagate=False)
+    dispatcher = Dispatcher(handlers=[handler], propagate=False)
 
     event = UnifiedTestEvent(message="hello")
     dispatcher.event(event)
@@ -73,7 +73,7 @@ def test_unified_handler_receives_events():
 def test_unified_handler_receives_spans():
     """Test that unified handlers receive span signals."""
     handler = UnifiedTestHandler()
-    dispatcher = Dispatcher(callbacks=[handler], propagate=False)
+    dispatcher = Dispatcher(handlers=[handler], propagate=False)
 
     @dispatcher.span
     def test_func():
@@ -90,7 +90,7 @@ def test_unified_handler_receives_spans():
 def test_unified_handler_receives_span_drops():
     """Test that unified handlers receive span drop signals."""
     handler = UnifiedTestHandler()
-    dispatcher = Dispatcher(callbacks=[handler], propagate=False)
+    dispatcher = Dispatcher(handlers=[handler], propagate=False)
 
     @dispatcher.span
     def test_func_error():

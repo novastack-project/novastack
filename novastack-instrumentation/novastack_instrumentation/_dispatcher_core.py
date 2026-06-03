@@ -39,7 +39,7 @@ class Dispatcher(BaseModel):
     """
     Orchestrates instrumentation events and span lifecycle management.
 
-    Routes events and span signals to registered callbacks through a hierarchical
+    Routes events and span signals to registered handlers through a hierarchical
     propagation chain. Provides a decorator-based API (@dispatcher.span) for
     automatic span tracking in both sync and async contexts. Supports thread-safe
     and async-safe operations using ContextVars, with automatic parent-child span
@@ -49,8 +49,8 @@ class Dispatcher(BaseModel):
 
     model_config = {"arbitrary_types_allowed": True}
     name: str = Field(default_factory=str, description="The name of dispatcher")
-    callbacks: list[BaseObservability] = Field(
-        default=[], description="List of unified callbacks"
+    handlers: list[BaseObservability] = Field(
+        default=[], description="List of unified handlers"
     )
     parent_name: str = Field(
         default_factory=str, description="The name of parent Dispatcher."
@@ -63,7 +63,7 @@ class Dispatcher(BaseModel):
     )
     propagate: bool = Field(
         default=True,
-        description="Whether to propagate the event to parent dispatchers and their callbacks",
+        description="Whether to propagate the event to parent dispatchers and their handlers",
     )
 
     @property
@@ -76,43 +76,43 @@ class Dispatcher(BaseModel):
         assert self.dispatcher_manager is not None
         return self.dispatcher_manager.dispatchers[self.root_name]
 
-    def _get_callback_hierarchy(self) -> Generator[BaseObservability, None, None]:
-        """Retrieve every callbacks reachable via the propagation chain."""
-        c: Dispatcher | None = self
-        while c:
-            yield from c.callbacks
-            if not c.propagate:
+    def _get_handler_hierarchy(self) -> Generator[BaseObservability, None, None]:
+        """Retrieve every handlers reachable via the propagation chain."""
+        h: Dispatcher | None = self
+        while h:
+            yield from h.handlers
+            if not h.propagate:
                 break
-            c = c.parent
+            h = h.parent
 
-    def _dispatch_to_callbacks(
-        self, callback_method: str, *args: Any, **kwargs: Any
+    def _dispatch_to_handlers(
+        self, handler_method: str, *args: Any, **kwargs: Any
     ) -> None:
         """
-        Invoke callback method across the propagation chain with error isolation.
+        Invoke handler method across the propagation chain with error isolation.
 
-        Calls the specified method on all callbacks in the chain. Callback exceptions
+        Calls the specified method on all handlers in the chain. Handler exceptions
         are silently caught to ensure instrumentation failures don't break application code.
 
         Args:
-            callback_method: Name of the callback method to call
-            *args: Positional arguments to pass to the callback method
-            **kwargs: Keyword arguments to pass to the callback method
+            handler_method: Name of the handler method to call
+            *args: Positional arguments to pass to the handler method
+            **kwargs: Keyword arguments to pass to the handler method
         """
-        for c in self._get_callback_hierarchy():
+        for h in self._get_handler_hierarchy():
             try:
-                getattr(c, callback_method)(*args, **kwargs)
+                getattr(h, handler_method)(*args, **kwargs)
             except BaseException:
                 pass
 
-    def add_callback(self, callback: BaseObservability) -> None:
-        """Add callback to set of callbacks."""
-        self.callbacks += [callback]
+    def add_handler(self, handler: BaseObservability) -> None:
+        """Add handler to set of handlers."""
+        self.handlers += [handler]
 
     def event(self, event: BaseEvent, **kwargs: Any) -> None:
-        """Dispatch event to all registered callbacks."""
+        """Dispatch event to all registered handlers."""
         event.metadata.update(_active_context_metadata.get())
-        self._dispatch_to_callbacks("on_event", event, **kwargs)
+        self._dispatch_to_handlers("on_event", event, **kwargs)
 
     def _span_start(
         self,
@@ -123,8 +123,8 @@ class Dispatcher(BaseModel):
         metadata: dict[str, Any] | None = None,
         **kwargs: Any,
     ) -> None:
-        """Internal: Send notice to callbacks that a span with id_ has started."""
-        self._dispatch_to_callbacks(
+        """Internal: Send notice to handlers that a span with id_ has started."""
+        self._dispatch_to_handlers(
             "on_span_start",
             id_=id_,
             bound_args=bound_args,
@@ -142,8 +142,8 @@ class Dispatcher(BaseModel):
         result: Any | None = None,
         **kwargs: Any,
     ) -> None:
-        """Internal: Send notice to callbacks that a span with id_ is exiting."""
-        self._dispatch_to_callbacks(
+        """Internal: Send notice to handlers that a span with id_ is exiting."""
+        self._dispatch_to_handlers(
             "on_span_end",
             id_=id_,
             bound_args=bound_args,
@@ -160,8 +160,8 @@ class Dispatcher(BaseModel):
         err: BaseException | None = None,
         **kwargs: Any,
     ) -> None:
-        """Internal: Send notice to callbacks that a span with id_ is being exited due an exception."""
-        self._dispatch_to_callbacks(
+        """Internal: Send notice to handlers that a span with id_ is being exited due an exception."""
+        self._dispatch_to_handlers(
             "on_span_exception",
             id_=id_,
             bound_args=bound_args,
@@ -172,13 +172,13 @@ class Dispatcher(BaseModel):
 
     def capture_propagation_context(self) -> dict[str, Any]:
         """
-        Capture trace propagation context from all callbacks and active metadata.
+        Capture trace propagation context from all handlers and active metadata.
 
-        Returns a serializable dictionary with namespaced callback data and context
+        Returns a serializable dictionary with namespaced handler data and context
         metadata, suitable for cross-process propagation via restore_propagation_context().
         """
         result: dict[str, Any] = {}
-        for h in self._get_callback_hierarchy():
+        for h in self._get_handler_hierarchy():
             try:
                 result.update(h.capture_propagation_context())
             except BaseException:
@@ -190,12 +190,12 @@ class Dispatcher(BaseModel):
 
     def restore_propagation_context(self, context: dict[str, Any]) -> None:
         """
-        Restore trace propagation context across all callbacks and metadata.
+        Restore trace propagation context across all handlers and metadata.
 
-        Applies the context to all callbacks in the chain and updates active
+        Applies the context to all handlers in the chain and updates active
         context metadata for subsequent span operations.
         """
-        for h in self._get_callback_hierarchy():
+        for h in self._get_handler_hierarchy():
             try:
                 h.restore_propagation_context(context)
             except BaseException:
@@ -206,16 +206,16 @@ class Dispatcher(BaseModel):
 
     def shutdown(self) -> None:
         """
-        Gracefully shutdown all callbacks in the propagation chain.
+        Gracefully shutdown all handlers in the propagation chain.
 
-        Invokes shutdown() on each callback while suppressing exceptions to ensure
-        complete cleanup even if individual callback fail.
+        Invokes shutdown() on each handler while suppressing exceptions to ensure
+        complete cleanup even if individual handler fail.
         """
-        for h in self._get_callback_hierarchy():
+        for h in self._get_handler_hierarchy():
             try:
                 h.shutdown()
             except BaseException:
-                _logger.warning("Error closing callback %s", h, exc_info=True)
+                _logger.warning("Error closing handler %s", h, exc_info=True)
 
     def span(self, func: Callable[..., _R]) -> Callable[..., _R]:
         try:

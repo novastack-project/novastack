@@ -4,7 +4,7 @@ from novastack_instrumentation._dispatcher_core import Dispatcher, _DispatcherMa
 from novastack_instrumentation.observability import BaseObservability
 
 
-def test_shutdown_calls_close_on_callbacks():
+def test_shutdown_calls_close_on_handlers():
     shutdown_mock = MagicMock()
 
     class TrackingObservability(BaseObservability):
@@ -12,7 +12,7 @@ def test_shutdown_calls_close_on_callbacks():
             shutdown_mock()
 
     handler = TrackingObservability()
-    d = Dispatcher(callbacks=[handler], propagate=False)
+    d = Dispatcher(handlers=[handler], propagate=False)
 
     d.shutdown()
 
@@ -34,10 +34,10 @@ def test_shutdown_walks_parent_chain():
     parent_handler = ParentObservability()
     child_handler = ChildObservability()
 
-    parent = Dispatcher(name="parent", callbacks=[parent_handler], propagate=False)
+    parent = Dispatcher(name="parent", handlers=[parent_handler], propagate=False)
     child = Dispatcher(
         name="child",
-        callbacks=[child_handler],
+        handlers=[child_handler],
         propagate=True,
         parent_name="parent",
     )
@@ -60,7 +60,7 @@ def test_shutdown_is_idempotent():
             shutdown_mock()
 
     handler = TrackingObservability()
-    d = Dispatcher(callbacks=[handler], propagate=False)
+    d = Dispatcher(handlers=[handler], propagate=False)
 
     d.shutdown()
     d.shutdown()

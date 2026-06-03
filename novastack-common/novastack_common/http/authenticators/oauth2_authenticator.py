@@ -2,19 +2,14 @@ from datetime import datetime, timedelta
 from typing import Any
 
 import httpx
-from pydantic import (
-    Field,
-    PrivateAttr,
-    SecretStr,
-    field_validator,
-)
+from pydantic import Field, PrivateAttr, SecretStr, field_validator
 
-from novastack_common.enums import BaseStrEnum
+from novastack_common import validate_enum
 from novastack_common.http.authenticators.base import BaseAuthenticator
 from novastack_common.http.exceptions import HttpAuthenticationError
 
 
-class OAuth2GrantType(BaseStrEnum):
+class OAuth2GrantType:
     """
     Supported OAuth2 grant type.
 
@@ -41,7 +36,7 @@ class OAuth2Authenticator(BaseAuthenticator):
     token_url: str = Field(..., description="OAuth2 token endpoint URL")
     client_id: str = Field(..., min_length=1, description="OAuth2 client ID")
     client_secret: SecretStr = Field(..., description="OAuth2 client secret")
-    grant_type: OAuth2GrantType = Field(
+    grant_type: str = Field(
         default=OAuth2GrantType.CLIENT_CREDENTIALS, description="OAuth2 grant type"
     )
     username: str | None = Field(
@@ -58,6 +53,11 @@ class OAuth2Authenticator(BaseAuthenticator):
     _token_type: str = PrivateAttr(default="Bearer")
     _expires_at: datetime | None = PrivateAttr(default=None)
     _refresh_token: str | None = PrivateAttr(default=None)
+
+    @field_validator("grant_type")
+    def _validate_grant_type(cls, v):
+        validate_enum(el=v, el_name="grant_type", expected_enum=OAuth2GrantType)
+        return v
 
     def model_post_init(self, __context: Any) -> None:  # noqa: PYI063
         if self.grant_type == OAuth2GrantType.PASSWORD:
@@ -176,20 +176,20 @@ class OAuth2Authenticator(BaseAuthenticator):
 
         if use_refresh_token and self._refresh_token:
             data = {
-                "grant_type": OAuth2GrantType.REFRESH_TOKEN.value,
+                "grant_type": OAuth2GrantType.REFRESH_TOKEN,
                 "refresh_token": self._refresh_token,
                 **base_data,
             }
         elif self.grant_type == OAuth2GrantType.PASSWORD:
             data = {
-                "grant_type": self.grant_type.value,
+                "grant_type": self.grant_type,
                 "username": self.username,
                 "password": self.password.get_secret_value() if self.password else None,
                 **base_data,
             }
         else:
             data = {
-                "grant_type": self.grant_type.value,
+                "grant_type": self.grant_type,
                 **base_data,
             }
 

@@ -370,7 +370,7 @@ def test_dispatcher_fire_event(
 ):
     mock_uuid.uuid4.return_value = "mock"
     event_handler = _TestEventObservability()
-    dispatcher.add_callback(event_handler)
+    dispatcher.add_handler(event_handler)
 
     _ = func_with_event(3, c=5)
 
@@ -394,7 +394,7 @@ async def test_dispatcher_async_fire_event(
     mock_span_end: MagicMock,
 ):
     event_handler = _TestEventObservability()
-    dispatcher.add_callback(event_handler)
+    dispatcher.add_handler(event_handler)
 
     tasks = [
         async_func_with_event(a=3, c=5),
@@ -422,7 +422,7 @@ async def test_dispatcher_attaches_tags_to_events_and_spans(
     use_async: bool,
 ):
     event_handler = _TestEventObservability()
-    dispatcher.add_callback(event_handler)
+    dispatcher.add_handler(event_handler)
     test_tags = {"test_tag_key": "test_tag_value"}
 
     with _context_metadata(test_tags):
@@ -441,7 +441,7 @@ def test_dispatcher_attaches_tags_to_concurrent_events(
     mock_span_start: MagicMock,
 ):
     event_handler = _TestEventObservability()
-    dispatcher.add_callback(event_handler)
+    dispatcher.add_handler(event_handler)
 
     num_functions = 5
     test_tags = [{"test_tag_key": num} for num in range(num_functions)]
@@ -479,7 +479,7 @@ def test_dispatcher_fire_event_with_instance(
 ):
     mock_uuid.uuid4.return_value = "mock"
     event_handler = _TestEventObservability()
-    dispatcher.add_callback(event_handler)
+    dispatcher.add_handler(event_handler)
 
     instance = _TestObject()
     _ = instance.func_with_event(a=3, c=5)
@@ -504,7 +504,7 @@ async def test_dispatcher_async_fire_event_with_instance(
     mock_span_end: MagicMock,
 ):
     event_handler = _TestEventObservability()
-    dispatcher.add_callback(event_handler)
+    dispatcher.add_handler(event_handler)
 
     instance = _TestObject()
     tasks = [
