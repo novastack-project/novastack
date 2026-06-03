@@ -1,8 +1,5 @@
 <div align="center">
-    <picture>
-      <img alt="Novastack Logo" src=".github/images/logo-light.png" width="80%">
-    </picture>
-  </a>
+    <img alt="Novastack Logo" src=".github/images/logo-light.png" width="80%">
 </div>
 
 <div align="center">
