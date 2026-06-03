@@ -13,7 +13,7 @@ markdown_extensions:
   - md_in_html
 
 extra:
-  version: "1.1.8"
+  version: "1.2.0"
 extra_css:
   - _static/css/style.css
 
@@ -69,6 +69,7 @@ nav:
   - Vector Stores: vector_stores/
   - Workflows:
     - Overview: workflows/overview.md
+    - Run as a Server: workflows/run_server.md
     - Benchmark: workflows/benchmark_report.md
     - Prebuilt:
       - Document Ingestion:  workflows/prebuilt/document_ingestion.md

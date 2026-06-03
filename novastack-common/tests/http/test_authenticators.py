@@ -3,13 +3,13 @@ from datetime import datetime, timedelta
 from unittest.mock import Mock, patch
 
 import pytest
-from novastack.common.http.authenticators import (
+from novastack_common.http.authenticators import (
     BasicAuthenticator,
     NoAuthAuthenticator,
     OAuth2Authenticator,
     OAuth2GrantType,
 )
-from novastack.common.http.exceptions import HttpAuthenticationError
+from novastack_common.http.exceptions import HttpAuthenticationError
 from pydantic import ValidationError
 
 
