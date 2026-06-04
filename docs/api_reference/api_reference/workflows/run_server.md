@@ -22,13 +22,13 @@ class MessageEvent(Event):
 
 class MyWorkflow(Workflow):
 
-    @step(depends_on=StartEvent)
+    @step(when=StartEvent)
     async def start(self, ctx: Context, ev: StartEvent) -> MessageEvent:
 
         input_msg = ev.get("message", "")
         return MessageEvent(message=f"Processed: {input_msg}")
 
-    @step(depends_on=MessageEvent)
+    @step(when=MessageEvent)
     async def process(self, ctx: Context, ev: MessageEvent) -> StopEvent:
         return StopEvent(result=ev.message)
 
