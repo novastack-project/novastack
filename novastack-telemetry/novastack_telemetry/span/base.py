@@ -18,7 +18,7 @@ class BaseSpan(BaseModel):
 
 
 class Span(BaseSpan):
-    """Simple span class."""
+    """Default span implementation."""
 
     start_time: datetime = Field(default_factory=lambda: datetime.now())
     end_time: datetime | None = Field(default=None)
