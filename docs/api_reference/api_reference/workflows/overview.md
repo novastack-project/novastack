@@ -15,8 +15,8 @@ pip install novastack-workflows
 Here's a simple example to get you started with NovaStack Workflows:
 
 ```python
-from novastack.workflows import Workflow, Context, step
-from novastack.workflows.events import Event, StartEvent, StopEvent
+from novastack_workflows import Workflow, Context, step
+from novastack_workflows.events import Event, StartEvent, StopEvent
 
 
 class MessageEvent(Event):

@@ -14,8 +14,8 @@ pip install "novastack-workflows[server]"
 
 ```python
 from novastack_workflows.server import WorkflowServer
-from novastack.workflows import Workflow, Context, step
-from novastack.workflows.events import Event, StartEvent, StopEvent
+from novastack_workflows import Workflow, Context, step
+from novastack_workflows.events import Event, StartEvent, StopEvent
 
 class MessageEvent(Event):
     message: str
