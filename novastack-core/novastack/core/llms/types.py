@@ -1,8 +1,8 @@
 from typing import Any
 
-from novastack.common.utils import validate_enum
 from novastack.core.bridge.pydantic import BaseModel, Field, field_validator
 from novastack.core.llms.enums import MessageRole
+from novastack.core.utils import validate_enum
 
 
 class ChatMessage(BaseModel):

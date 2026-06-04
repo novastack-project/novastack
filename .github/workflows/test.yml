@@ -6,13 +6,12 @@ on:
   pull_request:
 
 jobs:
-  test-common:
+  test-telemetry:
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
       matrix:
         python-version: ["3.11"]
-    
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -23,21 +22,20 @@ jobs:
       - name: Set up Python ${{ matrix.python-version }}
         run: uv python install ${{ matrix.python-version }}
 
-      - name: Install dependencies for novastack-common
-        working-directory: ./novastack-common
+      - name: Install dependencies for novastack-telemetry
+        working-directory: ./novastack-telemetry
         run: uv sync --extra dev
 
-      - name: Run tests for novastack-common
-        working-directory: ./novastack-common
+      - name: Run tests for novastack-telemetry
+        working-directory: ./novastack-telemetry
         run: uv run pytest -v --tb=short
 
-  test-instrumentation:
+  test-utils:
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
       matrix:
         python-version: ["3.11"]
-    
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -48,12 +46,12 @@ jobs:
       - name: Set up Python ${{ matrix.python-version }}
         run: uv python install ${{ matrix.python-version }}
 
-      - name: Install dependencies for novastack-instrumentation
-        working-directory: ./novastack-instrumentation
+      - name: Install dependencies for novastack-utils
+        working-directory: ./novastack-utils
         run: uv sync --extra dev
 
-      - name: Run tests for novastack-instrumentation
-        working-directory: ./novastack-instrumentation
+      - name: Run tests for novastack-utils
+        working-directory: ./novastack-utils
         run: uv run pytest -v --tb=short
 
   # test-core:
@@ -62,7 +60,6 @@ jobs:
   #     fail-fast: false
   #     matrix:
   #       python-version: ["3.11"]
-    
   #   steps:
   #     - name: Checkout code
   #       uses: actions/checkout@v4

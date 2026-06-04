@@ -1,4 +1,4 @@
-from novastack_common.http.authenticators import (
+from novastack_utils.http.authenticators import (
     BasicAuthenticator,
     IBMIAMAuthenticator,
     NoAuthAuthenticator,

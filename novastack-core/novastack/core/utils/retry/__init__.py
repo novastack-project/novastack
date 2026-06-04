@@ -1,4 +1,4 @@
-from novastack_common.retry import (
+from novastack_utils.retry import (
     retry,
     retry_if_exception,
     stop_after_attempt,
