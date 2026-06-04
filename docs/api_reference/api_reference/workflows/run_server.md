@@ -14,21 +14,21 @@ pip install "novastack-workflows[server]"
 
 ```python
 from novastack_workflows.server import WorkflowServer
-from novastack.workflows import Workflow, Context, step
-from novastack.workflows.events import Event, StartEvent, StopEvent
+from novastack_workflows import Workflow, Context, step
+from novastack_workflows.events import Event, StartEvent, StopEvent
 
 class MessageEvent(Event):
     message: str
 
 class MyWorkflow(Workflow):
 
-    @step(depends_on=StartEvent)
+    @step(when=StartEvent)
     async def start(self, ctx: Context, ev: StartEvent) -> MessageEvent:
 
-        input_msg = ev.get("input_msg", "")
+        input_msg = ev.get("message", "")
         return MessageEvent(message=f"Processed: {input_msg}")
 
-    @step(depends_on=MessageEvent)
+    @step(when=MessageEvent)
     async def process(self, ctx: Context, ev: MessageEvent) -> StopEvent:
         return StopEvent(result=ev.message)
 

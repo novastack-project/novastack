@@ -1,11 +1,11 @@
 from typing import Any
 
 import numpy as np
-from novastack.common.utils import validate_enum
 from novastack.core.base.enums import SimilarityMode
 from novastack.core.bridge.pydantic import Field, field_validator
 from novastack.core.embeddings import BaseEmbedding
 from novastack.core.evaluation.base import BaseEvaluator
+from novastack.core.utils import validate_enum
 
 
 class ContextSimilarityEvaluator(BaseEvaluator):

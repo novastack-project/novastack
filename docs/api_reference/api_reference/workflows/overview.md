@@ -15,8 +15,8 @@ pip install novastack-workflows
 Here's a simple example to get you started with NovaStack Workflows:
 
 ```python
-from novastack.workflows import Workflow, Context, step
-from novastack.workflows.events import Event, StartEvent, StopEvent
+from novastack_workflows import Workflow, Context, step
+from novastack_workflows.events import Event, StartEvent, StopEvent
 
 
 class MessageEvent(Event):
@@ -24,13 +24,13 @@ class MessageEvent(Event):
 
 class MyWorkflow(Workflow):
 
-    @step(depends_on=StartEvent)
+    @step(when=StartEvent)
     async def start(self, ctx: Context, ev: StartEvent) -> MessageEvent:
         
-        input_msg = ev.get("input_msg", "")
+        input_msg = ev.get("message", "")
         return MessageEvent(message=f"Processed: {input_msg}")
 
-    @step(depends_on=MessageEvent)
+    @step(when=MessageEvent)
     async def process(self, ctx: Context, ev: MessageEvent) -> StopEvent:
         return StopEvent(result=ev.message)
 
@@ -50,7 +50,7 @@ A workflow is a class that inherits from `Workflow` and contains one or more ste
 
 ### Steps
 
-Steps are asynchronous methods decorated with `@step(depends_on=EventType)` that define what happens when a specific event is received.
+Steps are asynchronous methods decorated with `@step(when=EventType)` that define what happens when a specific event is received.
 
 - Steps receive a `Context` and an `Event`.
 - Steps can return new events to trigger subsequent steps.

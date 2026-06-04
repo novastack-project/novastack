@@ -29,7 +29,7 @@ This workflow provides a streamlined approach to building document ingestion pip
 ## Example
 
 ```python
-from novastack.workflows.prebuilt import DocumentIngestionWorkflow
+from novastack_workflows.prebuilt import DocumentIngestionWorkflow
 from novastack.loaders import DirectoryLoader
 from novastack.text_chunkers import TokenChunker
 from novastack.vector_stores import ChromaVectorStore
