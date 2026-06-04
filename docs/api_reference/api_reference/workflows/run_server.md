@@ -25,7 +25,7 @@ class MyWorkflow(Workflow):
     @step(depends_on=StartEvent)
     async def start(self, ctx: Context, ev: StartEvent) -> MessageEvent:
 
-        input_msg = ev.get("input_msg", "")
+        input_msg = ev.get("message", "")
         return MessageEvent(message=f"Processed: {input_msg}")
 
     @step(depends_on=MessageEvent)
