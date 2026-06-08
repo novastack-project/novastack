@@ -1,12 +1,18 @@
-from abc import ABC, abstractmethod
+from abc import abstractmethod
 
 import numpy as np
 from novastack.core.base.enums import SimilarityMode
 from novastack.core.base.schema import TransformerComponent
 from novastack.core.bridge.pydantic import Field
 from novastack.core.document import Document
+from novastack.core.telemetry import DispatcherSpanMixin, get_dispatcher
+from novastack.core.telemetry.events.embedding import (
+    EmbeddingEndEvent,
+    EmbeddingStartEvent,
+)
 from novastack.core.utils import validate_enum
 
+dispatcher = get_dispatcher(__name__)
 Embedding = list[float]
 
 
@@ -50,7 +56,7 @@ def similarity(
         return float(product / norm)
 
 
-class BaseEmbedding(TransformerComponent, ABC):
+class BaseEmbedding(TransformerComponent, DispatcherSpanMixin):
     """
     Abstract base class defining the interface for embedding models.
     """
@@ -77,7 +83,7 @@ class BaseEmbedding(TransformerComponent, ABC):
         return similarity(embedding1, embedding2, mode)
 
     @abstractmethod
-    def embed_text(self, input: str | list[str]) -> list[Embedding]:
+    def _get_text_embeddings(self, input: str | list[str]) -> list[Embedding]:
         """
         Embed one or more text strings.
 
@@ -85,20 +91,59 @@ class BaseEmbedding(TransformerComponent, ABC):
             input: Single text string or list of text strings to embed
         """
 
-    def embed_documents(self, documents: list[Document]) -> list[Document]:
+    @dispatcher.span
+    def get_text_embeddings(self, input: str | list[str]) -> list[Embedding]:
+        """
+        Embed one or more text strings.
+
+        Args:
+            input: Single text string or list of text strings to embed
+        """
+        config_dict = self.model_dump(exclude={"api_key"})
+        dispatcher.event(
+            EmbeddingStartEvent(
+                config_dict=config_dict,
+            )
+        )
+
+        embeddings = self._get_text_embeddings(input)
+
+        dispatcher.event(
+            EmbeddingEndEvent(
+                embeddings=embeddings,
+            )
+        )
+        return embeddings
+
+    @dispatcher.span
+    def get_document_embeddings(self, documents: list[Document]) -> list[Document]:
         """
         Embed a list of documents and assign the computed embeddings to the 'embedding' attribute.
 
         Args:
             documents (list[Document]): List of documents to compute embeddings.
         """
+        config_dict = self.model_dump(exclude={"api_key"})
+        dispatcher.event(
+            EmbeddingStartEvent(
+                config_dict=config_dict,
+            )
+        )
+
         texts = [document.get_content() for document in documents]
-        embeddings = self.embed_text(texts)
+        embeddings = self.get_text_embeddings(texts)
 
         for document, embedding in zip(documents, embeddings):
             document.embedding = embedding
 
+        config_dict = self.model_dump(exclude={"api_key"})
+
+        dispatcher.event(
+            EmbeddingEndEvent(
+                embeddings=embeddings,
+            )
+        )
         return documents
 
     def __call__(self, documents: list[Document]) -> list[Document]:
-        return self.embed_documents(documents)
+        return self.get_document_embeddings(documents)
