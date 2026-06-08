@@ -1,9 +1,8 @@
 from typing import Any
 
-from novastack.common.utils import validate_enum
 from novastack.core.bridge.pydantic import Field, SecretStr, field_validator
 from novastack.core.llms import BaseLLM, ChatMessage, ChatResponse, CompletionResponse
-from novastack.core.llms.decorators import llm_chat_callback, llm_completion_callback
+from novastack.core.utils import validate_enum
 from novastack.llms.watsonx.supporting_classes.enums import Region
 
 
@@ -70,8 +69,7 @@ class WatsonxLLM(BaseLLM):
             space_id=self.space_id,
         )
 
-    @llm_completion_callback()
-    def completion(
+    def _completion(
         self,
         prompt: str,
         guardrails: bool = False,
@@ -101,8 +99,7 @@ class WatsonxLLM(BaseLLM):
             raw=response,
         )
 
-    @llm_chat_callback()
-    def chat_completion(
+    def _chat_completion(
         self,
         messages: list[ChatMessage | dict],
         params: dict[str, Any] = {},

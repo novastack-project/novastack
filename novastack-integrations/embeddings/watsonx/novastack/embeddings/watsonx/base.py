@@ -74,7 +74,7 @@ class WatsonxEmbedding(BaseEmbedding):
 
         self._client = WatsonxEmbeddings(**kwargs_params)
 
-    def embed_text(self, input: str | list[str]) -> list[Embedding]:
+    def _get_text_embeddings(self, input: str | list[str]) -> list[Embedding]:
         """
         Embed one or more text strings.
 

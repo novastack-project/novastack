@@ -36,7 +36,7 @@ class DoclingLoader(BaseFileLoader):
     detached_tables: bool = False
     export_table_format: Literal["markdown", "html"] = "markdown"
 
-    def load_data(self) -> list[Document]:
+    def _load_data(self) -> list[Document]:
         """Loads data from the given input file."""
         from docling.document_converter import DocumentConverter  # noqa: F401
 

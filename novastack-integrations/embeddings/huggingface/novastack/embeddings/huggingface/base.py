@@ -33,7 +33,7 @@ class HuggingFaceEmbedding(BaseEmbedding):
 
         self._client = SentenceTransformer(self.model_name, device=self.device)
 
-    def embed_text(self, input: str | list[str]) -> list[Embedding]:
+    def _get_text_embeddings(self, input: str | list[str]) -> list[Embedding]:
         """
         Embed one or more text strings.
 

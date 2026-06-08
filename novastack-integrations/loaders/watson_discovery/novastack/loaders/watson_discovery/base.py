@@ -71,7 +71,7 @@ class WatsonDiscoveryLoader(BaseLoader):
             logger.error(f"Error connecting to IBM Watson Discovery: {e}")
             raise
 
-    def load_data(self) -> list[Document]:
+    def _load_data(self) -> list[Document]:
         """
         Loads documents from Watson Discovery.
 

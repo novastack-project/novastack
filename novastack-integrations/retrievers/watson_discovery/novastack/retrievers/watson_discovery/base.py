@@ -60,7 +60,7 @@ class WatsonDiscoveryRetriever(BaseRetriever):
             logger.error(f"Error connecting to IBM Watson Discovery: {e}")
             raise
 
-    def query_documents(
+    def _query_documents(
         self, query: str, filter: str | None = None, top_k: int = 4, **kwargs: Any
     ) -> list[DocumentWithScore]:
         """
