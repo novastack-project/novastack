@@ -156,7 +156,7 @@ class NovastackDebugObservability(BaseObservability):
 
                 duration_str = f"{span.duration:.6f}s" if span.duration else ""
                 tree.create_node(
-                    tag=f"{span.id_} - {duration_str}",
+                    tag=f"{span.id_} (SPAN) - {duration_str}",
                     identifier=span.id_,
                     parent=span.parent_id,
                     data=span.start_time,
