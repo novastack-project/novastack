@@ -75,12 +75,7 @@ class WatsonxEmbedding(BaseEmbedding):
         self._client = WatsonxEmbeddings(**kwargs_params)
 
     def _get_text_embeddings(self, input: str | list[str]) -> list[Embedding]:
-        """
-        Embed one or more text strings.
-
-        Args:
-            input (str | list[str]): Input for which to compute embeddings.
-        """
+        """Embed one or more text strings."""
         if isinstance(input, str):
             return [self._client.embed_query(input)]
 

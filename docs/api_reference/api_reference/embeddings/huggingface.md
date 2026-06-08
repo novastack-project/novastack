@@ -8,4 +8,5 @@ title: Hugging Face
     options:
         inherited_members: true
         filters:
+        - "!^_"
         - "!similarity"

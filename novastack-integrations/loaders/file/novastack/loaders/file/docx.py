@@ -11,20 +11,18 @@ class DocxLoader(BaseFileLoader):
 
     Attributes:
         input_file (str): File path to load.
-    """
 
-    def _load_data(self) -> list[Document]:
-        """
-        Loads data from the specified file.
-
-        Example:
+    Example:
         ```python
         from novastack.loaders.file import DocxLoader
 
         loader = DocxLoader(input_file="path/to/file.docx")
         documents = loader.load_data()
         ```
-        """
+    """
+
+    def _load_data(self) -> list[Document]:
+        """Loads data and returns a list of documents."""
         try:
             import docx2txt  # noqa: F401
         except ImportError:

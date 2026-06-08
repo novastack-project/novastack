@@ -174,13 +174,7 @@ class ElasticsearchVectorStore(BaseVectorStore):
         return [doc.id_ for doc in documents]
 
     def _query_documents(self, query: str, top_k: int = 4) -> list[DocumentWithScore]:
-        """
-        Performs a similarity search for the top-k most similar documents.
-
-        Args:
-            query (str): Query text.
-            top_k (int, optional): Number of top results to return. Defaults to `4`.
-        """
+        """Performs a similarity search for the top-k most similar documents."""
         query_embedding = self.embed_model.embed_text(query)
         #  TO-DO: Add elasticsearch `filter` option
         es_query = {

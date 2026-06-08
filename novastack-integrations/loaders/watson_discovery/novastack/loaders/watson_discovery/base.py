@@ -34,6 +34,8 @@ class WatsonDiscoveryLoader(BaseLoader):
         discovery_loader = WatsonDiscoveryLoader(
             url="your_url", api_key="your_api_key", project_id="your_project_id"
         )
+
+        docs = discovery_loader.load_data()
         ```
     """
 
@@ -72,14 +74,7 @@ class WatsonDiscoveryLoader(BaseLoader):
             raise
 
     def _load_data(self) -> list[Document]:
-        """
-        Loads documents from Watson Discovery.
-
-        Example:
-            ```python
-            docs = discovery_loader.load_data()
-            ```
-        """
+        """Loads documents from Watson Discovery."""
         from ibm_watson.discovery_v2 import QueryLargePassages
 
         last_batch_size = self.batch_size

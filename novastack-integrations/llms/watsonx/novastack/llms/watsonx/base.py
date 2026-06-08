@@ -76,15 +76,7 @@ class WatsonxLLM(BaseLLM):
         params: dict[str, Any] = {},
         **kwargs: Any,
     ) -> CompletionResponse:
-        """
-        Creates a completion for the provided prompt and parameters. Using OpenAI's standard endpoint (/completions).
-
-        Args:
-            prompt (str): The input prompt to generate a completion for.
-            guardrails (bool, optional): The detection filter for potentially hateful, abusive, and/or profane language (HAP).
-            params (dict, optional): MetaProps for text generation. Method-provided params override class-level params.
-            **kwargs (Any, optional): Additional keyword arguments to customize the LLM completion request.
-        """
+        """Creates a completion for the provided prompt and parameters. Using OpenAI's standard endpoint (/completions)."""
         response = self._model_inference.generate(
             **kwargs,
             prompt=prompt,
@@ -105,14 +97,7 @@ class WatsonxLLM(BaseLLM):
         params: dict[str, Any] = {},
         **kwargs: Any,
     ) -> ChatResponse:
-        """
-        Creates a chat completion for LLM. Using OpenAI's standard endpoint (/chat/completions).
-
-        Args:
-            messages (list[ChatMessage]): A list of chat messages as input for the LLM.
-            params (dict, optional): MetaProps for text generation. Method-provided params override class-level params.
-            **kwargs (Any, optional): Additional keyword arguments to customize the LLM completion request.
-        """
+        """Creates a chat completion for LLM. Using OpenAI's standard endpoint (/chat/completions)."""
         input_messages_dict = [
             ChatMessage.model_validate(message).to_dict() for message in messages
         ]

@@ -48,7 +48,13 @@ class BaseLLM(BaseModel, DispatcherSpanMixin):
 
     @dispatcher.span
     def completion(self, prompt: str, **kwargs: Any) -> CompletionResponse:
-        """Generates a completion for LLM."""
+        """
+        Creates a completion for the provided prompt and parameters. Using OpenAI's standard endpoint (/completions).
+
+        Args:
+            prompt (str): The input prompt to generate a completion for.
+            **kwargs (Any): Additional keyword arguments to customize the LLM completion request.
+        """
         config_dict = self.model_dump(exclude={"api_key"})
         dispatcher.event(
             LLMCompletionStartEvent(
@@ -70,7 +76,13 @@ class BaseLLM(BaseModel, DispatcherSpanMixin):
     def chat_completion(
         self, messages: list[ChatMessage | dict], **kwargs: Any
     ) -> ChatResponse:
-        """Generates a chat completion for LLM."""
+        """
+        Creates a chat completion for LLM. Using OpenAI's standard endpoint (/chat/completions).
+
+        Args:
+            messages (list[ChatMessage]): A list of chat messages as input for the LLM.
+            **kwargs (Any): Additional keyword arguments to customize the LLM completion request.
+        """
         config_dict = self.model_dump(exclude={"api_key"})
         dispatcher.event(
             LLMChatStartEvent(

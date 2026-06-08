@@ -54,13 +54,7 @@ class LiteLLM(BaseLLM):
         }
 
     def _completion(self, prompt: str, **kwargs: Any) -> CompletionResponse:
-        """
-        Creates a completion for the provided prompt and parameters. Using OpenAI's standard endpoint (/completions).
-
-        Args:
-            prompt (str): The input prompt to generate a completion for.
-            **kwargs (Any): Additional keyword arguments to customize the LLM completion request.
-        """
+        """Creates a completion for the provided prompt and parameters. Using OpenAI's standard endpoint (/completions)."""
         all_kwargs = self._get_all_kwargs(**kwargs)
 
         response = litellm.text_completion(prompt=prompt, **all_kwargs).model_dump(
@@ -77,13 +71,7 @@ class LiteLLM(BaseLLM):
     def _chat_completion(
         self, messages: list[ChatMessage | dict], **kwargs: Any
     ) -> ChatResponse:
-        """
-        Creates a chat completion for LLM. Using OpenAI's standard endpoint (/chat/completions).
-
-        Args:
-            messages (list[ChatMessage]): A list of chat messages as input for the LLM.
-            **kwargs (Any): Additional keyword arguments to customize the LLM completion request.
-        """
+        """Creates a chat completion for LLM. Using OpenAI's standard endpoint (/chat/completions)."""
         all_kwargs = self._get_all_kwargs(**kwargs)
         input_messages_dict = [
             ChatMessage.model_validate(message).to_dict() for message in messages

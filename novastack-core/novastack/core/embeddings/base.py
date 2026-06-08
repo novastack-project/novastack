@@ -84,12 +84,7 @@ class BaseEmbedding(TransformerComponent, DispatcherSpanMixin):
 
     @abstractmethod
     def _get_text_embeddings(self, input: str | list[str]) -> list[Embedding]:
-        """
-        Embed one or more text strings.
-
-        Args:
-            input: Single text string or list of text strings to embed
-        """
+        """Embed one or more text strings."""
 
     @dispatcher.span
     def get_text_embeddings(self, input: str | list[str]) -> list[Embedding]:
