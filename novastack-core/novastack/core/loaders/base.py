@@ -1,10 +1,17 @@
-from abc import ABC, abstractmethod
+from abc import abstractmethod
 
 from novastack.core.bridge.pydantic import BaseModel, Field
 from novastack.core.document import Document
+from novastack.core.telemetry import DispatcherSpanMixin, get_dispatcher
+from novastack.core.telemetry.events.loader import (
+    LoaderEndEvent,
+    LoaderStartEvent,
+)
+
+dispatcher = get_dispatcher(__name__)
 
 
-class BaseLoader(BaseModel, ABC):
+class BaseLoader(BaseModel, DispatcherSpanMixin):
     """Abstract base class defining the interface for document loader."""
 
     model_config = {
@@ -20,8 +27,27 @@ class BaseLoader(BaseModel, ABC):
         return "BaseLoader"
 
     @abstractmethod
+    def _load_data(self) -> list[Document]:
+        """Loads data and returns a list of documents."""
+
+    @dispatcher.span
     def load_data(self) -> list[Document]:
         """Loads data and returns a list of documents."""
+        config_dict = self.model_dump(exclude={"api_key"})
+        dispatcher.event(
+            LoaderStartEvent(
+                config_dict=config_dict,
+            )
+        )
+
+        documents = self._load_data()
+
+        dispatcher.event(
+            LoaderEndEvent(
+                documents=documents,
+            )
+        )
+        return documents
 
 
 class BaseFileLoader(BaseLoader):

@@ -29,7 +29,7 @@ def test_capture_propagation_context_basic():
     assert ctx["test_handler"]["span_id"] == "def456"
 
 
-def test_capture_includes_instrument_tags():
+def test_capture_includes_telemetry_tags():
     handler = BaseObservability()
     d = Dispatcher(handlers=[handler], propagate=False)
 
@@ -42,7 +42,7 @@ def test_capture_includes_instrument_tags():
     assert ctx[_CONTEXT_METADATA_KEY] == {"user_id": "u1", "session": "s1"}
 
 
-def test_capture_omits_instrument_tags_when_empty():
+def test_capture_omits_telemetry_tags_when_empty():
     handler = BaseObservability()
     d = Dispatcher(handlers=[handler], propagate=False)
 
@@ -61,7 +61,7 @@ def test_restore_propagation_context_basic():
     assert handler._restored_context == context
 
 
-def test_restore_sets_instrument_tags():
+def test_restore_sets_telemetry_tags():
     handler = BaseObservability()
     d = Dispatcher(handlers=[handler], propagate=False)
 

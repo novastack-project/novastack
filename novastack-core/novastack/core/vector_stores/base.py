@@ -1,10 +1,17 @@
-from abc import ABC, abstractmethod
+from abc import abstractmethod
 
 from novastack.core.bridge.pydantic import BaseModel
 from novastack.core.document import Document, DocumentWithScore
+from novastack.core.telemetry import DispatcherSpanMixin, get_dispatcher
+from novastack.core.telemetry.events.retrieval import (
+    RetrievalEndEvent,
+    RetrievalStartEvent,
+)
+
+dispatcher = get_dispatcher(__name__)
 
 
-class BaseVectorStore(BaseModel, ABC):
+class BaseVectorStore(BaseModel, DispatcherSpanMixin):
     """
     Abstract base class defining the interface for vector store.
     """
@@ -33,7 +40,7 @@ class BaseVectorStore(BaseModel, ABC):
         )
 
     @abstractmethod
-    def query_documents(self, query: str, top_k: int = 4) -> list[DocumentWithScore]:
+    def _query_documents(self, query: str, top_k: int = 4) -> list[DocumentWithScore]:
         """
         Query for similar documents in the vector store based on the input query provided.
 
@@ -42,8 +49,34 @@ class BaseVectorStore(BaseModel, ABC):
             top_k: Number of top results to return. Defaults to 4.
         """
         raise NotImplementedError(
-            f"{self.__class__.__name__} must implement the query_documents() method"
+            f"{self.__class__.__name__} must implement the _query_documents() method"
         )
+
+    @dispatcher.span
+    def query_documents(self, query: str, top_k: int = 4) -> list[DocumentWithScore]:
+        """
+        Query for similar documents in the vector store based on the input query provided.
+
+        Args:
+            query: The query string to search for similar documents.
+            top_k: Number of top results to return. Defaults to 4.
+        """
+        config_dict = self.model_dump(exclude={"api_key"})
+        dispatcher.event(
+            RetrievalStartEvent(
+                query=query,
+                config_dict=config_dict,
+            )
+        )
+
+        documents = self._query_documents(query, top_k)
+
+        dispatcher.event(
+            RetrievalEndEvent(
+                documents=documents,
+            )
+        )
+        return documents
 
     @abstractmethod
     def delete_documents(self, ids: list[str]) -> None:

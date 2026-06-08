@@ -55,7 +55,7 @@ class SentenceChunker(BaseTextChunker):
             split_by_char(),
         ]
 
-    def chunk_text(self, text: str) -> list[str]:
+    def _get_text_chunks(self, text: str) -> list[str]:
         """
         Split a single string of text into smaller chunks.
 
@@ -64,7 +64,7 @@ class SentenceChunker(BaseTextChunker):
 
         Example:
             ```python
-            chunks = text_chunker.chunk_text(
+            chunks = text_chunker.get_text_chunks(
                 "novastack is a data framework to load any data in one line of code and connect with AI applications."
             )
             ```
@@ -72,33 +72,6 @@ class SentenceChunker(BaseTextChunker):
         splits = self._split(text)
 
         return merge_splits(splits, self.chunk_size, self.chunk_overlap)
-
-    def chunk_documents(self, documents: list[Document]) -> list[Document]:
-        """
-        Split a list of documents into smaller document chunks.
-
-        Args:
-            documents (list[Document]): List of `Document` objects to split.
-        """
-        chunks = []
-
-        for document in documents:
-            texts = self.chunk_text(document.get_content())
-            metadata = {**document.metadata}
-
-            for text in texts:
-                if len(texts) > 1:
-                    metadata["ref_doc_id"] = document.id_
-                    metadata["ref_doc_hash"] = document.hash
-
-                chunks.append(
-                    Document(
-                        text=text,
-                        metadata=metadata,
-                    ),
-                )
-
-        return chunks
 
     def _split(self, text: str) -> list[dict]:
         text_len = len(tokenizer(text))

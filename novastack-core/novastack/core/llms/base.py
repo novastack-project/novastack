@@ -1,12 +1,21 @@
-from abc import ABC, abstractmethod
+from abc import abstractmethod
 from typing import Any
 
 from novastack.core.bridge.pydantic import BaseModel, Field
 from novastack.core.llms.types import ChatMessage, ChatResponse, CompletionResponse
 from novastack.core.observability import BaseObservability
+from novastack.core.telemetry import DispatcherSpanMixin, get_dispatcher
+from novastack.core.telemetry.events.llm import (
+    LLMChatEndEvent,
+    LLMChatStartEvent,
+    LLMCompletionEndEvent,
+    LLMCompletionStartEvent,
+)
+
+dispatcher = get_dispatcher(__name__)
 
 
-class BaseLLM(BaseModel, ABC):
+class BaseLLM(BaseModel, DispatcherSpanMixin):
     """Abstract base class defining the interface for LLMs."""
 
     model_config = {
@@ -27,6 +36,58 @@ class BaseLLM(BaseModel, ABC):
     def class_name(cls) -> str:
         return "BaseLLM"
 
+    @abstractmethod
+    def _completion(self, prompt: str, **kwargs: Any) -> CompletionResponse:
+        """Generates a completion for LLM."""
+
+    @abstractmethod
+    def _chat_completion(
+        self, messages: list[ChatMessage | dict], **kwargs: Any
+    ) -> ChatResponse:
+        """Generates a chat completion for LLM."""
+
+    @dispatcher.span
+    def completion(self, prompt: str, **kwargs: Any) -> CompletionResponse:
+        """Generates a completion for LLM."""
+        config_dict = self.model_dump(exclude={"api_key"})
+        dispatcher.event(
+            LLMCompletionStartEvent(
+                prompt=prompt,
+                config_dict=config_dict,
+            )
+        )
+
+        response = self._completion(prompt)
+
+        dispatcher.event(
+            LLMCompletionEndEvent(
+                response=response,
+            )
+        )
+        return response
+
+    @dispatcher.span
+    def chat_completion(
+        self, messages: list[ChatMessage | dict], **kwargs: Any
+    ) -> ChatResponse:
+        """Generates a chat completion for LLM."""
+        config_dict = self.model_dump(exclude={"api_key"})
+        dispatcher.event(
+            LLMChatStartEvent(
+                messages=messages,
+                config_dict=config_dict,
+            )
+        )
+
+        response = self._chat_completion(messages)
+
+        dispatcher.event(
+            LLMChatEndEvent(
+                response=response,
+            )
+        )
+        return response
+
     def text_completion(self, prompt: str, **kwargs: Any) -> str:
         """
         Generates a chat completion for LLM. Using OpenAI's standard endpoint (/completions).
@@ -38,13 +99,3 @@ class BaseLLM(BaseModel, ABC):
         response = self.completion(prompt=prompt, **kwargs)
 
         return response.text
-
-    @abstractmethod
-    def completion(self, prompt: str, **kwargs: Any) -> CompletionResponse:
-        """Generates a completion for LLM."""
-
-    @abstractmethod
-    def chat_completion(
-        self, messages: list[ChatMessage | dict], **kwargs: Any
-    ) -> ChatResponse:
-        """Generates a chat completion for LLM."""

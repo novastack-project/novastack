@@ -1,19 +1,11 @@
-from abc import ABC, abstractmethod
+from abc import abstractmethod
 
 from novastack.core.bridge.pydantic import BaseModel, Field, model_validator
 from novastack.core.observability.types import PayloadRecord
 from novastack.core.prompts import PromptTemplate
 
 
-class BaseObservability(BaseModel, ABC):
-    """Abstract base class defining the interface for observability."""
-
-    @classmethod
-    def class_name(cls) -> str:
-        return "BaseObservability"
-
-
-class PromptObservability(BaseObservability):
+class PromptObservability(BaseModel):
     """
     Abstract base class for prompt observability with Pydantic validation.
 

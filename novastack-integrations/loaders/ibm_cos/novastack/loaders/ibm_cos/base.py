@@ -50,7 +50,7 @@ class IBMCosLoader(BaseLoader):
         self._ibm_boto3 = ibm_boto3
         self._boto_config = Config
 
-    def load_data(self) -> list[Document]:
+    def _load_data(self) -> list[Document]:
         """Loads data from the specified bucket."""
         ibm_s3 = self._ibm_boto3.resource(
             "s3",

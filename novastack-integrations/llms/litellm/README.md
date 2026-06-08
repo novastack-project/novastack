@@ -1,4 +1,4 @@
-# NovaStack integration - LiteLLM LLMs
+# Novastack integration - LiteLLM LLMs
 
 ## Installation 
 

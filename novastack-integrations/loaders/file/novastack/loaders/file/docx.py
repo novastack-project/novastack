@@ -13,7 +13,7 @@ class DocxLoader(BaseFileLoader):
         input_file (str): File path to load.
     """
 
-    def load_data(self) -> list[Document]:
+    def _load_data(self) -> list[Document]:
         """
         Loads data from the specified file.
 

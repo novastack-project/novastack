@@ -100,7 +100,7 @@ class SemanticChunker(BaseTextChunker):
 
         return [i for i, x in enumerate(distances) if x > distance_threshold]
 
-    def chunk_text(self, text: str) -> list[str]:
+    def _get_text_chunks(self, text: str) -> list[str]:
         """
         Split a single string of text into smaller chunks.
 
@@ -128,32 +128,5 @@ class SemanticChunker(BaseTextChunker):
         if start_index < len(sentences):
             combined_text = " ".join([d["sentence"] for d in sentences[start_index:]])
             chunks.append(combined_text)
-
-        return chunks
-
-    def chunk_documents(self, documents: list[Document]) -> list[Document]:
-        """
-        Split a list of documents into smaller document chunks.
-
-        Args:
-            documents (list[Document]): List of `Document` objects to split.
-        """
-        chunks = []
-
-        for document in documents:
-            texts = self.chunk_text(document.get_content())
-            metadata = {**document.metadata}
-
-            for text in texts:
-                if len(texts) > 1:
-                    metadata["ref_doc_id"] = document.id_
-                    metadata["ref_doc_hash"] = document.hash
-
-                chunks.append(
-                    Document(
-                        text=text,
-                        metadata=metadata,
-                    ),
-                )
 
         return chunks

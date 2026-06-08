@@ -94,12 +94,23 @@ class Dispatcher(BaseModel):
         Calls the specified method on all handlers in the chain. Handler exceptions
         are silently caught to ensure telemetry failures don't break application code.
 
+        Deduplicates handlers by identity to prevent the same handler instance from
+        being called multiple times when it appears in multiple levels of the hierarchy.
+
         Args:
             handler_method: Name of the handler method to call
             *args: Positional arguments to pass to the handler method
             **kwargs: Keyword arguments to pass to the handler method
         """
+        dedup_handlers = set()
         for h in self._get_handler_hierarchy():
+            # Use id() to check if we've already processed this exact handler instance
+            handler_id = id(h)
+            if handler_id in dedup_handlers:
+                # Prevent duplicate calls to the same handler instance
+                continue
+            dedup_handlers.add(handler_id)
+
             try:
                 getattr(h, handler_method)(*args, **kwargs)
             except BaseException:
