@@ -9,7 +9,7 @@ from random import random
 from typing import Any
 from unittest.mock import MagicMock, patch
 
-import novastack_telemetry as instrument
+import novastack_telemetry as telemetry
 import pytest
 import wrapt
 from novastack_telemetry import DispatcherSpanMixin
@@ -17,7 +17,7 @@ from novastack_telemetry._dispatcher_core import Dispatcher, _context_metadata
 from novastack_telemetry.events import BaseEvent
 from novastack_telemetry.observability import BaseObservability
 
-dispatcher = instrument.get_dispatcher("test")
+dispatcher = telemetry.get_dispatcher("test")
 
 value_error = ValueError("value error")
 cancelled_error = CancelledError("cancelled error")
