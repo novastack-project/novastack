@@ -28,10 +28,6 @@ class BaseTextChunker(TransformerComponent, DispatcherSpanMixin):
     def _get_text_chunks(self, text: str) -> list[str]:
         """Split a single string of text into smaller chunks."""
 
-    @abstractmethod
-    def _get_document_chunks(self, documents: list[Document]) -> list[Document]:
-        """Split a list of documents into smaller document chunks."""
-
     @dispatcher.span
     def get_text_chunks(self, text: str) -> list[str]:
         """Split a single string of text into smaller chunks."""
@@ -60,8 +56,23 @@ class BaseTextChunker(TransformerComponent, DispatcherSpanMixin):
                 config_dict=config_dict,
             )
         )
+        documents = []
 
-        documents = self._chunk_documents(documents)
+        for document in documents:
+            texts = self._get_text_chunks(document.get_content())
+            metadata = {**document.metadata}
+
+            for text in texts:
+                if len(texts) > 1:
+                    metadata["ref_doc_id"] = document.id_
+                    metadata["ref_doc_hash"] = document.hash
+
+                documents.append(
+                    Document(
+                        text=text,
+                        metadata=metadata,
+                    ),
+                )
 
         dispatcher.event(
             TextChunkerEndEvent(

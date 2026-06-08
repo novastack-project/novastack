@@ -131,7 +131,7 @@ class BaseEmbedding(TransformerComponent, DispatcherSpanMixin):
         )
 
         texts = [document.get_content() for document in documents]
-        embeddings = self.get_text_embeddings(texts)
+        embeddings = self._get_text_embeddings(texts)
 
         for document, embedding in zip(documents, embeddings):
             document.embedding = embedding

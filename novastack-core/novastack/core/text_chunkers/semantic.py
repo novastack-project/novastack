@@ -130,30 +130,3 @@ class SemanticChunker(BaseTextChunker):
             chunks.append(combined_text)
 
         return chunks
-
-    def _get_document_chunks(self, documents: list[Document]) -> list[Document]:
-        """
-        Split a list of documents into smaller document chunks.
-
-        Args:
-            documents (list[Document]): List of `Document` objects to split.
-        """
-        chunks = []
-
-        for document in documents:
-            texts = self.chunk_text(document.get_content())
-            metadata = {**document.metadata}
-
-            for text in texts:
-                if len(texts) > 1:
-                    metadata["ref_doc_id"] = document.id_
-                    metadata["ref_doc_hash"] = document.hash
-
-                chunks.append(
-                    Document(
-                        text=text,
-                        metadata=metadata,
-                    ),
-                )
-
-        return chunks
