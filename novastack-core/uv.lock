@@ -204,7 +204,7 @@ wheels = [
 
 [[package]]
 name = "novastack-core"
-version = "1.2.1"
+version = "2.0.0"
 source = { editable = "." }
 dependencies = [
     { name = "deprecated" },
@@ -231,7 +231,7 @@ requires-dist = [
     { name = "deprecated", specifier = ">=1.3.1,<2.0.0" },
     { name = "httpx", specifier = ">=0.28.1,<1.0.0" },
     { name = "nltk", specifier = ">=3.9.2,<4.0.0" },
-    { name = "novastack-telemetry", specifier = ">=1.0.0,<2.0.0" },
+    { name = "novastack-telemetry", specifier = ">=1.1.1,<2.0.0" },
     { name = "novastack-utils", specifier = ">=1.0.0,<3.0.0" },
     { name = "novastack-workflows", specifier = ">=2.0.1,<3.0.0" },
     { name = "numpy", specifier = ">=1.26.4,<2.0.0" },
@@ -246,16 +246,16 @@ provides-extras = ["dev"]
 
 [[package]]
 name = "novastack-telemetry"
-version = "1.0.0"
+version = "1.1.1"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "pydantic" },
     { name = "treelib" },
     { name = "wrapt" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/41/ca/38fe446000a52e8f0cabad2b926fbeb4ebc6d4b0fdecfc5bb11692a1ef71/novastack_telemetry-1.0.0.tar.gz", hash = "sha256:940f3206ae4d87130789d26f9a593ab04a4d1b24759d17fd41fd0cbb4f8232fa", size = 8683, upload-time = "2026-06-04T03:18:23.736Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/91/67/528898da3b9e3926520305f01a1d536f01574941be441aa19892c2eb14c5/novastack_telemetry-1.1.1.tar.gz", hash = "sha256:aac162381d9671d17630e646071793afd46f940a120708f4bfa3bd72fb91114a", size = 9190, upload-time = "2026-06-08T17:17:39.145Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/3f/1c/1ad14b37b6a96e03117cf3f3cc3c8be7a87dd5e408e6fe3759bed1ba563b/novastack_telemetry-1.0.0-py3-none-any.whl", hash = "sha256:fe56d6e13ef47629806810cb70cb39a1fdb9520a7c8d09bc52f2c6ff5ef127b4", size = 12039, upload-time = "2026-06-04T03:18:24.833Z" },
+    { url = "https://files.pythonhosted.org/packages/78/97/8670fd0746275be614b629fa3dc05b04f627dd68b9a3e37553c090213a90/novastack_telemetry-1.1.1-py3-none-any.whl", hash = "sha256:ad60ec7340cef0f921fc34608b106b791fd31174f5e6872f07261d6ecd1201f5", size = 12632, upload-time = "2026-06-08T17:17:38.141Z" },
 ]
 
 [[package]]
