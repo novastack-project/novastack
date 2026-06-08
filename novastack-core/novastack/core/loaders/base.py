@@ -10,6 +10,7 @@ from novastack.core.telemetry.events.loader import (
 
 dispatcher = get_dispatcher(__name__)
 
+
 class BaseLoader(BaseModel, DispatcherSpanMixin):
     """Abstract base class defining the interface for document loader."""
 
@@ -47,6 +48,7 @@ class BaseLoader(BaseModel, DispatcherSpanMixin):
             )
         )
         return documents
+
 
 class BaseFileLoader(BaseLoader):
     """
