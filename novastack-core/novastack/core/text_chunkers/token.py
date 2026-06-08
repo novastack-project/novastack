@@ -49,7 +49,7 @@ class TokenTextChunker(BaseTextChunker):
         self._split_fns = [split_by_sep(self.separator)]
         self._sub_split_fns = [split_by_char()]
 
-    def chunk_text(self, text: str) -> list[str]:
+    def _get_text_chunks(self, text: str) -> list[str]:
         """
         Split a single string of text into smaller chunks.
 
@@ -67,7 +67,7 @@ class TokenTextChunker(BaseTextChunker):
 
         return merge_splits(splits, self.chunk_size, self.chunk_overlap)
 
-    def chunk_documents(self, documents: list[Document]) -> list[Document]:
+    def _get_document_chunks(self, documents: list[Document]) -> list[Document]:
         """
         Split a list of documents into smaller document chunks.
 
