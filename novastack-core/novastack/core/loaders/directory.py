@@ -101,7 +101,7 @@ class DirectoryLoader(BaseLoader):
 
         return validated_exts
 
-    def load_data(self) -> list[Document]:
+    def _load_data(self) -> list[Document]:
         """Loads data from the specified directory."""
         if not self.input_dir:
             raise ValueError("input_dir cannot be empty")
