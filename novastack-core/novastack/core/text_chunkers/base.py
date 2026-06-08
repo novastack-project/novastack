@@ -38,7 +38,7 @@ class BaseTextChunker(TransformerComponent, DispatcherSpanMixin):
             )
         )
 
-        chunks = self._chunk_text(text)
+        chunks = self._get_text_chunks(text)
 
         dispatcher.event(
             TextChunkerEndEvent(
