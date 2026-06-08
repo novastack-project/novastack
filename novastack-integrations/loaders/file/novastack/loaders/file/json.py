@@ -13,22 +13,20 @@ class JsonLoader(BaseFileLoader):
     Attributes:
         input_file (str): File path to load.
         jq_schema (str, optional): jq schema to use to extract the data from the JSON.
-    """
 
-    jq_schema: str | None = None
-
-    def _load_data(self) -> list[Document]:
-        """
-        Loads data from the specified file.
-
-        Example:
+    Example:
         ```python
         from novastack.loaders.file import JsonLoader
 
         loader = JsonLoader(input_file="path/to/file.json")
         documents = loader.load_data()
         ```
-        """
+    """
+
+    jq_schema: str | None = None
+
+    def _load_data(self) -> list[Document]:
+        """Loads data and returns a list of documents."""
         try:
             import jq  # noqa: F401
         except ImportError:

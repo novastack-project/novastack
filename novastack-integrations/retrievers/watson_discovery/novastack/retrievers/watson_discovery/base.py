@@ -30,6 +30,8 @@ class WatsonDiscoveryRetriever(BaseRetriever):
         doc_retriever = WatsonDiscoveryRetriever(
             url="your_url", api_key="your_api_key", project_id="your_project_id"
         )
+
+        docs = doc_retriever.query_documents("What's novastack Framework?")
         ```
     """
 
@@ -63,20 +65,7 @@ class WatsonDiscoveryRetriever(BaseRetriever):
     def _query_documents(
         self, query: str, filter: str | None = None, top_k: int = 4, **kwargs: Any
     ) -> list[DocumentWithScore]:
-        """
-        Search your data in the Discovery API and return a list of documents.
-
-        Args:
-            query (str): Query text.
-            filter (str, optional): Searches for documents that match the filter.
-                Use Discovery Query Language syntax. Defaults to `None`.
-            top_k (int, optional): Number of top results to return. Defaults to `4`.
-
-        Example:
-            ```python
-            docs = doc_retriever.query_documents("What's novastack Framework?")
-            ```
-        """
+        """Search your data in the Discovery API and return a list of documents."""
         from ibm_watson.discovery_v2 import QueryLargePassages
 
         return_fields = ["extracted_metadata.filename", "extracted_metadata.file_type"]

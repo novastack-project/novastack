@@ -30,7 +30,12 @@ class BaseTextChunker(TransformerComponent, DispatcherSpanMixin):
 
     @dispatcher.span
     def get_text_chunks(self, text: str) -> list[str]:
-        """Split a single string of text into smaller chunks."""
+        """
+        Split a single string of text into smaller chunks.
+
+        Args:
+            text (str): Input text to split.
+        """
         config_dict = self.model_dump(exclude={"api_key"})
         dispatcher.event(
             TextChunkerStartEvent(
@@ -49,7 +54,12 @@ class BaseTextChunker(TransformerComponent, DispatcherSpanMixin):
 
     @dispatcher.span
     def get_document_chunks(self, documents: list[Document]) -> list[Document]:
-        """Split a list of documents into smaller document chunks."""
+        """
+        Split a list of documents into smaller document chunks.
+
+        Args:
+            documents (list[Document]): Documents to split.
+        """
         config_dict = self.model_dump(exclude={"api_key"})
         dispatcher.event(
             TextChunkerStartEvent(

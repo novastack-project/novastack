@@ -34,12 +34,7 @@ class HuggingFaceEmbedding(BaseEmbedding):
         self._client = SentenceTransformer(self.model_name, device=self.device)
 
     def _get_text_embeddings(self, input: str | list[str]) -> list[Embedding]:
-        """
-        Embed one or more text strings.
-
-        Args:
-            input (list[str]): Input for which to compute embeddings.
-        """
+        """Embed one or more text strings."""
         embeddings = self._client.encode_document(input).tolist()
 
         if embeddings and all(isinstance(item, list) for item in embeddings):

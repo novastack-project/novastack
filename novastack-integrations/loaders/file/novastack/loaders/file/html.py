@@ -12,22 +12,20 @@ class HtmlLoader(BaseFileLoader):
     Attributes:
         input_file (str): File path to load.
         tag (str): HTML tag to extract. Defaults to `section`.
-    """
 
-    tag: str = "section"
-
-    def _load_data(self) -> list[Document]:
-        """
-        Loads data from the specified file.
-
-        Example:
+    Example:
         ```python
         from novastack.loaders.file import HtmlLoader
 
         loader = HtmlLoader(input_file="path/to/file.html")
         documents = loader.load_data()
         ```
-        """
+    """
+
+    tag: str = "section"
+
+    def _load_data(self) -> list[Document]:
+        """Loads data and returns a list of documents."""
         try:
             from bs4 import BeautifulSoup  # noqa: F401
         except ImportError:

@@ -25,9 +25,7 @@ class BaseRetriever(BaseModel, DispatcherSpanMixin):
         query: str,
         **kwargs: Any,
     ) -> list[DocumentWithScore]:
-        """
-        Query and retrieve relevant documents.
-        """
+        """Query and retrieve relevant documents."""
         raise NotImplementedError(
             f"{self.__class__.__name__} must implement the _query_documents() method"
         )
@@ -40,6 +38,10 @@ class BaseRetriever(BaseModel, DispatcherSpanMixin):
     ) -> list[DocumentWithScore]:
         """
         Query and retrieve relevant documents.
+
+        Args:
+            query (str): Query text.
+            **kwargs (Any): Additional keyword arguments to customize the LLM completion request.
         """
         config_dict = self.model_dump(exclude={"api_key"})
         dispatcher.event(
