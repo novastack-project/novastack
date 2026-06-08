@@ -27,6 +27,8 @@ plugins:
       handlers:
         python:
           options:
+            filters:
+              - "!^_"
             show_source: false
             separate_signature: true
             merge_init_into_class: true

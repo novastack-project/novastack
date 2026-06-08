@@ -8,4 +8,5 @@ title: watsonx
     options:
         inherited_members: true
         filters:
+        - "!^_"
         - "!similarity"
