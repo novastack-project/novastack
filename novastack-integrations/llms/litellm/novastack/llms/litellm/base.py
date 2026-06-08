@@ -2,7 +2,6 @@ from typing import Any
 
 from novastack.core.bridge.pydantic import Field, SecretStr
 from novastack.core.llms import BaseLLM, ChatMessage, ChatResponse, CompletionResponse
-from novastack.core.llms.decorators import llm_chat_callback, llm_completion_callback
 
 import litellm
 
@@ -22,7 +21,7 @@ class LiteLLM(BaseLLM):
         additional_kwargs (dict[str, Any], optional): A dictionary of additional parameters passed
             to the LLM during completion. This allows customization of the request beyond
             the standard parameters.
-        callback_manager: (ModelMonitor, optional): The callback manager is used for observability.
+        callback_manager: (BaseObservability, optional): The callback manager is used for observability.
 
     Example:
         ```python
@@ -54,8 +53,7 @@ class LiteLLM(BaseLLM):
             "api_key": self.api_key.get_secret_value(),  # Always enforced from class
         }
 
-    @llm_completion_callback()
-    def completion(self, prompt: str, **kwargs: Any) -> CompletionResponse:
+    def _completion(self, prompt: str, **kwargs: Any) -> CompletionResponse:
         """
         Creates a completion for the provided prompt and parameters. Using OpenAI's standard endpoint (/completions).
 
@@ -76,8 +74,7 @@ class LiteLLM(BaseLLM):
             raw=response,
         )
 
-    @llm_chat_callback()
-    def chat_completion(
+    def _chat_completion(
         self, messages: list[ChatMessage | dict], **kwargs: Any
     ) -> ChatResponse:
         """
