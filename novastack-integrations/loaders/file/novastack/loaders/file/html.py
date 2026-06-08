@@ -16,7 +16,7 @@ class HtmlLoader(BaseFileLoader):
 
     tag: str = "section"
 
-    def load_data(self) -> list[Document]:
+    def _load_data(self) -> list[Document]:
         """
         Loads data from the specified file.
 

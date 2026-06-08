@@ -17,7 +17,7 @@ class JsonLoader(BaseFileLoader):
 
     jq_schema: str | None = None
 
-    def load_data(self) -> list[Document]:
+    def _load_data(self) -> list[Document]:
         """
         Loads data from the specified file.
 
