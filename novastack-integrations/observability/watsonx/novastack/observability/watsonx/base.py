@@ -7,15 +7,15 @@ from typing import Any
 
 from ibm_cloud_sdk_core.authenticators import Authenticator as IBMAuthenticator
 from novastack.core.bridge.pydantic import Field, PrivateAttr, field_validator
-from novastack.core.observability import BaseObservability
-from novastack.core.prompts import PromptTemplate
-from novastack.core.prompts.utils import extract_template_vars
-from novastack.core.telemetry.events import BaseEvent
-from novastack.core.telemetry.events.llm import (
+from novastack.core.instrumentation.events import BaseEvent
+from novastack.core.instrumentation.events.llm import (
     LLMCompletionEndEvent,
     LLMCompletionStartEvent,
 )
-from novastack.core.telemetry.span import Span
+from novastack.core.instrumentation.span import Span
+from novastack.core.observability import BaseObservability
+from novastack.core.prompts import PromptTemplate
+from novastack.core.prompts.utils import extract_template_vars
 from novastack.observability.watsonx.enums import Region
 from novastack.observability.watsonx.external_monitor_manager import (
     WatsonxExternalMonitorManager,
