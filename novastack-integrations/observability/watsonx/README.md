@@ -1,4 +1,4 @@
-# NovaStack integration - watsonx Observability
+# Novatack integration - watsonx Observability
 
 ## Installation 
 

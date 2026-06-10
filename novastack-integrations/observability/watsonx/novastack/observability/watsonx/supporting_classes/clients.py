@@ -1,8 +1,8 @@
 import logging
 from typing import TYPE_CHECKING, Any
 
-from novastack.common.utils import validate_enum, validate_type
-from novastack.observability.watsonx.supporting_classes.enums import Region
+from novastack.core.utils import validate_type
+from novastack.observability.watsonx.enums import Region
 
 if TYPE_CHECKING:
     from ibm_cloud_sdk_core.authenticators import Authenticator as IBMAuthenticator
@@ -25,7 +25,6 @@ class WosClientFactory:
             region: The region object containing service URLs.
             service_instance_id: The service instance ID.
         """
-        validate_enum(region, "region", Region)
         region = Region.from_value(region)
 
         from ibm_watson_openscale import APIClient as WosAPIClient  # type: ignore
@@ -63,7 +62,6 @@ class AIGovFactsClientFactory:
             container_type: The container type ('space' or 'project').
             region: The region object containing service URLs.
         """
-        validate_enum(region, "region", Region)
         region = Region.from_value(region)
 
         from ibm_aigov_facts_client import AIGovFactsClient  # type: ignore
@@ -104,7 +102,6 @@ class WMLClientFactory:
             region: The region object containing service URLs.
             space_id: The space ID to set as default.
         """
-        validate_enum(region, "region", Region)
         region = Region.from_value(region)
 
         from ibm_watsonx_ai import APIClient, Credentials  # type: ignore

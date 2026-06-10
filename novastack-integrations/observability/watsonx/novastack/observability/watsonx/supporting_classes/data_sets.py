@@ -1,6 +1,10 @@
 import json
 from typing import Any
 
+from ibm_watson_openscale.supporting_classes.enums import (
+    DataSetTypes,
+    TargetTypes,
+)
 from novastack.core.bridge.pydantic import BaseModel
 from novastack.observability.watsonx.supporting_classes.utils import (
     build_payload,
@@ -32,22 +36,13 @@ class DataSets(BaseModel):
             request_records (list[dict]): A list of records to be logged. Each record is represented as a dictionary.
             subscription_id (str, optional): The subscription ID associated with the records being logged.
         """
-        from ibm_watson_openscale.supporting_classes.enums import (
-            DataSetTypes,
-            TargetTypes,
-        )
-
-        # Expected behavior: Prefer using fn `subscription_id`.
-        # Fallback to `self.subscription_id` if `subscription_id` None or empty.
-        _subscription_id = subscription_id or self.subscription_id
-
-        if _subscription_id is None or _subscription_id == "":
+        if subscription_id is None or subscription_id == "":
             raise ValueError(
                 "Unexpected value for 'subscription_id': Cannot be None or empty string."
             )
 
         subscription_details = self.wos_client.subscriptions.get(
-            _subscription_id,
+            subscription_id,
         ).result
         subscription_details = json.loads(str(subscription_details))
 
@@ -58,7 +53,7 @@ class DataSets(BaseModel):
         payload_data_set_id = (
             self.wos_client.data_sets.list(
                 type=DataSetTypes.PAYLOAD_LOGGING,
-                target_target_id=_subscription_id,
+                target_target_id=subscription_id,
                 target_target_type=TargetTypes.SUBSCRIPTION,
             )
             .result.data_sets[0]
@@ -88,22 +83,13 @@ class DataSets(BaseModel):
             request_records (list[dict]): A list of records to be logged, where each record is represented as a dictionary.
             subscription_id (str, optional): The subscription ID associated with the records being logged.
         """
-        from ibm_watson_openscale.supporting_classes.enums import (
-            DataSetTypes,
-            TargetTypes,
-        )
-
-        # Expected behavior: Prefer using fn `subscription_id`.
-        # Fallback to `self.subscription_id` if `subscription_id` None or empty.
-        _subscription_id = subscription_id or self.subscription_id
-
-        if _subscription_id is None or _subscription_id == "":
+        if subscription_id is None or subscription_id == "":
             raise ValueError(
                 "Unexpected value for 'subscription_id': Cannot be None or empty string."
             )
 
         subscription_details = self.wos_client.subscriptions.get(
-            _subscription_id,
+            subscription_id,
         ).result
         subscription_details = json.loads(str(subscription_details))
 
@@ -122,7 +108,7 @@ class DataSets(BaseModel):
         feedback_data_set_id = (
             self.wos_client.data_sets.list(
                 type=DataSetTypes.FEEDBACK,
-                target_target_id=_subscription_id,
+                target_target_id=subscription_id,
                 target_target_type=TargetTypes.SUBSCRIPTION,
             )
             .result.data_sets[0]
