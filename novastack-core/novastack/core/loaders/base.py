@@ -2,8 +2,8 @@ from abc import abstractmethod
 
 from novastack.core.bridge.pydantic import BaseModel, Field
 from novastack.core.document import Document
-from novastack.core.telemetry import DispatcherSpanMixin, get_dispatcher
-from novastack.core.telemetry.events.loader import (
+from novastack.core.instrumentation import DispatcherSpanMixin, get_dispatcher
+from novastack.core.instrumentation.events.loader import (
     LoaderEndEvent,
     LoaderStartEvent,
 )
