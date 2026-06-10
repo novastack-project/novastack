@@ -23,5 +23,5 @@ class BaseGuardrail(BaseModel, ABC):
         return "BaseGuardrail"
 
     @abstractmethod
-    def enforce(self, text: str, direction: str) -> GuardrailResponse:
+    def enforce(self, text: str, direction: str, **kwargs) -> GuardrailResponse:
         """Run policy enforcement on the specified text."""

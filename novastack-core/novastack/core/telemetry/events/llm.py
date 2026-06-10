@@ -1,4 +1,6 @@
-from novastack.core.llms import ChatMessage, ChatResponse, CompletionResponse
+from __future__ import annotations
+
+from novastack.core.llms.types import ChatMessage, ChatResponse, CompletionResponse
 from novastack_telemetry.events import BaseEvent
 
 

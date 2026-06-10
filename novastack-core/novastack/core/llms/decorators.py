@@ -1,3 +1,5 @@
+# Deprecated: Callback decorator now is handled by novastack telemetry.
+
 import asyncio
 import atexit
 import functools
@@ -8,7 +10,6 @@ from typing import Any, Callable
 
 from novastack.core.llms.enums import MessageRole
 from novastack.core.llms.types import ChatMessage, ChatResponse, CompletionResponse
-from novastack.core.observability.types import PayloadRecord
 from novastack.core.prompts.utils import extract_template_vars
 
 logger = getLogger(__name__)
