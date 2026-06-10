@@ -1,12 +1,12 @@
 from typing import Any
 
-from novastack_telemetry._dispatcher_core import (
+from novastack_instrumentation._core import (
     _CONTEXT_METADATA_KEY,
     Dispatcher,
+    DispatcherManager,
     _active_context_metadata,
-    _DispatcherManager,
 )
-from novastack_telemetry.observability import BaseObservability
+from novastack_instrumentation.observability import BaseObservability
 
 
 class PropagatingObservability(BaseObservability):
@@ -83,7 +83,7 @@ def test_capture_walks_parent_chain():
         propagate=True,
         parent_name="parent",
     )
-    manager = _DispatcherManager(parent)
+    manager = DispatcherManager(parent)
     manager.add_dispatcher(child)
     child.dispatcher_manager = manager
     parent.dispatcher_manager = manager
@@ -104,7 +104,7 @@ def test_restore_walks_parent_chain():
         propagate=True,
         parent_name="parent",
     )
-    manager = _DispatcherManager(parent)
+    manager = DispatcherManager(parent)
     manager.add_dispatcher(child)
     child.dispatcher_manager = manager
     parent.dispatcher_manager = manager
@@ -127,7 +127,7 @@ def test_capture_stops_at_propagate_false():
         propagate=False,
         parent_name="parent",
     )
-    manager = _DispatcherManager(parent)
+    manager = DispatcherManager(parent)
     manager.add_dispatcher(child)
     child.dispatcher_manager = manager
     parent.dispatcher_manager = manager

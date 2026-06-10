@@ -6,7 +6,7 @@ on:
   pull_request:
 
 jobs:
-  test-telemetry:
+  test-instrumentation:
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
@@ -22,12 +22,12 @@ jobs:
       - name: Set up Python ${{ matrix.python-version }}
         run: uv python install ${{ matrix.python-version }}
 
-      - name: Install dependencies for novastack-telemetry
-        working-directory: ./novastack-telemetry
+      - name: Install dependencies for novastack-instrumentation
+        working-directory: ./novastack-instrumentation
         run: uv sync --extra dev
 
-      - name: Run tests for novastack-telemetry
-        working-directory: ./novastack-telemetry
+      - name: Run tests for novastack-instrumentation
+        working-directory: ./novastack-instrumentation
         run: uv run pytest -v --tb=short
 
   test-utils:

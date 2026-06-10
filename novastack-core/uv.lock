@@ -204,13 +204,13 @@ wheels = [
 
 [[package]]
 name = "novastack-core"
-version = "2.0.1"
+version = "2.0.2"
 source = { editable = "." }
 dependencies = [
     { name = "deprecated" },
     { name = "httpx" },
     { name = "nltk" },
-    { name = "novastack-telemetry" },
+    { name = "novastack-instrumentation" },
     { name = "novastack-utils" },
     { name = "novastack-workflows" },
     { name = "numpy" },
@@ -231,8 +231,8 @@ requires-dist = [
     { name = "deprecated", specifier = ">=1.3.1,<2.0.0" },
     { name = "httpx", specifier = ">=0.28.1,<1.0.0" },
     { name = "nltk", specifier = ">=3.9.2,<4.0.0" },
-    { name = "novastack-telemetry", specifier = ">=1.1.1,<2.0.0" },
-    { name = "novastack-utils", specifier = ">=1.0.0,<3.0.0" },
+    { name = "novastack-instrumentation", specifier = ">=2.0.0,<3.0.0" },
+    { name = "novastack-utils", specifier = ">=1.0.0,<2.0.0" },
     { name = "novastack-workflows", specifier = ">=2.0.1,<3.0.0" },
     { name = "numpy", specifier = ">=1.26.4,<2.0.0" },
     { name = "pydantic", specifier = ">=2.12.5,<3.0.0" },
@@ -245,17 +245,17 @@ requires-dist = [
 provides-extras = ["dev"]
 
 [[package]]
-name = "novastack-telemetry"
-version = "1.1.1"
+name = "novastack-instrumentation"
+version = "2.0.0"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "pydantic" },
     { name = "treelib" },
     { name = "wrapt" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/91/67/528898da3b9e3926520305f01a1d536f01574941be441aa19892c2eb14c5/novastack_telemetry-1.1.1.tar.gz", hash = "sha256:aac162381d9671d17630e646071793afd46f940a120708f4bfa3bd72fb91114a", size = 9190, upload-time = "2026-06-08T17:17:39.145Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/bd/8c/ff183612c421b1365c85bed8478e28d55c601f5009881cf39d6a01df9161/novastack_instrumentation-2.0.0.tar.gz", hash = "sha256:47541beba3833db8f70b77f14abb7a048d566398d00a4a83f14169db92825fa2", size = 9176, upload-time = "2026-06-10T20:45:52.976Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/78/97/8670fd0746275be614b629fa3dc05b04f627dd68b9a3e37553c090213a90/novastack_telemetry-1.1.1-py3-none-any.whl", hash = "sha256:ad60ec7340cef0f921fc34608b106b791fd31174f5e6872f07261d6ecd1201f5", size = 12632, upload-time = "2026-06-08T17:17:38.141Z" },
+    { url = "https://files.pythonhosted.org/packages/bc/66/3d0b415ab8cb987ba00d71e01dfc87f5086ec4119e987b34375567a35607/novastack_instrumentation-2.0.0-py3-none-any.whl", hash = "sha256:05864f494d0c038d2c716510ac507386abcee7eec2495b9bb52c9fa63b532b34", size = 12740, upload-time = "2026-06-10T20:45:51.806Z" },
 ]
 
 [[package]]

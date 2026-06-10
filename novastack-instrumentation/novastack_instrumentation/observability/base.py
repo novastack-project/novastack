@@ -3,8 +3,8 @@ from typing import Any
 
 from pydantic import BaseModel
 
-from novastack_telemetry.events.base import BaseEvent
-from novastack_telemetry.span import Span
+from novastack_instrumentation.events.base import BaseEvent
+from novastack_instrumentation.span import Span
 
 
 class BaseObservability(BaseModel):

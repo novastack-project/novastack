@@ -3,8 +3,8 @@ from typing import Any
 
 from novastack.core.bridge.pydantic import BaseModel
 from novastack.core.document import DocumentWithScore
-from novastack.core.telemetry import DispatcherSpanMixin, get_dispatcher
-from novastack.core.telemetry.events.retrieval import (
+from novastack.core.instrumentation import DispatcherSpanMixin, get_dispatcher
+from novastack.core.instrumentation.events.retrieval import (
     RetrievalEndEvent,
     RetrievalStartEvent,
 )

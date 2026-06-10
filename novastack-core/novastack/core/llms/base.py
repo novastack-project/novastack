@@ -2,15 +2,15 @@ from abc import abstractmethod
 from typing import Any
 
 from novastack.core.bridge.pydantic import BaseModel, Field
-from novastack.core.llms.types import ChatMessage, ChatResponse, CompletionResponse
-from novastack.core.observability import BaseObservability
-from novastack.core.telemetry import DispatcherSpanMixin, get_dispatcher
-from novastack.core.telemetry.events.llm import (
+from novastack.core.instrumentation import DispatcherSpanMixin, get_dispatcher
+from novastack.core.instrumentation.events.llm import (
     LLMChatEndEvent,
     LLMChatStartEvent,
     LLMCompletionEndEvent,
     LLMCompletionStartEvent,
 )
+from novastack.core.llms.types import ChatMessage, ChatResponse, CompletionResponse
+from novastack.core.observability import BaseObservability
 
 dispatcher = get_dispatcher(__name__)
 

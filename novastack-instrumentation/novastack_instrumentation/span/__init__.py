@@ -1,7 +1,7 @@
 from contextvars import ContextVar
 from typing import Optional
 
-from novastack_telemetry.span.base import BaseSpan, Span
+from novastack_instrumentation.span.base import BaseSpan, Span
 
 # ContextVar for managing active spans
 _active_span_id: ContextVar[Optional[str]] = ContextVar("_active_span_id", default=None)

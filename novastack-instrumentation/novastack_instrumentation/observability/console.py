@@ -7,15 +7,14 @@ from typing import Any, Optional
 from pydantic import Field, PrivateAttr
 from treelib.tree import Tree
 
-from novastack_telemetry.events import BaseEvent
-from novastack_telemetry.observability.base import BaseObservability
-from novastack_telemetry.span import Span
+from novastack_instrumentation.events import BaseEvent
+from novastack_instrumentation.observability.base import BaseObservability
+from novastack_instrumentation.span import Span
 
 
-class NovastackDebugObservability(BaseObservability):
-    """Novastack observability to track debug information (in-memory)."""
+class ConsoleObservability(BaseObservability):
+    """Sends observability data to console to track information (in-memory)."""
 
-    model_config = {"arbitrary_types_allowed": True}
     open_spans: dict[str, Span] = Field(
         default_factory=dict, description="Dictionary of open spans."
     )
@@ -41,7 +40,7 @@ class NovastackDebugObservability(BaseObservability):
 
     @classmethod
     def class_name(cls) -> str:
-        return "NovastackDebugObservability"
+        return "ConsoleObservability"
 
     def on_event(self, event: BaseEvent, **kwargs: Any) -> None:
         """Handle an event."""

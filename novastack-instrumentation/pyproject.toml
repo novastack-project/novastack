@@ -3,9 +3,9 @@ requires = ["hatchling"]
 build-backend = "hatchling.build"
 
 [project]
-name = "novastack-telemetry"
-version = "1.1.1"
-description = "Provides the telemetry hooks for observability in Novastack."
+name = "novastack-instrumentation"
+version = "2.0.0"
+description = "Provides the instrumentation hooks for observability in Novastack."
 authors = [{ name = "Leonardo Furnielis", email = "leonardofurnielis@outlook.com" }]
 license = { text = "Apache-2.0" }
 readme = "README.md"
@@ -31,10 +31,10 @@ dev = [
 ]
 
 [project.urls]
-Repository = "https://github.com/novastack-project/novastack/tree/main/novastack-telemetry"
+Repository = "https://github.com/novastack-project/novastack/tree/main/novastack-instrumentation"
 
 [tool.hatch.build.targets.sdist]
-include = ["novastack_telemetry/"]
+include = ["novastack_instrumentation/"]
 
 [tool.hatch.build.targets.wheel]
-include = ["novastack_telemetry/"]
+include = ["novastack_instrumentation/"]

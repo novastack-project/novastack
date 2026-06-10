@@ -4,7 +4,7 @@ from uuid import uuid4
 
 from pydantic import BaseModel, Field
 
-from novastack_telemetry.span import _active_span_id
+from novastack_instrumentation.span import _active_span_id
 
 
 class BaseEvent(BaseModel):

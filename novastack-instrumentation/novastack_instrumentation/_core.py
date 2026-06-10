@@ -10,9 +10,9 @@ from typing import Any, Callable, Generator, Optional, TypeVar
 import wrapt
 from pydantic import BaseModel, Field
 
-from novastack_telemetry.events import BaseEvent, SpanExceptionEvent
-from novastack_telemetry.observability import BaseObservability
-from novastack_telemetry.span import _active_span_id
+from novastack_instrumentation.events import BaseEvent, SpanExceptionEvent
+from novastack_instrumentation.observability import BaseObservability
+from novastack_instrumentation.span import _active_span_id
 
 _CONTEXT_METADATA_KEY = "context_metadata"
 _DISPATCHER_SPAN_DECORATED_ATTR = "__dispatcher_span_decorated__"
@@ -37,14 +37,14 @@ def _context_metadata(new_metadata: dict[str, Any]) -> Generator[None, None, Non
 
 class Dispatcher(BaseModel):
     """
-    Orchestrates telemetry events and span lifecycle management.
+    Orchestrates events and span lifecycle management.
 
     Routes events and span signals to registered handlers through a hierarchical
     propagation chain. Provides a decorator-based API (@dispatcher.span) for
     automatic span tracking in both sync and async contexts. Supports thread-safe
     and async-safe operations using ContextVars, with automatic parent-child span
     relationships, trace context management, and silent exception handling to
-    prevent telemetry failures from affecting application code.
+    prevent instrumentation failures from affecting application code.
     """
 
     model_config = {"arbitrary_types_allowed": True}
@@ -55,7 +55,7 @@ class Dispatcher(BaseModel):
     parent_name: str = Field(
         default_factory=str, description="The name of parent Dispatcher."
     )
-    dispatcher_manager: Optional["_DispatcherManager"] = Field(
+    dispatcher_manager: Optional["DispatcherManager"] = Field(
         default=None, description="Dispatcher manager."
     )
     root_name: str = Field(
@@ -92,7 +92,7 @@ class Dispatcher(BaseModel):
         Invoke handler method across the propagation chain with error isolation.
 
         Calls the specified method on all handlers in the chain. Handler exceptions
-        are silently caught to ensure telemetry failures don't break application code.
+        are silently caught to ensure instrumentation failures don't break application code.
 
         Deduplicates handlers by identity to prevent the same handler instance from
         being called multiple times when it appears in multiple levels of the hierarchy.
@@ -370,7 +370,7 @@ class Dispatcher(BaseModel):
             return self.name
 
 
-class _DispatcherManager:
+class DispatcherManager:
     def __init__(self, root: Dispatcher) -> None:
         self.dispatchers: dict[str, Dispatcher] = {root.name: root}
 

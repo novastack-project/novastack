@@ -9,13 +9,13 @@ from random import random
 from typing import Any
 from unittest.mock import MagicMock, patch
 
-import novastack_telemetry as telemetry
+import novastack_instrumentation as telemetry
 import pytest
 import wrapt
-from novastack_telemetry import DispatcherSpanMixin
-from novastack_telemetry._dispatcher_core import Dispatcher, _context_metadata
-from novastack_telemetry.events import BaseEvent
-from novastack_telemetry.observability import BaseObservability
+from novastack_instrumentation import DispatcherSpanMixin
+from novastack_instrumentation._core import Dispatcher, _context_metadata
+from novastack_instrumentation.events import BaseEvent
+from novastack_instrumentation.observability import BaseObservability
 
 dispatcher = telemetry.get_dispatcher("test")
 
@@ -130,7 +130,7 @@ class _TestObject:
 
 @patch.object(Dispatcher, "_span_end")
 @patch.object(Dispatcher, "_span_start")
-@patch("novastack_telemetry._dispatcher_core.uuid")
+@patch("novastack_instrumentation._core.uuid")
 def test_dispatcher_span_args(mock_uuid, mock_span_start, mock_span_end):
     mock_uuid.uuid4.return_value = "mock"
 
@@ -161,7 +161,7 @@ def test_dispatcher_span_args(mock_uuid, mock_span_start, mock_span_end):
 
 @patch.object(Dispatcher, "_span_end")
 @patch.object(Dispatcher, "_span_start")
-@patch("novastack_telemetry._dispatcher_core.uuid")
+@patch("novastack_instrumentation._core.uuid")
 def test_dispatcher_span_args_with_instance(mock_uuid, mock_span_start, mock_span_end):
     mock_uuid.uuid4.return_value = "mock"
 
@@ -194,7 +194,7 @@ def test_dispatcher_span_args_with_instance(mock_uuid, mock_span_start, mock_spa
 @patch.object(Dispatcher, "_span_end")
 @patch.object(Dispatcher, "_span_exception")
 @patch.object(Dispatcher, "_span_start")
-@patch("novastack_telemetry._dispatcher_core.uuid")
+@patch("novastack_instrumentation._core.uuid")
 def test_dispatcher_span_drop_args(
     mock_uuid: MagicMock,
     mock_span_start: MagicMock,
@@ -227,7 +227,7 @@ def test_dispatcher_span_drop_args(
 @pytest.mark.asyncio
 @patch.object(Dispatcher, "_span_end")
 @patch.object(Dispatcher, "_span_start")
-@patch("novastack_telemetry._dispatcher_core.uuid")
+@patch("novastack_instrumentation._core.uuid")
 async def test_dispatcher_async_span_args(mock_uuid, mock_span_start, mock_span_end):
     mock_uuid.uuid4.return_value = "mock"
 
@@ -259,7 +259,7 @@ async def test_dispatcher_async_span_args(mock_uuid, mock_span_start, mock_span_
 @pytest.mark.asyncio
 @patch.object(Dispatcher, "_span_end")
 @patch.object(Dispatcher, "_span_start")
-@patch("novastack_telemetry._dispatcher_core.uuid")
+@patch("novastack_instrumentation._core.uuid")
 async def test_dispatcher_async_span_args_with_instance(
     mock_uuid, mock_span_start, mock_span_end
 ):
@@ -295,7 +295,7 @@ async def test_dispatcher_async_span_args_with_instance(
 @patch.object(Dispatcher, "_span_end")
 @patch.object(Dispatcher, "_span_exception")
 @patch.object(Dispatcher, "_span_start")
-@patch("novastack_telemetry._dispatcher_core.uuid")
+@patch("novastack_instrumentation._core.uuid")
 async def test_dispatcher_async_span_drop_args(
     mock_uuid: MagicMock,
     mock_span_start: MagicMock,
@@ -328,7 +328,7 @@ async def test_dispatcher_async_span_drop_args(
 @patch.object(Dispatcher, "_span_end")
 @patch.object(Dispatcher, "_span_exception")
 @patch.object(Dispatcher, "_span_start")
-@patch("novastack_telemetry._dispatcher_core.uuid")
+@patch("novastack_instrumentation._core.uuid")
 async def test_dispatcher_async_span_drop_args_with_instance(
     mock_uuid: MagicMock,
     mock_span_start: MagicMock,
@@ -361,7 +361,7 @@ async def test_dispatcher_async_span_drop_args_with_instance(
 @patch.object(Dispatcher, "_span_end")
 @patch.object(Dispatcher, "_span_exception")
 @patch.object(Dispatcher, "_span_start")
-@patch("novastack_telemetry._dispatcher_core.uuid")
+@patch("novastack_instrumentation._core.uuid")
 def test_dispatcher_fire_event(
     mock_uuid: MagicMock,
     mock_span_start: MagicMock,
@@ -473,7 +473,7 @@ def test_dispatcher_attaches_tags_to_concurrent_events(
 @patch.object(Dispatcher, "_span_end")
 @patch.object(Dispatcher, "_span_exception")
 @patch.object(Dispatcher, "_span_start")
-@patch("novastack_telemetry._dispatcher_core.uuid")
+@patch("novastack_instrumentation._core.uuid")
 def test_dispatcher_fire_event_with_instance(
     mock_uuid, mock_span_start, mock_span_exception, mock_span_end
 ):
@@ -553,7 +553,7 @@ def test_mixin_decorates_overridden_method(mock_span_start):
 
 @patch.object(Dispatcher, "_span_end")
 @patch.object(Dispatcher, "_span_start")
-@patch("novastack_telemetry._dispatcher_core.uuid")
+@patch("novastack_instrumentation._core.uuid")
 def test_span_naming_with_inheritance(mock_uuid, mock_span_start, mock_span_end):
     """Test that span IDs use the runtime class name, not the definition class name."""
     mock_uuid.uuid4.return_value = "mock"
@@ -597,7 +597,7 @@ def test_span_naming_with_inheritance(mock_uuid, mock_span_start, mock_span_end)
 @pytest.mark.asyncio
 @patch.object(Dispatcher, "_span_end")
 @patch.object(Dispatcher, "_span_start")
-@patch("novastack_telemetry._dispatcher_core.uuid")
+@patch("novastack_instrumentation._core.uuid")
 async def test_async_span_naming_with_inheritance(
     mock_uuid, mock_span_start, mock_span_end
 ):
@@ -629,7 +629,7 @@ async def test_async_span_naming_with_inheritance(
 
 @patch.object(Dispatcher, "_span_end")
 @patch.object(Dispatcher, "_span_start")
-@patch("novastack_telemetry._dispatcher_core.uuid")
+@patch("novastack_instrumentation._core.uuid")
 def test_span_naming_regular_functions_unchanged(
     mock_uuid, mock_span_start, mock_span_end
 ):
@@ -650,7 +650,7 @@ def test_span_naming_regular_functions_unchanged(
 
 @patch.object(Dispatcher, "_span_end")
 @patch.object(Dispatcher, "_span_start")
-@patch("novastack_telemetry._dispatcher_core.uuid")
+@patch("novastack_instrumentation._core.uuid")
 def test_span_naming_complex_inheritance(mock_uuid, mock_span_start, mock_span_end):
     """Test span naming with multiple levels of inheritance."""
     mock_uuid.uuid4.return_value = "mock"
@@ -694,7 +694,7 @@ def test_span_naming_complex_inheritance(mock_uuid, mock_span_start, mock_span_e
 
 @patch.object(Dispatcher, "_span_end")
 @patch.object(Dispatcher, "_span_start")
-@patch("novastack_telemetry._dispatcher_core.uuid")
+@patch("novastack_instrumentation._core.uuid")
 def test_span_naming_with_method_override(mock_uuid, mock_span_start, mock_span_end):
     """Test span naming when methods are overridden in derived classes."""
     mock_uuid.uuid4.return_value = "mock"
@@ -725,7 +725,7 @@ def test_span_naming_with_method_override(mock_uuid, mock_span_start, mock_span_
 
 @patch.object(Dispatcher, "_span_end")
 @patch.object(Dispatcher, "_span_start")
-@patch("novastack_telemetry._dispatcher_core.uuid")
+@patch("novastack_instrumentation._core.uuid")
 def test_span_naming_with_nested_classes(mock_uuid, mock_span_start, mock_span_end):
     """Test span naming with nested classes."""
     mock_uuid.uuid4.return_value = "mock"

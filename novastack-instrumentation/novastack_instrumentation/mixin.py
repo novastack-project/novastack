@@ -2,8 +2,8 @@ import inspect
 from abc import ABC
 from typing import Any
 
-from novastack_telemetry._dispatcher_core import _DISPATCHER_SPAN_DECORATED_ATTR
-from novastack_telemetry.dispatcher import get_dispatcher
+from novastack_instrumentation._core import _DISPATCHER_SPAN_DECORATED_ATTR
+from novastack_instrumentation.dispatcher import get_dispatcher
 
 
 class DispatcherSpanMixin(ABC):

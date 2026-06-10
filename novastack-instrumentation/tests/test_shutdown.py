@@ -1,7 +1,7 @@
 from unittest.mock import MagicMock
 
-from novastack_telemetry._dispatcher_core import Dispatcher, _DispatcherManager
-from novastack_telemetry.observability import BaseObservability
+from novastack_instrumentation._core import Dispatcher, DispatcherManager
+from novastack_instrumentation.observability import BaseObservability
 
 
 def test_shutdown_calls_close_on_handlers():
@@ -41,7 +41,7 @@ def test_shutdown_walks_parent_chain():
         propagate=True,
         parent_name="parent",
     )
-    manager = _DispatcherManager(parent)
+    manager = DispatcherManager(parent)
     manager.add_dispatcher(child)
     child.dispatcher_manager = manager
     parent.dispatcher_manager = manager

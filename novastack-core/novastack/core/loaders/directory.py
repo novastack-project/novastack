@@ -1,7 +1,7 @@
 import glob
 import os
 from pathlib import Path
-from typing import Any, Type
+from typing import Type
 
 from novastack.core.bridge.pydantic import Field, field_validator
 from novastack.core.document import Document

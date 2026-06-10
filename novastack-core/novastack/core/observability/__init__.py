@@ -1,6 +1,6 @@
-from novastack_telemetry.observability import (
+from novastack_instrumentation.observability import (
     BaseObservability,
-    NovastackDebugObservability,
+    ConsoleObservability,
 )
 
-__all__ = ["BaseObservability", "NovastackDebugObservability"]
+__all__ = ["BaseObservability", "ConsoleObservability"]

@@ -1,5 +1,5 @@
-from novastack_telemetry._dispatcher_core import Dispatcher, _DispatcherManager
-from novastack_telemetry.observability import BaseObservability
+from novastack_instrumentation._core import Dispatcher, DispatcherManager
+from novastack_instrumentation.observability import BaseObservability
 
 _global_handlers: list[BaseObservability] = []
 
@@ -9,7 +9,7 @@ root_dispatcher: Dispatcher = Dispatcher(
     propagate=False,
 )
 
-root_manager: _DispatcherManager = _DispatcherManager(root_dispatcher)
+root_manager: DispatcherManager = DispatcherManager(root_dispatcher)
 
 
 def set_global_handler(handler: BaseObservability) -> None:
@@ -24,11 +24,11 @@ def set_global_handler(handler: BaseObservability) -> None:
 
     Example:
         ```python
-        from novastack_telemetry import set_global_handler, get_dispatcher
-        from novastack_telemetry.observability import NovastackDebugObservability
+        from novastack_instrumentation import set_global_handler, get_dispatcher
+        from novastack_instrumentation.observability import ConsoleObservability
 
         # Set global handler once
-        handler = NovastackDebugObservability()
+        handler = ConsoleObservability()
         set_global_handler(handler)
         ```
     """

@@ -1,9 +1,9 @@
 import inspect
 from typing import Any
 
-from novastack_telemetry._dispatcher_core import Dispatcher
-from novastack_telemetry.events import BaseEvent
-from novastack_telemetry.observability import BaseObservability
+from novastack_instrumentation._core import Dispatcher
+from novastack_instrumentation.events import BaseEvent
+from novastack_instrumentation.observability import BaseObservability
 from pydantic import Field
 
 
@@ -29,7 +29,7 @@ class UnifiedTestHandler(BaseObservability):
         bound_args: inspect.BoundArguments,
         instance: Any | None = None,
         parent_id: str | None = None,
-        tags: dict[str, Any] | None = None,
+        metadata: dict[str, Any] | None = None,
         **kwargs: Any,
     ) -> None:
         """Handle span start."""
