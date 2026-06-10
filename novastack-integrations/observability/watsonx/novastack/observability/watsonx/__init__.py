@@ -1,3 +1,6 @@
+from novastack.observability.watsonx.base import (
+    WatsonxObservability,
+)
 from novastack.observability.watsonx.custom_metric_manager import (
     WatsonxCustomMetricsManager,
 )
@@ -16,6 +19,7 @@ from novastack.observability.watsonx.types import (
 )
 
 __all__ = [
+    "WatsonxObservability",
     "IntegratedSystemCredentials",
     "WatsonxExternalMonitorManager",
     "WatsonxCustomMetricsManager",
