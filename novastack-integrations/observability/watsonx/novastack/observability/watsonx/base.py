@@ -23,6 +23,31 @@ from novastack.observability.watsonx.external_monitor_manager import (
 
 
 class WatsonxObservability(BaseObservability):
+    """
+    Add observability to Novastack LLM Calls with IBM watsonx.governance.
+
+    Attributes:
+        authenticator (IBMAuthenticator): The authenticator specifies the authentication mechanism.
+        subscription_id (str, optional): The subscription ID associated with the records being logged.
+        region (str, optional): The region where watsonx.governance is hosted when using IBM Cloud.
+            Defaults to `us-south`.
+        service_instance_id (str, optional): The service instance ID.
+
+    Example:
+        ```python
+        from novastack.core import set_global_handler
+        from novastack.observability.watsonx import WatsonxObservability
+
+        # watsonx.governance (IBM Cloud)
+        watsonx_handler = WatsonxObservability(
+            authenticator=IAMAuthenticator(apikey="API_KEY"),
+            subscription_id="SUBSCRIPTION_ID",
+        )
+
+        set_global_handler(watsonx_handler)
+        ```
+    """
+
     open_spans: dict[str, Span] = Field(
         default_factory=dict, description="Dictionary of open spans."
     )
