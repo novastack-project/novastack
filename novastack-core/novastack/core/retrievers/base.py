@@ -13,9 +13,7 @@ dispatcher = get_dispatcher(__name__)
 
 
 class BaseRetriever(BaseModel, DispatcherSpanMixin):
-    """
-    Abstract base class for document retrievers.
-    """
+    """Abstract base class for document retrievers."""
 
     model_config = {"arbitrary_types_allowed": True}
 

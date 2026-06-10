@@ -12,9 +12,7 @@ dispatcher = get_dispatcher(__name__)
 
 
 class BaseVectorStore(BaseModel, DispatcherSpanMixin):
-    """
-    Abstract base class defining the interface for vector store.
-    """
+    """Abstract base class defining the interface for vector store."""
 
     model_config = {
         "arbitrary_types_allowed": True,

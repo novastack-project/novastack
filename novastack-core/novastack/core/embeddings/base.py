@@ -1,10 +1,10 @@
 from abc import abstractmethod
 
 import numpy as np
-from novastack.core.base.enums import SimilarityMode
-from novastack.core.base.schema import TransformerComponent
 from novastack.core.bridge.pydantic import Field
+from novastack.core.component import TransformerComponent
 from novastack.core.document import Document
+from novastack.core.enums import SimilarityMode
 from novastack.core.telemetry import DispatcherSpanMixin, get_dispatcher
 from novastack.core.telemetry.events.embedding import (
     EmbeddingEndEvent,
