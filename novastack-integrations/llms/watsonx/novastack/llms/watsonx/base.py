@@ -32,6 +32,10 @@ class WatsonxLLM(BaseLLM):
         ```
     """
 
+    model_config = {
+        "validate_assignment": False,
+    }
+
     model: str
     api_key: SecretStr
     region: str = Region.US_SOUTH
@@ -40,8 +44,8 @@ class WatsonxLLM(BaseLLM):
     params: dict[str, Any] = Field(default_factory=dict)
     additional_kwargs: dict[str, Any] = Field(default_factory=dict)
 
-    @field_validator("role")
-    def _validate_role(cls, v):
+    @field_validator("region")
+    def _validate_region(cls, v):
         validate_enum(el=v, el_name="region", expected_enum=Region)
         return v
 

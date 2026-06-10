@@ -21,14 +21,6 @@ class RegionValue(str):
     def watsonx(self) -> str:
         return REGION_CONFIG[self]["watsonx"]
 
-    @property
-    def openscale(self) -> str:
-        return REGION_CONFIG[self]["openscale"]
-
-    @property
-    def factsheet(self) -> str:
-        return REGION_CONFIG[self]["factsheet"]
-
 
 class Region:
     """
