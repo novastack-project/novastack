@@ -1,4 +1,4 @@
-# NovaStack integration - watsonx.governance Guardrails
+# Novastack integration - watsonx.governance Guardrails
 
 ## Installation
 
