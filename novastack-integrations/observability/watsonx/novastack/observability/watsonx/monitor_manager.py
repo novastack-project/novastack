@@ -3,17 +3,15 @@ from typing import Any
 
 import certifi
 from ibm_cloud_sdk_core.authenticators import Authenticator as IBMAuthenticator
-from novastack.common.utils import validate_enum
-from novastack.core.bridge.pydantic import PrivateAttr
-from novastack.core.observability import PromptObservability
-from novastack.core.observability.types import PayloadRecord
+from novastack.core.bridge.pydantic import BaseModel, PrivateAttr
+from novastack.core.utils import validate_enum
+from novastack.observability.watsonx.enums import Region, TaskType
 from novastack.observability.watsonx.supporting_classes.clients import (
     AIGovFactsClientFactory,
     WMLClientFactory,
     WosClientFactory,
 )
 from novastack.observability.watsonx.supporting_classes.data_sets import DataSets
-from novastack.observability.watsonx.supporting_classes.enums import Region, TaskType
 from novastack.observability.watsonx.supporting_classes.utils import (
     suppress_output,
     validate_and_filter_dict,
@@ -22,7 +20,7 @@ from novastack.observability.watsonx.supporting_classes.utils import (
 os.environ["REQUESTS_CA_BUNDLE"] = certifi.where()
 
 
-class WatsonxPromptMonitor(PromptObservability):
+class WatsonxMonitorManager(BaseModel):
     """
     Provides functionality to interact with IBM watsonx.governance for monitoring prompts executed within
     IBM watsonx.ai LLMs.
@@ -37,16 +35,15 @@ class WatsonxPromptMonitor(PromptObservability):
         project_id (str, optional): The project ID in watsonx.governance.
         region (str, optional): The region where watsonx.governance is hosted when using IBM Cloud.
             Defaults to `us-south`.
-        subscription_id (str, optional): The subscription ID associated with the records being logged.
         service_instance_id (str, optional): The service instance ID.
 
     Example:
         ```python
-        from novastack.observability.watsonx import WatsonxPromptMonitor
+        from novastack.observability.watsonx import WatsonxMonitorManager
         from novastack.observability.watsonx.authenticators import IAMAuthenticator
 
         # watsonx.governance (IBM Cloud)
-        prompt_mgr = WatsonxPromptMonitor(
+        prompt_mgr = WatsonxMonitorManager(
             authenticator=IAMAuthenticator(apikey="API_KEY"),
             region="us-south",
             space_id="SPACE_ID",
@@ -57,7 +54,7 @@ class WatsonxPromptMonitor(PromptObservability):
             CloudPakForDataAuthenticator,
         )
 
-        prompt_mgr = WatsonxPromptMonitor(
+        prompt_mgr = WatsonxMonitorManager(
             authenticator=CloudPakForDataAuthenticator(
                 url="CPD_URL",
                 username="USERNAME",
@@ -70,11 +67,16 @@ class WatsonxPromptMonitor(PromptObservability):
         ```
     """
 
+    model_config = {
+        "arbitrary_types_allowed": True,
+        "validate_assignment": True,
+        "validate_default": True,
+    }
+
     authenticator: IBMAuthenticator
     space_id: str | None = None
     project_id: str | None = None
     region: str = Region.US_SOUTH
-    subscription_id: str | None = None
     service_instance_id: str | None = None
 
     _wos_client: Any | None = PrivateAttr(default=None)
@@ -110,7 +112,7 @@ class WatsonxPromptMonitor(PromptObservability):
 
         return created_pta.to_dict()["asset_id"]
 
-    def _delete_prompt(self, pta_id: str) -> None:
+    def _delete_prompt_template(self, pta_id: str) -> None:
         aigov_client = AIGovFactsClientFactory.create_client(
             authenticator=self.authenticator,
             container_id=self._container_id,
@@ -151,7 +153,7 @@ class WatsonxPromptMonitor(PromptObservability):
 
         suppress_output(wml_client.deployments.delete, deployment_id)
 
-    def create_prompt_monitor(
+    def setup_monitor(
         self,
         name: str,
         model_id: str,
@@ -183,7 +185,7 @@ class WatsonxPromptMonitor(PromptObservability):
 
         Example:
             ```python
-            prompt_mgr.create_prompt_monitor(
+            prompt_mgr.setup_monitor(
                 name="IBM prompt template",
                 model_id="ibm/granite-3-2b-instruct",
                 task_id="retrieval_augmented_generation",
@@ -248,7 +250,7 @@ class WatsonxPromptMonitor(PromptObservability):
         pta_id = suppress_output(
             self._create_prompt_template, prompt_details, asset_details
         )
-        rollback_stack.append(lambda: self._delete_prompt(pta_id))
+        rollback_stack.append(lambda: self._delete_prompt_template(pta_id))
 
         deployment_id = None
         if self._container_type == "space":
@@ -331,7 +333,7 @@ class WatsonxPromptMonitor(PromptObservability):
             ),
         }
 
-    def store_payload_records(
+    def log_payload_records(
         self,
         request_records: list[dict],
         subscription_id: str | None = None,
@@ -345,7 +347,7 @@ class WatsonxPromptMonitor(PromptObservability):
 
         Example:
             ```python
-            prompt_mgr.store_payload_records(
+            prompt_mgr.log_payload_records(
                 request_records=[
                     {
                         "context1": "value_context1",
@@ -373,7 +375,7 @@ class WatsonxPromptMonitor(PromptObservability):
             subscription_id=subscription_id,
         )
 
-    def store_feedback_records(
+    def log_feedback_records(
         self,
         request_records: list[dict],
         subscription_id: str | None = None,
@@ -390,7 +392,7 @@ class WatsonxPromptMonitor(PromptObservability):
 
         Example:
             ```python
-            prompt_mgr.store_feedback_records(
+            prompt_mgr.log_feedback_records(
                 request_records=[
                     {
                         "context1": "value_context1",
@@ -415,17 +417,4 @@ class WatsonxPromptMonitor(PromptObservability):
         return data_sets_mgr.store_feedback_records(
             request_records=request_records,
             subscription_id=subscription_id,
-        )
-
-    def __call__(self, payload: PayloadRecord) -> None:
-        self.store_payload_records(
-            [
-                {
-                    **payload.prompt_variables,
-                    **payload.model_dump(
-                        exclude_none=True,
-                        exclude={"system_prompt", "prompt_variables"},
-                    ),
-                }
-            ]
         )

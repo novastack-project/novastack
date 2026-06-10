@@ -1,10 +1,11 @@
 from typing import Any
 
-from novastack.common.http import HttpService
-from novastack.common.http.authenticators import IBMIAMAuthenticator
 from novastack.core.bridge.pydantic import Field, PrivateAttr, SecretStr
 from novastack.core.guardrails import BaseGuardrail, GuardrailResponse
 from novastack.core.guardrails.enums import Direction
+from novastack.core.utils import validate_enum
+from novastack.core.utils.http import HttpService
+from novastack.core.utils.http.authenticators import IBMIAMAuthenticator
 from novastack.guardrails.watsonx.supporting_classes.enums import Region
 
 
@@ -20,7 +21,7 @@ class WatsonxGuardrail(BaseGuardrail):
         policy_id (str): The policy ID in watsonx.governance.
         inventory_id (str): The inventory ID in watsonx.governance.
         instance_id (str): The instance ID in watsonx.governance.
-        region (Region, optional): The region where watsonx.governance is hosted when using IBM Cloud.
+        region (str, optional): The region where watsonx.governance is hosted when using IBM Cloud.
             Defaults to `us-south`.
 
     Example:
@@ -46,7 +47,7 @@ class WatsonxGuardrail(BaseGuardrail):
     policy_id: str = Field(..., description="The policy ID in watsonx.governance")
     inventory_id: str = Field(..., description="The inventory ID in watsonx.governance")
     instance_id: str = Field(..., description="The instance ID in watsonx.governance")
-    region: Region = Field(
+    region: str = Field(
         default=Region.US_SOUTH,
         description="The region where watsonx.governance is hosted when using IBM Cloud",
     )
@@ -158,7 +159,7 @@ class WatsonxGuardrail(BaseGuardrail):
             )
             ```
         """
-        direction = Direction.from_value(direction).value
+        validate_enum(el=direction, el_name="direction", expected_enum=Direction)
 
         # Validate detector requirements before proceeding
         detectors = self._get_policy_detectors()

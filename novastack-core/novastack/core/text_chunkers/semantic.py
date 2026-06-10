@@ -2,10 +2,10 @@ import re
 from typing import Literal
 
 import numpy as np
-from novastack.core.base.enums import SimilarityMode
 from novastack.core.document import Document
 from novastack.core.embeddings import BaseEmbedding
 from novastack.core.embeddings.base import similarity
+from novastack.core.enums import SimilarityMode
 from novastack.core.text_chunkers.base import BaseTextChunker
 
 

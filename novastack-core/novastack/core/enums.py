@@ -1,5 +1,4 @@
 class SimilarityMode:
-    # Deprecated: Moved to root/enums.py, should remove in next release.
     """
     Describes possible similarity types.
 

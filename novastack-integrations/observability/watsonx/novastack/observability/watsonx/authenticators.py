@@ -54,6 +54,7 @@ class CloudPakForDataAuthenticator(_IBMCloudPakForDataAuthenticator):
 
 
 __all__ = [
+    "CloudPakForDataAuthenticator",
     "IAMAuthenticator",
     "MCSPV2Authenticator",
 ]

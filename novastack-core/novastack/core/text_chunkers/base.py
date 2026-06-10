@@ -1,6 +1,6 @@
 from abc import abstractmethod
 
-from novastack.core.base.schema import TransformerComponent
+from novastack.core.component import TransformerComponent
 from novastack.core.document import Document
 from novastack.core.telemetry import DispatcherSpanMixin, get_dispatcher
 from novastack.core.telemetry.events.text_chunker import (

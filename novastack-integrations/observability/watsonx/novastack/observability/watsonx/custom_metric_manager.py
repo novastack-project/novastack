@@ -2,21 +2,20 @@ import datetime
 import uuid
 from typing import Any, Literal
 
-from deprecated import deprecated
 from ibm_cloud_sdk_core.authenticators import Authenticator as IBMAuthenticator
-from novastack.common.utils import validate_enum
 from novastack.core.bridge.pydantic import BaseModel, PrivateAttr
+from novastack.core.utils import validate_enum
+from novastack.observability.watsonx.enums import DataSetType, Region
+from novastack.observability.watsonx.integrated_system import (
+    IntegratedSystemCredentials,
+)
 from novastack.observability.watsonx.supporting_classes.clients import (
     WosClientFactory,
 )
-from novastack.observability.watsonx.supporting_classes.enums import DataSetType, Region
-from novastack.observability.watsonx.supporting_classes.integrated_system import (
-    IntegratedSystemCredentials,
-)
-from novastack.observability.watsonx.supporting_classes.types import (
+from novastack.observability.watsonx.supporting_classes.utils import suppress_output
+from novastack.observability.watsonx.types import (
     WatsonxMetricSpec,
 )
-from novastack.observability.watsonx.supporting_classes.utils import suppress_output
 
 
 class WatsonxCustomMetricsManager(BaseModel):
@@ -31,7 +30,7 @@ class WatsonxCustomMetricsManager(BaseModel):
 
     Example:
         ```python
-        from novastack.observability.watsonx import WatsonxExternalPromptMonitor
+        from novastack.observability.watsonx import WatsonxCustomMetricsManager
         from novastack.observability.watsonx.authenticators import IAMAuthenticator
 
         # watsonx.governance (IBM Cloud)
@@ -380,22 +379,6 @@ class WatsonxCustomMetricsManager(BaseModel):
 
         return monitor_instance_details
 
-    @deprecated(
-        reason="'store_metric_data' is deprecated and will be removed in a future release. Use 'log_metrics'.",
-        version="1.1.0",
-    )
-    def store_metric_data(
-        self,
-        monitor_instance_id: str,
-        run_id: str,
-        request_records: dict[str, float | int],
-    ):
-        return self.log_metrics(
-            monitor_instance_id=monitor_instance_id,
-            run_id=run_id,
-            request_records=request_records,
-        )
-
     def log_metrics(
         self,
         monitor_instance_id: str,
@@ -454,26 +437,6 @@ class WatsonxCustomMetricsManager(BaseModel):
             monitoring_run_id=run_id,
             json_patch_operation=patch_payload,
         ).result
-
-    @deprecated(
-        reason="'store_record_metric_data' is deprecated and will be removed in a future release. Use 'log_record_metrics'.",
-        version="1.1.0",
-    )
-    def store_record_metric_data(
-        self,
-        custom_data_set_id: str,
-        reference_data_set_id: str,
-        computed_on: str,
-        run_id: str,
-        request_records: list[dict],
-    ):
-        return self.log_record_metrics(
-            custom_data_set_id=custom_data_set_id,
-            reference_data_set_id=reference_data_set_id,
-            computed_on=computed_on,
-            run_id=run_id,
-            request_records=request_records,
-        )
 
     def log_record_metrics(
         self,

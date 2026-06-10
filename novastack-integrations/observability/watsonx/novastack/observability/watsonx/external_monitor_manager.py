@@ -4,16 +4,14 @@ from typing import Any
 
 import certifi
 from ibm_cloud_sdk_core.authenticators import Authenticator as IBMAuthenticator
-from novastack.common.utils import validate_enum
-from novastack.core.bridge.pydantic import PrivateAttr
-from novastack.core.observability import PromptObservability
-from novastack.core.observability.types import PayloadRecord
+from novastack.core.bridge.pydantic import BaseModel, PrivateAttr
+from novastack.core.utils import validate_enum
+from novastack.observability.watsonx.enums import Region, TaskType
 from novastack.observability.watsonx.supporting_classes.clients import (
     AIGovFactsClientFactory,
     WosClientFactory,
 )
 from novastack.observability.watsonx.supporting_classes.data_sets import DataSets
-from novastack.observability.watsonx.supporting_classes.enums import Region, TaskType
 from novastack.observability.watsonx.supporting_classes.utils import (
     suppress_output,
     validate_and_filter_dict,
@@ -22,7 +20,7 @@ from novastack.observability.watsonx.supporting_classes.utils import (
 os.environ["REQUESTS_CA_BUNDLE"] = certifi.where()
 
 
-class WatsonxExternalPromptMonitor(PromptObservability):
+class WatsonxExternalMonitorManager(BaseModel):
     """
     Provides functionality to interact with IBM watsonx.governance for monitoring prompts executed on LLMs.
 
@@ -36,16 +34,15 @@ class WatsonxExternalPromptMonitor(PromptObservability):
         project_id (str, optional): The project ID in watsonx.governance.
         region (str, optional): The region where watsonx.governance is hosted when using IBM Cloud.
             Defaults to `us-south`.
-        subscription_id (str, optional): The subscription ID associated with the records being logged.
         service_instance_id (str, optional): The service instance ID.
 
     Example:
         ```python
-        from novastack.observability.watsonx import WatsonxExternalPromptMonitor
+        from novastack.observability.watsonx import WatsonxExternalMonitorManager
         from novastack.observability.watsonx.authenticators import IAMAuthenticator
 
         # watsonx.governance (IBM Cloud)
-        prompt_mgr = WatsonxExternalPromptMonitor(
+        prompt_mgr = WatsonxExternalMonitorManager(
             authenticator=IAMAuthenticator(apikey="API_KEY"),
             region="us-south",
             space_id="SPACE_ID",
@@ -56,7 +53,7 @@ class WatsonxExternalPromptMonitor(PromptObservability):
             CloudPakForDataAuthenticator,
         )
 
-        prompt_mgr = WatsonxExternalPromptMonitor(
+        prompt_mgr = WatsonxExternalMonitorManager(
             authenticator=CloudPakForDataAuthenticator(
                 url="CPD_URL",
                 username="USERNAME",
@@ -67,11 +64,16 @@ class WatsonxExternalPromptMonitor(PromptObservability):
         ```
     """
 
+    model_config = {
+        "arbitrary_types_allowed": True,
+        "validate_assignment": True,
+        "validate_default": True,
+    }
+
     authenticator: IBMAuthenticator
     space_id: str | None = None
     project_id: str | None = None
     region: str = Region.US_SOUTH
-    subscription_id: str | None = None
     service_instance_id: str | None = None
 
     _wos_client: Any | None = PrivateAttr(default=None)
@@ -124,7 +126,7 @@ class WatsonxExternalPromptMonitor(PromptObservability):
 
         suppress_output(self._aigov_client.assets.delete_prompt_asset, asset_id)
 
-    def create_prompt_monitor(
+    def setup_monitor(
         self,
         name: str,
         model_id: str,
@@ -168,7 +170,7 @@ class WatsonxExternalPromptMonitor(PromptObservability):
 
         Example:
             ```python
-            prompt_mgr.create_prompt_monitor(
+            prompt_mgr.setup_monitor(
                 name="Prompt Template for Retrieval Augmented Generation",
                 model_id="anthropic.claude-v2",
                 task_id="retrieval_augmented_generation",
@@ -321,7 +323,7 @@ class WatsonxExternalPromptMonitor(PromptObservability):
             ),
         }
 
-    def store_payload_records(
+    def log_payload_records(
         self,
         request_records: list[dict],
         subscription_id: str | None = None,
@@ -335,7 +337,7 @@ class WatsonxExternalPromptMonitor(PromptObservability):
 
         Example:
             ```python
-            prompt_mgr.store_payload_records(
+            prompt_mgr.log_payload_records(
                 request_records=[
                     {
                         "context1": "value_context1",
@@ -363,7 +365,7 @@ class WatsonxExternalPromptMonitor(PromptObservability):
             subscription_id=subscription_id,
         )
 
-    def store_feedback_records(
+    def log_feedback_records(
         self,
         request_records: list[dict],
         subscription_id: str | None = None,
@@ -381,7 +383,7 @@ class WatsonxExternalPromptMonitor(PromptObservability):
 
         Example:
             ```python
-            prompt_mgr.store_feedback_records(
+            prompt_mgr.log_feedback_records(
                 request_records=[
                     {
                         "context1": "value_context1",
@@ -406,17 +408,4 @@ class WatsonxExternalPromptMonitor(PromptObservability):
         return data_sets_mgr.store_feedback_records(
             request_records=request_records,
             subscription_id=subscription_id,
-        )
-
-    def __call__(self, payload: PayloadRecord) -> None:
-        self.store_payload_records(
-            [
-                {
-                    **payload.prompt_variables,
-                    **payload.model_dump(
-                        exclude_none=True,
-                        exclude={"system_prompt", "prompt_variables"},
-                    ),
-                }
-            ]
         )

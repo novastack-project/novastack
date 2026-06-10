@@ -4,16 +4,25 @@ title: watsonx
 
 `% pip install novastack-observability-watsonx`
 
-## Monitors
+## Observability
 
-::: novastack.observability.watsonx.WatsonxPromptMonitor
+::: novastack.observability.watsonx.WatsonxObservability
     options:
       members_order: source
       show_root_heading: true
       show_root_full_path: false
       heading_level: 3
 
-::: novastack.observability.watsonx.WatsonxExternalPromptMonitor
+## Monitors Setup
+
+::: novastack.observability.watsonx.WatsonxMonitorManager
+    options:
+      members_order: source
+      show_root_heading: true
+      show_root_full_path: false
+      heading_level: 3
+
+::: novastack.observability.watsonx.WatsonxExternalMonitorManager
     options:
       members_order: source
       show_root_heading: true
@@ -51,14 +60,21 @@ title: watsonx
       heading_level: 3
 
 ## Enums
-::: novastack.observability.watsonx.supporting_classes.enums.Region
+::: novastack.observability.watsonx.enums.Region
     options:
       members_order: source
       show_root_heading: true
       show_root_full_path: false
       heading_level: 3
 
-::: novastack.observability.watsonx.supporting_classes.enums.TaskType
+::: novastack.observability.watsonx.enums.TaskType
+    options:
+      members_order: source
+      show_root_heading: true
+      show_root_full_path: false
+      heading_level: 3
+
+::: novastack.observability.watsonx.enums.DataSetType
     options:
       members_order: source
       show_root_heading: true
