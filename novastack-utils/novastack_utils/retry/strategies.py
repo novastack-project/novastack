@@ -1,6 +1,6 @@
 import random
 
-from novastack_utils.retry.types import RetryState
+from novastack_utils.retry.protocols import RetryState
 
 
 class _BaseRetryCondition:
@@ -27,6 +27,27 @@ class _BaseWaitStrategy:
 class retry_if_exception(_BaseRetryCondition):
     def __call__(self, exception: Exception) -> bool:
         return True
+
+
+class retry_if_exception_type(_BaseRetryCondition):
+    def __init__(
+        self, exception_types: type[Exception] | tuple[type[Exception], ...]
+    ) -> None:
+        if not isinstance(exception_types, tuple):
+            exception_types = (exception_types,)
+
+        for exc_type in exception_types:
+            if not isinstance(exc_type, type) or not issubclass(
+                exc_type, BaseException
+            ):
+                raise TypeError(
+                    f"Invalid exception type '{exc_type}'. Must be a subclass of BaseException."
+                )
+
+        self.exception_types = exception_types
+
+    def __call__(self, exception: Exception) -> bool:
+        return isinstance(exception, self.exception_types)
 
 
 class stop_after_attempt(_BaseStopConditionBase):

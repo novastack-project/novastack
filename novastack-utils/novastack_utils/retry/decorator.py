@@ -3,16 +3,16 @@ import functools
 import time
 from typing import Any, Callable, TypeVar
 
-from novastack_utils.retry.strategies import (
-    retry_if_exception,
-    stop_after_attempt,
-    wait_fixed,
-)
-from novastack_utils.retry.types import (
+from novastack_utils.retry.protocols import (
     RetryCondition,
     RetryState,
     StopCondition,
     WaitStrategy,
+)
+from novastack_utils.retry.strategies import (
+    retry_if_exception,
+    stop_after_attempt,
+    wait_fixed,
 )
 
 T = TypeVar("T")

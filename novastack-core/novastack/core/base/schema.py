@@ -5,6 +5,7 @@ from novastack.core.document import Document
 
 # Deprecated: Moved to root/component.py, should remove in next release.
 
+
 class BaseComponent(BaseModel):
     """Base component object."""
 
