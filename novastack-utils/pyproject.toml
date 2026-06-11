@@ -4,8 +4,8 @@ build-backend = "hatchling.build"
 
 [project]
 name = "novastack-utils"
-version = "1.0.0"
-description = "This library contains utilities used across various packages."
+version = "1.0.1"
+description = "This library contains common utilities used across various packages."
 authors = [{ name = "Leonardo Furnielis", email = "leonardofurnielis@outlook.com" }]
 license = { text = "Apache-2.0" }
 readme = "README.md"

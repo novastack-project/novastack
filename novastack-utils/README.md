@@ -1,6 +1,6 @@
 # Novastack utils
 
-This library contains utils utilities used across various packages.
+This library contains common utilities used across various packages.
 
 ## Installation 
 

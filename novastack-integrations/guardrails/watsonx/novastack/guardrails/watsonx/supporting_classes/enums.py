@@ -14,7 +14,6 @@ REGION_CONFIG: dict = {
 
 
 class RegionValue(str):
-
     @property
     def openscale(self) -> str:
         return REGION_CONFIG[self]["openscale"]
