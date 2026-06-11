@@ -2,12 +2,14 @@ import pytest
 from novastack_utils.retry import (
     retry,
     retry_if_exception,
+    retry_if_exception_type,
     stop_after_attempt,
     stop_after_delay,
     wait_exponential,
     wait_fixed,
     wait_random,
 )
+from novastack_utils.retry.protocols import RetryState
 
 
 def test_retry_success():
@@ -67,10 +69,41 @@ def test_retry_if_exception():
     assert strategy(Exception("test")) is True
 
 
+def test_retry_if_exception_type():
+    """Test retry_if_exception_type strategy."""
+    strategy = retry_if_exception_type(ValueError)
+    assert strategy(ValueError("test")) is True
+    assert strategy(TypeError("test")) is False
+
+    strategy = retry_if_exception_type((ValueError, TypeError))
+    assert strategy(ValueError("test")) is True
+    assert strategy(TypeError("test")) is True
+    assert strategy(RuntimeError("test")) is False
+
+
+def test_retry_with_exception_type():
+    """Test retry decorator with retry_if_exception_type."""
+    attempt_count = {"count": 0}
+
+    @retry(
+        stop=stop_after_attempt(5),
+        when=retry_if_exception_type(ValueError),
+        wait=wait_fixed(0.01),
+        reraise=False,
+    )
+    def func():
+        attempt_count["count"] += 1
+        if attempt_count["count"] < 3:
+            raise ValueError("Test error")
+        return "success"
+
+    result = func()
+    assert result == "success"
+    assert attempt_count["count"] == 3
+
+
 def test_stop_after_attempt():
     """Test stop_after_attempt strategy."""
-    from novastack_utils.retry.types import RetryState
-
     strategy = stop_after_attempt(3)
     state = RetryState(
         retry_number=2,
@@ -87,8 +120,6 @@ def test_stop_after_attempt():
 
 def test_stop_after_delay():
     """Test stop_after_delay strategy."""
-    from novastack_utils.retry.types import RetryState
-
     strategy = stop_after_delay(2.0)
     state = RetryState(
         retry_number=0,
@@ -105,8 +136,6 @@ def test_stop_after_delay():
 
 def test_wait_fixed():
     """Test wait_fixed strategy."""
-    from novastack_utils.retry.types import RetryState
-
     strategy = wait_fixed(2.0)
     state = RetryState(
         retry_number=0,
@@ -117,8 +146,6 @@ def test_wait_fixed():
 
 def test_wait_exponential():
     """Test wait_exponential strategy."""
-    from novastack_utils.retry.types import RetryState
-
     strategy = wait_exponential(multiplier=1, min=0, max=10)
 
     state = RetryState(
@@ -136,8 +163,6 @@ def test_wait_exponential():
 
 def test_wait_random():
     """Test wait_random strategy."""
-    from novastack_utils.retry.types import RetryState
-
     strategy = wait_random(1.0, 3.0)
     state = RetryState(
         retry_number=0,
