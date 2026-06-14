@@ -1,7 +1,7 @@
 from novastack_instrumentation.observability.base import BaseObservability
-from novastack_instrumentation.observability.console import ConsoleObservability
+from novastack_instrumentation.observability.debug import DebugObservability
 
 __all__ = [
     "BaseObservability",
-    "ConsoleObservability",
+    "DebugObservability",
 ]

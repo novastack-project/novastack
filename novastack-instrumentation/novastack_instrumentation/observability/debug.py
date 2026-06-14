@@ -5,14 +5,20 @@ from datetime import datetime
 from typing import Any, Optional
 
 from pydantic import Field, PrivateAttr
-from treelib.tree import Tree
 
 from novastack_instrumentation.events import BaseEvent
 from novastack_instrumentation.observability.base import BaseObservability
 from novastack_instrumentation.span import Span
 
+try:
+    from treelib.tree import Tree
+except ImportError as e:
+    raise ImportError(
+        "treelib package not found, please install it with `pip install treelib`",
+    )
 
-class ConsoleObservability(BaseObservability):
+
+class DebugObservability(BaseObservability):
     """Sends observability data to console to track information (in-memory)."""
 
     open_spans: dict[str, Span] = Field(
@@ -40,7 +46,7 @@ class ConsoleObservability(BaseObservability):
 
     @classmethod
     def class_name(cls) -> str:
-        return "ConsoleObservability"
+        return "DebugObservability"
 
     def on_event(self, event: BaseEvent, **kwargs: Any) -> None:
         """Handle an event."""
