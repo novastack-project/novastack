@@ -1,4 +1,4 @@
-from novastack_instrumentation.dispatcher import (
+from novastack_instrumentation.base import (
     get_dispatcher,
     get_global_handlers,
     set_global_handler,

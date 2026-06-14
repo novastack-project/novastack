@@ -1,7 +1,7 @@
 import inspect
 from typing import Any
 
-from novastack_instrumentation._core import Dispatcher
+from novastack_instrumentation.dispatcher import Dispatcher
 from novastack_instrumentation.events import BaseEvent
 from novastack_instrumentation.observability import BaseObservability
 from pydantic import Field

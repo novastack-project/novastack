@@ -1,8 +1,8 @@
 import pytest
-from novastack_instrumentation._core import Dispatcher
+from novastack_instrumentation.dispatcher import Dispatcher
 from novastack_instrumentation.events import BaseEvent
-from novastack_instrumentation.observability.console import (
-    ConsoleObservability,
+from novastack_instrumentation.observability import (
+    DebugObservability,
 )
 
 
@@ -15,8 +15,8 @@ class SampleEvent(BaseEvent):
 
 
 def test_simple_span_handler_basic():
-    """Test basic span tracking with ConsoleObservability."""
-    handler = ConsoleObservability()
+    """Test basic span tracking with DebugObservability."""
+    handler = DebugObservability()
     dispatcher = Dispatcher(handlers=[handler], propagate=False)
 
     @dispatcher.span
@@ -37,8 +37,8 @@ def test_simple_span_handler_basic():
 
 
 def test_simple_span_handler_tracks_events():
-    """Test that ConsoleObservability tracks events."""
-    handler = ConsoleObservability()
+    """Test that DebugObservability tracks events."""
+    handler = DebugObservability()
     dispatcher = Dispatcher(handlers=[handler], propagate=False)
 
     @dispatcher.span
@@ -57,7 +57,7 @@ def test_simple_span_handler_tracks_events():
 
 def test_simple_span_handler_with_error():
     """Test span tracking when errors occur."""
-    handler = ConsoleObservability()
+    handler = DebugObservability()
     dispatcher = Dispatcher(handlers=[handler], propagate=False)
 
     @dispatcher.span
@@ -74,7 +74,7 @@ def test_simple_span_handler_with_error():
 
 def test_print_trace_trees_basic():
     """Test print_trace_trees with basic hierarchy."""
-    handler = ConsoleObservability()
+    handler = DebugObservability()
     dispatcher = Dispatcher(handlers=[handler], propagate=False)
 
     @dispatcher.span
@@ -96,7 +96,7 @@ def test_print_trace_trees_basic():
 
 def test_print_trace_trees_with_events():
     """Test print_trace_trees displays events under spans."""
-    handler = ConsoleObservability()
+    handler = DebugObservability()
     dispatcher = Dispatcher(handlers=[handler], propagate=False)
 
     @dispatcher.span
@@ -140,7 +140,7 @@ def test_print_trace_trees_with_events():
 
 def test_print_trace_trees_multiple_roots():
     """Test print_trace_trees with multiple root spans."""
-    handler = ConsoleObservability()
+    handler = DebugObservability()
     dispatcher = Dispatcher(handlers=[handler], propagate=False)
 
     @dispatcher.span
@@ -164,7 +164,7 @@ def test_print_trace_trees_multiple_roots():
 
 def test_print_trace_trees_nested():
     """Test print_trace_trees with deeply nested spans."""
-    handler = ConsoleObservability()
+    handler = DebugObservability()
     dispatcher = Dispatcher(handlers=[handler], propagate=False)
 
     @dispatcher.span
@@ -193,7 +193,7 @@ def test_print_trace_trees_nested():
 
 def test_get_trace_trees_returns_trees():
     """Test that _get_trace_trees returns Tree objects."""
-    handler = ConsoleObservability()
+    handler = DebugObservability()
     dispatcher = Dispatcher(handlers=[handler], propagate=False)
 
     @dispatcher.span
@@ -215,7 +215,7 @@ def test_get_trace_trees_returns_trees():
 
 def test_span_handler_parent_child_relationship():
     """Test that parent-child relationships are correctly tracked."""
-    handler = ConsoleObservability()
+    handler = DebugObservability()
     dispatcher = Dispatcher(handlers=[handler], propagate=False)
 
     @dispatcher.span
@@ -245,7 +245,7 @@ def test_span_handler_parent_child_relationship():
 
 def test_print_event_trees():
     """Test print_event_trees displays events grouped by span."""
-    handler = ConsoleObservability()
+    handler = DebugObservability()
     dispatcher = Dispatcher(handlers=[handler], propagate=False)
 
     @dispatcher.span
@@ -271,7 +271,7 @@ def test_print_event_trees():
 
 def test_print_trace_trees_spans_only():
     """Test print_trace_trees with include_events=False."""
-    handler = ConsoleObservability()
+    handler = DebugObservability()
     dispatcher = Dispatcher(handlers=[handler], propagate=False)
 
     @dispatcher.span

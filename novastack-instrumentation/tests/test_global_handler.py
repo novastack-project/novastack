@@ -1,12 +1,12 @@
 import novastack_instrumentation as instrumentation
-from novastack_instrumentation.observability.console import (
-    ConsoleObservability,
+from novastack_instrumentation.observability import (
+    DebugObservability,
 )
 
 
 def test_set_global_handler_on_new_dispatcher():
     """Test that new dispatchers automatically get global handlers."""
-    handler = ConsoleObservability(print_span_on_end=False)
+    handler = DebugObservability(print_span_on_end=False)
     instrumentation.set_global_handler(handler)
 
     dispatcher = instrumentation.get_dispatcher("test_global_handler")

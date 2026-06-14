@@ -1,5 +1,5 @@
 import novastack_instrumentation as instrumentation
-from novastack_instrumentation.dispatcher import root_manager
+from novastack_instrumentation.base import root_manager
 
 
 def test_root_manager_add_dispatcher():

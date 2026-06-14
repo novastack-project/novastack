@@ -4,7 +4,6 @@ from typing import Any
 from pydantic import BaseModel
 
 from novastack_instrumentation.events.base import BaseEvent
-from novastack_instrumentation.span import Span
 
 
 class BaseObservability(BaseModel):

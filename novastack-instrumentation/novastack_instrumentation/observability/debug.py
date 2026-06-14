@@ -2,17 +2,19 @@ import inspect
 import threading
 from collections import defaultdict
 from datetime import datetime
-from typing import Any, Optional
+from typing import TYPE_CHECKING, Any, Optional
 
 from pydantic import Field, PrivateAttr
-from treelib.tree import Tree
 
 from novastack_instrumentation.events import BaseEvent
 from novastack_instrumentation.observability.base import BaseObservability
 from novastack_instrumentation.span import Span
 
+if TYPE_CHECKING:
+    from treelib.tree import Tree
 
-class ConsoleObservability(BaseObservability):
+
+class DebugObservability(BaseObservability):
     """Sends observability data to console to track information (in-memory)."""
 
     open_spans: dict[str, Span] = Field(
@@ -40,7 +42,7 @@ class ConsoleObservability(BaseObservability):
 
     @classmethod
     def class_name(cls) -> str:
-        return "ConsoleObservability"
+        return "DebugObservability"
 
     def on_event(self, event: BaseEvent, **kwargs: Any) -> None:
         """Handle an event."""
@@ -122,8 +124,15 @@ class ConsoleObservability(BaseObservability):
 
         return result
 
-    def _get_trace_trees(self, include_events: bool = True) -> list[Tree]:
+    def _get_trace_trees(self, include_events: bool = True) -> list["Tree"]:
         """Generate hierarchical tree structures representing execution traces with span durations."""
+        try:
+            from treelib.tree import Tree
+        except ImportError as e:
+            raise ImportError(
+                "treelib package not found, please install it with `pip install treelib`",
+            )
+
         all_spans = self.completed_spans + self.dropped_spans
         for s in all_spans:
             if s.parent_id is None:
@@ -182,8 +191,7 @@ class ConsoleObservability(BaseObservability):
             from treelib.tree import Tree
         except ImportError as e:
             raise ImportError(
-                "`treelib` package is missing. Please install it by using "
-                "`pip install treelib`."
+                "treelib package not found, please install it with `pip install treelib`",
             )
 
         # Group events by span_id
