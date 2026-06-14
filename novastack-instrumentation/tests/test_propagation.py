@@ -1,6 +1,6 @@
 from typing import Any
 
-from novastack_instrumentation._core import (
+from novastack_instrumentation.dispatcher import (
     _CONTEXT_METADATA_KEY,
     Dispatcher,
     DispatcherManager,

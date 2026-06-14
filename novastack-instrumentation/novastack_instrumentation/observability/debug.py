@@ -2,13 +2,16 @@ import inspect
 import threading
 from collections import defaultdict
 from datetime import datetime
-from typing import Any, Optional
+from typing import TYPE_CHECKING, Any, Optional
 
 from pydantic import Field, PrivateAttr
 
 from novastack_instrumentation.events import BaseEvent
 from novastack_instrumentation.observability.base import BaseObservability
 from novastack_instrumentation.span import Span
+
+if TYPE_CHECKING:
+    from treelib.tree import Tree
 
 
 class DebugObservability(BaseObservability):
@@ -121,7 +124,7 @@ class DebugObservability(BaseObservability):
 
         return result
 
-    def _get_trace_trees(self, include_events: bool = True) -> list[Tree]:
+    def _get_trace_trees(self, include_events: bool = True) -> list["Tree"]:
         """Generate hierarchical tree structures representing execution traces with span durations."""
         try:
             from treelib.tree import Tree

@@ -1,6 +1,6 @@
 from unittest.mock import MagicMock
 
-from novastack_instrumentation._core import Dispatcher, DispatcherManager
+from novastack_instrumentation.dispatcher import Dispatcher, DispatcherManager
 from novastack_instrumentation.observability import BaseObservability
 
 
