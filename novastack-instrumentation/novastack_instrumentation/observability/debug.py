@@ -10,13 +10,6 @@ from novastack_instrumentation.events import BaseEvent
 from novastack_instrumentation.observability.base import BaseObservability
 from novastack_instrumentation.span import Span
 
-try:
-    from treelib.tree import Tree
-except ImportError as e:
-    raise ImportError(
-        "treelib package not found, please install it with `pip install treelib`",
-    )
-
 
 class DebugObservability(BaseObservability):
     """Sends observability data to console to track information (in-memory)."""
@@ -130,6 +123,13 @@ class DebugObservability(BaseObservability):
 
     def _get_trace_trees(self, include_events: bool = True) -> list[Tree]:
         """Generate hierarchical tree structures representing execution traces with span durations."""
+        try:
+            from treelib.tree import Tree
+        except ImportError as e:
+            raise ImportError(
+                "treelib package not found, please install it with `pip install treelib`",
+            )
+
         all_spans = self.completed_spans + self.dropped_spans
         for s in all_spans:
             if s.parent_id is None:
@@ -188,8 +188,7 @@ class DebugObservability(BaseObservability):
             from treelib.tree import Tree
         except ImportError as e:
             raise ImportError(
-                "`treelib` package is missing. Please install it by using "
-                "`pip install treelib`."
+                "treelib package not found, please install it with `pip install treelib`",
             )
 
         # Group events by span_id
