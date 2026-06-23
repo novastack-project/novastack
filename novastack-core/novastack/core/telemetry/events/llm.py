@@ -1,7 +1,11 @@
 from __future__ import annotations
 
-from novastack.core.llms.types import ChatMessage, ChatResponse, CompletionResponse
+from typing import TYPE_CHECKING
+
 from novastack_instrumentation.events import BaseEvent
+
+if TYPE_CHECKING:
+    from novastack.core.llms.types import ChatMessage, ChatResponse, CompletionResponse
 
 
 class LLMCompletionStartEvent(BaseEvent):
