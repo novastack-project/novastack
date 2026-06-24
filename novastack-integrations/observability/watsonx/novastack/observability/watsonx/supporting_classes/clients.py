@@ -2,6 +2,11 @@ import logging
 from typing import TYPE_CHECKING, Any
 
 from novastack.core.utils import validate_type
+from novastack.observability.watsonx.authenticators import (
+    CloudPakForDataAuthenticator,
+    IAMAuthenticator,
+    MCSPV2Authenticator,
+)
 from novastack.observability.watsonx.enums import Region
 
 if TYPE_CHECKING:
@@ -30,11 +35,18 @@ class WosClientFactory:
         from ibm_watson_openscale import APIClient as WosAPIClient  # type: ignore
 
         try:
-            return WosAPIClient(
-                authenticator=authenticator,  # type: ignore
-                service_url=region.openscale,
-                service_instance_id=service_instance_id,
-            )
+            if isinstance(authenticator, CloudPakForDataAuthenticator):
+                return WosAPIClient(
+                    authenticator=authenticator._base_authenticator,
+                    service_url=authenticator.base_url,
+                    service_instance_id=service_instance_id,
+                )
+            else:
+                return WosAPIClient(
+                    authenticator=authenticator._base_authenticator,
+                    service_url=region.openscale,
+                    service_instance_id=service_instance_id,
+                )
 
         except Exception as e:
             logging.error(
@@ -63,20 +75,32 @@ class AIGovFactsClientFactory:
             region: The region object containing service URLs.
         """
         region = Region.from_value(region)
+        EXPERIMENT_NAME = "novastack-observability-watsonx"
 
         from ibm_aigov_facts_client import AIGovFactsClient  # type: ignore
 
         try:
-            return AIGovFactsClient(
-                experiment_name="novastack-observability-watsonx",
-                authenticator=authenticator,  # type: ignore
-                container_id=container_id,
-                container_type=container_type,
-                set_as_current_experiment=True,
-                enable_autolog=False,
-                disable_tracing=True,
-                region=region.factsheet,
-            )
+            if isinstance(authenticator, CloudPakForDataAuthenticator):
+                return AIGovFactsClient(
+                    experiment_name=EXPERIMENT_NAME,
+                    authenticator=authenticator._base_authenticator,
+                    container_id=container_id,
+                    container_type=container_type,
+                    set_as_current_experiment=True,
+                    enable_autolog=False,
+                    disable_tracing=True,
+                )
+            else:
+                return AIGovFactsClient(
+                    experiment_name=EXPERIMENT_NAME,
+                    authenticator=authenticator._base_authenticator,
+                    container_id=container_id,
+                    container_type=container_type,
+                    set_as_current_experiment=True,
+                    enable_autolog=False,
+                    disable_tracing=True,
+                    region=region.factsheet,
+                )
 
         except Exception as e:
             logging.error(
@@ -105,24 +129,15 @@ class WMLClientFactory:
         region = Region.from_value(region)
 
         from ibm_watsonx_ai import APIClient, Credentials  # type: ignore
-        from novastack.observability.watsonx.authenticators import (
-            CloudPakForDataAuthenticator,
-            IAMAuthenticator,
-            MCSPV2Authenticator,
-        )
 
-        allowed = [
-            CloudPakForDataAuthenticator,
-            IAMAuthenticator,
-            MCSPV2Authenticator,
-        ]
+        allowed = [CloudPakForDataAuthenticator, IAMAuthenticator, MCSPV2Authenticator]
 
         validate_type(authenticator, "authenticator", allowed)
 
         try:
             if isinstance(authenticator, CloudPakForDataAuthenticator):
                 credentials = Credentials(
-                    url=authenticator.token_manager.url,
+                    url=authenticator.base_url,
                     username=authenticator.token_manager.username,
                     password=authenticator.token_manager.password,
                     instance_id=authenticator.instance_id,
