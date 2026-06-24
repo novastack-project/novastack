@@ -670,7 +670,7 @@ wheels = [
 
 [[package]]
 name = "novastack-core"
-version = "2.0.2"
+version = "2.0.3"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "deprecated" },
@@ -683,9 +683,9 @@ dependencies = [
     { name = "pydantic" },
     { name = "tiktoken" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/13/70/6f6618baf33f316156d6b0d290e1b2b8c6ceefac87e52efa2b071967b84c/novastack_core-2.0.2.tar.gz", hash = "sha256:a1e39c072e7d51038688b81918f5a1b1c88256574ffdf4ab53bc85be9a3d5811", size = 20567, upload-time = "2026-06-10T20:56:40.689Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/2b/e9/bacc3c01d32178c6faaf208df01accbb0ffd991b930b7a0b00c1a132470b/novastack_core-2.0.3.tar.gz", hash = "sha256:d56a86ce6286212630c5f7af1fc194601a71a22591bffe4edd879d3f0840d8be", size = 20625, upload-time = "2026-06-23T14:31:47.741Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/e1/4c/3059534840c8fd4d399acd4142bb3e9375eef0f15936ff07817cb740b6f9/novastack_core-2.0.2-py3-none-any.whl", hash = "sha256:4294bcf45a65449e40ed577af06b326233119ac5fba251c2d2b09c0dd13c0120", size = 41691, upload-time = "2026-06-10T20:56:39.316Z" },
+    { url = "https://files.pythonhosted.org/packages/02/c1/e12768c708a4004d6d16e31b89c921cf6dbad6fbd5beee115f0fdbd7bc7f/novastack_core-2.0.3-py3-none-any.whl", hash = "sha256:b5f577054920cdea628066f508747de70db47e276a3c2c77a5474f4772d51936", size = 41759, upload-time = "2026-06-23T14:31:48.936Z" },
 ]
 
 [[package]]
@@ -704,7 +704,7 @@ wheels = [
 
 [[package]]
 name = "novastack-observability-watsonx"
-version = "2.0.1"
+version = "2.0.6"
 source = { editable = "." }
 dependencies = [
     { name = "certifi" },
@@ -729,7 +729,7 @@ requires-dist = [
     { name = "ibm-watson-openscale", specifier = ">=3.1.4,<3.2.0" },
     { name = "ibm-watsonx-ai", specifier = ">=1.5.5,<1.6.0" },
     { name = "ipython", specifier = "==9.10.1" },
-    { name = "novastack-core", specifier = ">=2.0.2,<3.0.0" },
+    { name = "novastack-core", specifier = ">=2.0.3,<3.0.0" },
     { name = "pytest", marker = "extra == 'dev'", specifier = ">=9.0.3,<10.0.0" },
     { name = "pytest-asyncio", marker = "extra == 'dev'", specifier = ">=1.3.0,<2.0.0" },
     { name = "ruff", marker = "extra == 'dev'", specifier = ">=0.15.8,<1.0.0" },
