@@ -12,7 +12,7 @@ pip install novastack-workflows
 
 ## Quick Start
 
-Here's a simple example to get you started with NovaStack Workflows:
+Here's a simple example to get you started with Novastack Workflows:
 
 ```python
 from novastack_workflows import Workflow, Context, step
@@ -80,7 +80,7 @@ ctx.send_event(MyEvent(...))
 ```
 ## Features
 
-| Feature                | NovaStack Workflows     |
+| Feature                | Novastack Workflows     |
 | ---------------------- | ----------------------- |
 | Event-driven execution | ✅                       |
 | Fan-out (parallelism)  | ✅                       |
