@@ -3,6 +3,7 @@ from abc import ABC, abstractmethod
 from typing import Any, Literal
 
 from novastack.core.bridge.pydantic import BaseModel, Field, field_validator
+from novastack.core.components import BaseComponent
 
 
 class ToolInputSchema(BaseModel):
@@ -35,7 +36,7 @@ class ToolInputSchema(BaseModel):
         return self.model_dump()
 
 
-class BaseTool(BaseModel, ABC):
+class BaseTool(BaseComponent, ABC):
     """
     Abstract base class defining the interface for tools.
 

@@ -3,14 +3,12 @@ from __future__ import annotations
 import re
 from typing import Any
 
-from novastack.core.bridge.pydantic import (
-    BaseModel,
-    Field,
-)
+from novastack.core.bridge.pydantic import Field
+from novastack.core.components import BaseComponent
 from novastack.core.prompts.utils import SafeFormatter
 
 
-class PromptTemplate(BaseModel):
+class PromptTemplate(BaseComponent):
     """
     Prompt Template with variable placeholders.
 
@@ -43,7 +41,7 @@ class PromptTemplate(BaseModel):
     )
 
     def __init__(self, template: str):
-        super().__init__(template=template)
+        super().__init__(template=template) # type: ignore[call-arg]
 
     @classmethod
     def model_validate_input(

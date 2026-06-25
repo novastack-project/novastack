@@ -1,6 +1,6 @@
 from abc import abstractmethod
 
-from novastack.core.component import TransformerComponent
+from novastack.core.components import TransformerComponent
 from novastack.core.document import Document
 from novastack.core.instrumentation import DispatcherSpanMixin, get_dispatcher
 from novastack.core.instrumentation.events.text_chunker import (
@@ -36,7 +36,7 @@ class BaseTextChunker(TransformerComponent, DispatcherSpanMixin):
         Args:
             text (str): Input text to split.
         """
-        config_dict = self.model_dump(exclude={"api_key"})
+        config_dict = self.to_dict(exclude={"api_key"})
         dispatcher.event(
             TextChunkerStartEvent(
                 config_dict=config_dict,
@@ -60,7 +60,7 @@ class BaseTextChunker(TransformerComponent, DispatcherSpanMixin):
         Args:
             documents (list[Document]): Documents to split.
         """
-        config_dict = self.model_dump(exclude={"api_key"})
+        config_dict = self.to_dict(exclude={"api_key"})
         dispatcher.event(
             TextChunkerStartEvent(
                 config_dict=config_dict,

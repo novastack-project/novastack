@@ -1,4 +1,4 @@
-# NovaStack integration - HuggingFace Embeddings
+# Novastack integration - HuggingFace Embeddings
 
 HuggingFace sentence-transformers integration for NovaStack.
 

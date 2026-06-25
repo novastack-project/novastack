@@ -1,4 +1,4 @@
-# NovaStack integration - File Loader
+# Novastack integration - File Loader
 
 ## Installation 
 

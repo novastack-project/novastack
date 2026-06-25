@@ -4,15 +4,11 @@ from hashlib import sha256
 from typing import Any
 
 import numpy as np
-from novastack.core.bridge.pydantic import (
-    BaseModel,
-    Field,
-    computed_field,
-    field_validator,
-)
+from novastack.core.bridge.pydantic import Field, computed_field, field_validator
+from novastack.core.components import BaseComponent
 
 
-class BaseDocument(BaseModel, ABC):
+class BaseDocument(BaseComponent, ABC):
     """Abstract base class defining the interface for retrievable documents."""
 
     model_config = {"arbitrary_types_allowed": True, "validate_assignment": True}
@@ -74,7 +70,7 @@ class Document(BaseDocument):
         return str(sha256(str(self.text).encode("utf-8", "surrogatepass")).hexdigest())
 
 
-class DocumentWithScore(BaseModel):
+class DocumentWithScore(BaseComponent):
     """Document with associated relevance score."""
 
     model_config = {"arbitrary_types_allowed": True, "validate_assignment": True}

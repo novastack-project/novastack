@@ -1,4 +1,4 @@
-# NovaStack integration - IBM Cloud Object Storage Loader
+# Novastack integration - IBM Cloud Object Storage Loader
 
 ## Installation 
 

@@ -1,6 +1,6 @@
 from abc import abstractmethod
 
-from novastack.core.bridge.pydantic import BaseModel
+from novastack.core.components import BaseComponent
 from novastack.core.document import Document, DocumentWithScore
 from novastack.core.instrumentation import DispatcherSpanMixin, get_dispatcher
 from novastack.core.instrumentation.events.retrieval import (
@@ -11,7 +11,7 @@ from novastack.core.instrumentation.events.retrieval import (
 dispatcher = get_dispatcher(__name__)
 
 
-class BaseVectorStore(BaseModel, DispatcherSpanMixin):
+class BaseVectorStore(BaseComponent, DispatcherSpanMixin):
     """Abstract base class defining the interface for vector store."""
 
     model_config = {
@@ -59,7 +59,7 @@ class BaseVectorStore(BaseModel, DispatcherSpanMixin):
             query: The query string to search for similar documents.
             top_k: Number of top results to return. Defaults to 4.
         """
-        config_dict = self.model_dump(exclude={"api_key"})
+        config_dict = self.to_dict(exclude={"api_key"})
         dispatcher.event(
             RetrievalStartEvent(
                 query=query,

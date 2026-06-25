@@ -4,7 +4,7 @@ build-backend = "hatchling.build"
 
 [project]
 name = "novastack-embeddings-huggingface"
-version = "2.0.0"
+version = "0.1.0"
 description = "novastack integration embeddings huggingface"
 authors = [{ name = "Leonardo Furnielis", email = "leonardofurnielis@outlook.com" }]
 license = { text = "Apache-2.0" }
@@ -13,7 +13,7 @@ requires-python = ">=3.11,<3.14"
 dependencies = [
     "sentence-transformers>=5.2.3,<6.0.0",
     "hf-xet>=1.4.2,<1.5.0",
-    "novastack-core>=2.0.0,<3.0.0",
+    "novastack-core>=0.1.0,<0.2.0",
 ]
 
 [tool.hatch.build.targets.sdist]
@@ -24,7 +24,7 @@ include = ["novastack/"]
 
 [project.optional-dependencies]
 dev = [
-    "pytest>=9.0.3,<10.0.0",
-    "pytest-asyncio>=1.3.0,<2.0.0",
-    "ruff>=0.15.8,<1.0.0",
+    "pytest>=9.1.1,<10.0.0",
+    "pytest-asyncio>=1.4.0,<2.0.0",
+    "ruff>=0.15.19,<0.16.0",
 ]

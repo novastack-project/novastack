@@ -1,4 +1,4 @@
-# NovaStack integration - Watson Discovery Retriever
+# Novastack integration - Watson Discovery Retriever
 
 ## Installation 
 

@@ -1,4 +1,4 @@
-# NovaStack integration - watsonx.ai LLMs
+# Novastack integration - watsonx.ai LLMs
 
 ## Installation 
 

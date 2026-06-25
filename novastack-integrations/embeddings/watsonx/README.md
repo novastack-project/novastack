@@ -1,4 +1,4 @@
-# NovaStack integration - watsonx.ai Embeddings
+# Novastack integration - watsonx.ai Embeddings
 
 ## Installation
 

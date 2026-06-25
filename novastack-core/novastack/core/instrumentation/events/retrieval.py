@@ -24,10 +24,10 @@ class RetrievalEndEvent(BaseEvent):
     RetrievalEndEvent.
 
     Args:
-        documents (DocumentWithScore): List of documents with scores.
+        documents (list[DocumentWithScore]): List of documents with scores.
     """
 
-    documents: DocumentWithScore
+    documents: list[DocumentWithScore]
 
     @classmethod
     def class_name(cls) -> str:

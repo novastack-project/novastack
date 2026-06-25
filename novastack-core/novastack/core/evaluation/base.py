@@ -1,10 +1,11 @@
 from abc import ABC, abstractmethod
 from typing import Any
 
-from novastack.core.bridge.pydantic import BaseModel, Field, field_validator
+from novastack.core.bridge.pydantic import Field, field_validator
+from novastack.core.components import BaseComponent
 
 
-class BaseEvaluator(BaseModel, ABC):
+class BaseEvaluator(BaseComponent, ABC):
     """
     Abstract base class defining the interface for evaluation metrics.
 

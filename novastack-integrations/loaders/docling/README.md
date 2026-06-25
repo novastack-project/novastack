@@ -1,4 +1,4 @@
-# NovaStack integration - Docling Loader
+# Novastack integration - Docling Loader
 
 ## Installation 
 
