@@ -1,4 +1,4 @@
-# NovaStack integration - Watson Discovery Loader
+# Novastack integration - Watson Discovery Loader
 
 ## Installation 
 

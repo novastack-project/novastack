@@ -1,4 +1,4 @@
-# NovaStack integration - Elasticsearch Vector Store
+# Novastack integration - Elasticsearch Vector Store
 
 ## Installation 
 

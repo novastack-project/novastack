@@ -1,4 +1,4 @@
-# NovaStack integration - Chroma Vector Store
+# Novastack integration - Chroma Vector Store
 
 ## Installation 
 
