@@ -2,7 +2,7 @@ from abc import abstractmethod
 
 import numpy as np
 from novastack.core.bridge.pydantic import Field
-from novastack.core.component import TransformerComponent
+from novastack.core.components import TransformerComponent
 from novastack.core.document import Document
 from novastack.core.enums import SimilarityMode
 from novastack.core.instrumentation import DispatcherSpanMixin, get_dispatcher
@@ -94,7 +94,7 @@ class BaseEmbedding(TransformerComponent, DispatcherSpanMixin):
         Args:
             input: Single text string or list of text strings to embed
         """
-        config_dict = self.model_dump(exclude={"api_key"})
+        config_dict = self.to_dict(exclude={"api_key"})
         dispatcher.event(
             EmbeddingStartEvent(
                 config_dict=config_dict,
@@ -118,7 +118,7 @@ class BaseEmbedding(TransformerComponent, DispatcherSpanMixin):
         Args:
             documents (list[Document]): List of documents to compute embeddings.
         """
-        config_dict = self.model_dump(exclude={"api_key"})
+        config_dict = self.to_dict(exclude={"api_key"})
         dispatcher.event(
             EmbeddingStartEvent(
                 config_dict=config_dict,
@@ -131,7 +131,7 @@ class BaseEmbedding(TransformerComponent, DispatcherSpanMixin):
         for document, embedding in zip(documents, embeddings):
             document.embedding = embedding
 
-        config_dict = self.model_dump(exclude={"api_key"})
+        config_dict = self.to_dict(exclude={"api_key"})
 
         dispatcher.event(
             EmbeddingEndEvent(

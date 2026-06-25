@@ -1,7 +1,8 @@
 from abc import abstractmethod
 from typing import Any
 
-from novastack.core.bridge.pydantic import BaseModel, Field
+from novastack.core.bridge.pydantic import Field
+from novastack.core.components import BaseComponent
 from novastack.core.instrumentation import DispatcherSpanMixin, get_dispatcher
 from novastack.core.instrumentation.events.llm import (
     LLMChatEndEvent,
@@ -9,13 +10,13 @@ from novastack.core.instrumentation.events.llm import (
     LLMCompletionEndEvent,
     LLMCompletionStartEvent,
 )
-from novastack.core.llms.types import ChatMessage, ChatResponse, CompletionResponse
+from novastack.core.llms.schemas import ChatMessage, ChatResponse, CompletionResponse
 from novastack.core.observability import BaseObservability
 
 dispatcher = get_dispatcher(__name__)
 
 
-class BaseLLM(BaseModel, DispatcherSpanMixin):
+class BaseLLM(BaseComponent, DispatcherSpanMixin):
     """Abstract base class defining the interface for LLMs."""
 
     model_config = {
@@ -55,7 +56,7 @@ class BaseLLM(BaseModel, DispatcherSpanMixin):
             prompt (str): The input prompt to generate a completion for.
             **kwargs (Any): Additional keyword arguments to customize the LLM completion request.
         """
-        config_dict = self.model_dump(exclude={"api_key"})
+        config_dict = self.to_dict(exclude={"api_key"})
         dispatcher.event(
             LLMCompletionStartEvent(
                 prompt=prompt,
@@ -83,7 +84,7 @@ class BaseLLM(BaseModel, DispatcherSpanMixin):
             messages (list[ChatMessage]): A list of chat messages as input for the LLM.
             **kwargs (Any): Additional keyword arguments to customize the LLM completion request.
         """
-        config_dict = self.model_dump(exclude={"api_key"})
+        config_dict = self.to_dict(exclude={"api_key"})
         dispatcher.event(
             LLMChatStartEvent(
                 messages=messages,

@@ -1,4 +1,4 @@
-from novastack.core.telemetry import (
+from novastack.core.instrumentation import (
     set_global_handler,
 )
 

@@ -1,7 +1,7 @@
 from abc import abstractmethod
 from typing import Any
 
-from novastack.core.bridge.pydantic import BaseModel
+from novastack.core.components import BaseComponent
 from novastack.core.document import DocumentWithScore
 from novastack.core.instrumentation import DispatcherSpanMixin, get_dispatcher
 from novastack.core.instrumentation.events.retrieval import (
@@ -12,7 +12,7 @@ from novastack.core.instrumentation.events.retrieval import (
 dispatcher = get_dispatcher(__name__)
 
 
-class BaseRetriever(BaseModel, DispatcherSpanMixin):
+class BaseRetriever(BaseComponent, DispatcherSpanMixin):
     """Abstract base class for document retrievers."""
 
     model_config = {"arbitrary_types_allowed": True}
@@ -41,7 +41,7 @@ class BaseRetriever(BaseModel, DispatcherSpanMixin):
             query (str): Query text.
             **kwargs (Any): Additional keyword arguments to customize the LLM completion request.
         """
-        config_dict = self.model_dump(exclude={"api_key"})
+        config_dict = self.to_dict(exclude={"api_key"})
         dispatcher.event(
             RetrievalStartEvent(
                 query=query,

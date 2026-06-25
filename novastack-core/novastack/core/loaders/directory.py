@@ -127,7 +127,7 @@ class DirectoryLoader(BaseLoader):
                 loader_cls = self.file_loader.get(extension)
                 if loader_cls:
                     try:
-                        doc = loader_cls(input_file=file_dir).load_data()
+                        doc = loader_cls(input_file=file_dir).load_data()  # type: ignore[call-arg]
                         documents.extend(doc)
                     except Exception as e:
                         raise Exception(f"Error loading {file_dir}: {e}")

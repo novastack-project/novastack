@@ -1,10 +1,10 @@
 from abc import ABC, abstractmethod
 
-from novastack.core.bridge.pydantic import BaseModel
-from novastack.core.guardrails.types import GuardrailResponse
+from novastack.core.components import BaseComponent
+from novastack.core.guardrails.schemas import GuardrailResponse
 
 
-class BaseGuardrail(BaseModel, ABC):
+class BaseGuardrail(BaseComponent, ABC):
     """
     Abstract base class defining the interface for guardrails.
 
