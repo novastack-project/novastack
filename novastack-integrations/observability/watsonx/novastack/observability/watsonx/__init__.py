@@ -17,13 +17,15 @@ from novastack.observability.watsonx.types import (
     WatsonxMetricSpec,
     WatsonxMetricThreshold,
 )
+from novastack.observability.watsonx.watsonx_gov_client import WatsonxGovClient
 
 __all__ = [
     "WatsonxObservability",
     "IntegratedSystemCredentials",
+    "WatsonxGovClient",
+    "WatsonxMonitorManager",
     "WatsonxExternalMonitorManager",
     "WatsonxCustomMetricsManager",
     "WatsonxMetricSpec",
     "WatsonxMetricThreshold",
-    "WatsonxMonitorManager",
 ]
