@@ -3,7 +3,7 @@
 </div>
 
 <div align="center">
-  <h3>Forge data pipelines, unleash smart AI applications.</h3>
+  <h3>Unleash smart AI applications.</h3>
 </div>
 
 <div align="center">
