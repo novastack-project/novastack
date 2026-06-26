@@ -13,7 +13,7 @@ from novastack.observability.watsonx.integrated_system import (
 from novastack.observability.watsonx.monitor_manager import (
     WatsonxMonitorManager,
 )
-from novastack.observability.watsonx.types import (
+from novastack.observability.watsonx.schemas import (
     WatsonxMetricSpec,
     WatsonxMetricThreshold,
 )
