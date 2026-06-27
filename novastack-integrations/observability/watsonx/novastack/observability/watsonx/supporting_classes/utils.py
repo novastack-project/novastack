@@ -85,3 +85,36 @@ def validate_and_filter_dict(
         for key in all_keys_to_keep
         if key in original_dict and original_dict[key] is not None
     }
+
+
+class retry_if_exception_wos_entitlement:
+    def __init__(
+        self,
+        wos_client: Any,
+        space_id: str | None = None,
+        project_id: str | None = None,
+    ) -> None:
+        self._wos_client = wos_client
+        self.space_id = space_id
+        self.project_id = project_id
+
+    def __call__(self, exception: Exception) -> bool:
+        if not (
+            getattr(exception, "code", None) == 403
+            and "The user entitlement does not exist"
+            in getattr(exception, "message", "")
+        ):
+            return False
+
+        data_marts = self._wos_client.data_marts.list().result
+        if (data_marts.data_marts is None) or (not data_marts.data_marts):
+            return False
+
+        data_mart_id = data_marts.data_marts[0].metadata.id
+
+        self._wos_client.wos.add_instance_mapping(
+            service_instance_id=data_mart_id,
+            space_id=self.space_id,
+            project_id=self.project_id,
+        )
+        return True

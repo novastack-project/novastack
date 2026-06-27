@@ -6,6 +6,7 @@ import certifi
 from ibm_cloud_sdk_core.authenticators import Authenticator as IBMAuthenticator
 from novastack.core.bridge.pydantic import BaseModel, PrivateAttr
 from novastack.core.utils import validate_enum
+from novastack.core.utils.retry import retry, stop_after_attempt
 from novastack.observability.watsonx.enums import Region, TaskType
 from novastack.observability.watsonx.supporting_classes.clients import (
     AIGovFactsClientFactory,
@@ -14,6 +15,7 @@ from novastack.observability.watsonx.supporting_classes.clients import (
 )
 from novastack.observability.watsonx.supporting_classes.data_sets import DataSets
 from novastack.observability.watsonx.supporting_classes.utils import (
+    retry_if_exception_wos_entitlement,
     suppress_output,
     validate_and_filter_dict,
 )
@@ -104,7 +106,9 @@ class WatsonxGovClient(BaseModel):
                 "id": asset_id,
             },
             wml_client.deployments.ConfigurationMetaNames.FOUNDATION_MODEL: {},
-            wml_client.deployments.ConfigurationMetaNames.NAME: name + " " + "deployment",
+            wml_client.deployments.ConfigurationMetaNames.NAME: name
+            + " "
+            + "deployment",
             wml_client.deployments.ConfigurationMetaNames.BASE_MODEL_ID: model_id,
         }
 
@@ -205,58 +209,45 @@ class WatsonxGovClient(BaseModel):
             },
         }
 
-        max_attempt_execute_prompt_setup = 0
-        while max_attempt_execute_prompt_setup < 2:
-            try:
-                generative_ai_monitor_details = suppress_output(
-                    self._wos_client.wos.execute_prompt_setup,
-                    prompt_template_asset_id=pta_id,
-                    space_id=self.space_id,
-                    project_id=self.project_id,
-                    deployment_id=deployment_id,
-                    label_column="reference_output",
-                    context_fields=context_fields,
-                    question_field=question_field,
-                    operational_space_id=self._deployment_stage,
-                    problem_type=task_id,
-                    data_input_locale=[locale],
-                    generated_output_locale=[locale],
-                    input_data_type="unstructured_text",
-                    supporting_monitors=monitors,
-                    background_mode=False,
-                )
+        @retry(
+            stop=stop_after_attempt(2),
+            when=retry_if_exception_wos_entitlement(
+                wos_client=self._wos_client,
+                space_id=self.space_id,
+                project_id=self.project_id,
+            ),
+            reraise=True,
+        )
+        def _execute():
+            return suppress_output(
+                self._wos_client.wos.execute_prompt_setup,
+                prompt_template_asset_id=pta_id,
+                space_id=self.space_id,
+                project_id=self.project_id,
+                deployment_id=deployment_id,
+                label_column="reference_output",
+                context_fields=context_fields,
+                question_field=question_field,
+                operational_space_id=self._deployment_stage,
+                problem_type=task_id,
+                data_input_locale=[locale],
+                generated_output_locale=[locale],
+                input_data_type="unstructured_text",
+                supporting_monitors=monitors,
+                background_mode=False,
+            )
 
-                break
-
-            except Exception as e:
-                if (
-                    e.code == 403
-                    and "The user entitlement does not exist" in e.message
-                    and max_attempt_execute_prompt_setup < 1
-                ):
-                    max_attempt_execute_prompt_setup += 1
-
-                    data_marts = self._wos_client.data_marts.list().result
-                    if (data_marts.data_marts is None) or (not data_marts.data_marts):
-                        raise ValueError(
-                            "Error retrieving IBM watsonx.governance (openscale) data mart. "
-                            "Make sure the data mart are configured.",
-                        )
-
-                    data_mart_id = data_marts.data_marts[0].metadata.id
-
-                    self._wos_client.wos.add_instance_mapping(
-                        service_instance_id=data_mart_id,
-                        space_id=self.space_id,
-                        project_id=self.project_id,
-                    )
-                else:
-                    max_attempt_execute_prompt_setup = 2
-                    raise
+        try:
+            generative_ai_monitor_details = _execute()
+        except Exception:
+            for rollback_step in reversed(rollback_stack):
+                rollback_step()
+            raise
 
         generative_ai_monitor_details = generative_ai_monitor_details._to_dict()
 
         wos_status = generative_ai_monitor_details.get("status", {})
+
         if wos_status.get("state") == "ERROR":
             for rollback_step in reversed(rollback_stack):
                 rollback_step()
@@ -309,7 +300,9 @@ class WatsonxGovClient(BaseModel):
         """
         validate_enum(task_id, "task_id", TaskType)
 
-        if (not (self.project_id or self.space_id)) or (self.project_id and self.space_id):
+        if (not (self.project_id or self.space_id)) or (
+            self.project_id and self.space_id
+        ):
             raise ValueError(
                 "Invalid configuration: Neither was provided: please set either 'project_id' or 'space_id'. "
                 "Both were provided: 'project_id' and 'space_id' cannot be set at the same time."
@@ -328,7 +321,9 @@ class WatsonxGovClient(BaseModel):
             "description": description,
             "model_parameters": model_parameters,
             "input": prompt_template,
-            "prompt_variables": dict.fromkeys(prompt_variables, "") if prompt_variables else {},
+            "prompt_variables": dict.fromkeys(prompt_variables, "")
+            if prompt_variables
+            else {},
         }
 
         rollback_stack = []
@@ -349,7 +344,9 @@ class WatsonxGovClient(BaseModel):
 
         deployment_id = None
         if self._container_type == "space":
-            deployment_id = suppress_output(self._create_deployment_pta, pta_id, name, model_id)
+            deployment_id = suppress_output(
+                self._create_deployment_pta, pta_id, name, model_id
+            )
             rollback_stack.append(lambda: self._delete_deployment_pta(deployment_id))
 
         subscription_id = self._wos_execute_prompt_setup(
@@ -429,7 +426,9 @@ class WatsonxGovClient(BaseModel):
         """
         validate_enum(task_id, "task_id", TaskType)
 
-        if (not (self.project_id or self.space_id)) or (self.project_id and self.space_id):
+        if (not (self.project_id or self.space_id)) or (
+            self.project_id and self.space_id
+        ):
             raise ValueError(
                 "Invalid configuration: Neither was provided: please set either 'project_id' or 'space_id'. "
                 "Both were provided: 'project_id' and 'space_id' cannot be set at the same time."
@@ -453,7 +452,9 @@ class WatsonxGovClient(BaseModel):
             "prompt_url": prompt_url,
             "prompt_additional_info": prompt_additional_info,
             "input": prompt_template,
-            "prompt_variables": dict.fromkeys(prompt_variables, "") if prompt_variables else {},
+            "prompt_variables": dict.fromkeys(prompt_variables, "")
+            if prompt_variables
+            else {},
         }
 
         rollback_stack = []
