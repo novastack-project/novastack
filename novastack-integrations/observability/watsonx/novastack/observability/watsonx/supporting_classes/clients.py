@@ -75,7 +75,7 @@ class AIGovFactsClientFactory:
             region: The region object containing service URLs.
         """
         region = Region.from_value(region)
-        EXPERIMENT_NAME = "novastack-observability-watsonx"
+        EXPERIMENT_NAME = "novastack-aigov-experiment"
 
         from ibm_aigov_facts_client import AIGovFactsClient  # type: ignore
 
