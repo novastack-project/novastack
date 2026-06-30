@@ -100,7 +100,7 @@ class retry_if_exception_wos_entitlement:
 
     def __call__(self, exception: Exception) -> bool:
         if not (
-            getattr(exception, "code", None) == 403
+            getattr(exception, "status_code", None) == 403
             and "The user entitlement does not exist"
             in getattr(exception, "message", "")
         ):

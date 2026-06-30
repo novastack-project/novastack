@@ -193,7 +193,6 @@ class WatsonxGovClient(BaseModel):
         locale: str,
         context_fields: list[str] | None,
         question_field: str | None,
-        rollback_stack: list,
         deployment_id: str | None = None,
     ) -> str:
         if not self._wos_client:
@@ -237,20 +236,14 @@ class WatsonxGovClient(BaseModel):
                 background_mode=False,
             )
 
-        try:
-            generative_ai_monitor_details = _execute()
-        except Exception:
-            for rollback_step in reversed(rollback_stack):
-                rollback_step()
-            raise
+        generative_ai_monitor_details = _execute()
+
 
         generative_ai_monitor_details = generative_ai_monitor_details._to_dict()
 
         wos_status = generative_ai_monitor_details.get("status", {})
 
         if wos_status.get("state") == "ERROR":
-            for rollback_step in reversed(rollback_stack):
-                rollback_step()
             raise Exception(wos_status.get("failure"))
 
         return generative_ai_monitor_details.get("subscription_id", None)
@@ -339,32 +332,36 @@ class WatsonxGovClient(BaseModel):
             ["name", "model_id", "task_id"],
         )
 
-        pta_id = suppress_output(self._create_prompt, prompt_details, asset_details)
-        rollback_stack.append(lambda: self._delete_prompt_asset(pta_id))
+        try:
+            pta_id = suppress_output(self._create_prompt, prompt_details, asset_details)
+            rollback_stack.append(lambda: self._delete_prompt_asset(pta_id))
 
-        deployment_id = None
-        if self._container_type == "space":
-            deployment_id = suppress_output(
-                self._create_deployment_pta, pta_id, name, model_id
+            deployment_id = None
+            if self._container_type == "space":
+                deployment_id = suppress_output(
+                    self._create_deployment_pta, pta_id, name, model_id
+                )
+                rollback_stack.append(lambda: self._delete_deployment_pta(deployment_id))
+
+            subscription_id = self._wos_execute_prompt_setup(
+                pta_id=pta_id,
+                task_id=task_id,
+                locale=locale,
+                context_fields=context_fields,
+                question_field=question_field,
+                deployment_id=deployment_id,
             )
-            rollback_stack.append(lambda: self._delete_deployment_pta(deployment_id))
 
-        subscription_id = self._wos_execute_prompt_setup(
-            pta_id=pta_id,
-            task_id=task_id,
-            locale=locale,
-            context_fields=context_fields,
-            question_field=question_field,
-            rollback_stack=rollback_stack,
-            deployment_id=deployment_id,
-        )
-
-        return {
-            "asset_id": pta_id,
-            "asset_type": "prompt_template",
-            "deployment_id": deployment_id,
-            "subscription_id": subscription_id,
-        }
+            return {
+                "asset_id": pta_id,
+                "asset_type": "prompt_template",
+                "deployment_id": deployment_id,
+                "subscription_id": subscription_id,
+            }
+        except Exception:
+            for step in reversed(rollback_stack):
+                step()
+            raise
 
     def setup_external_monitor(
         self,
@@ -477,28 +474,60 @@ class WatsonxGovClient(BaseModel):
             ["name", "model_id", "task_id"],
         )
 
-        pta_id = suppress_output(
-            self._create_detached_prompt,
-            detached_details,
-            prompt_details,
-            detached_asset_details,
-        )
-        rollback_stack.append(lambda: self._delete_prompt_asset(pta_id))
+        try:
+            pta_id = suppress_output(
+                self._create_detached_prompt,
+                detached_details,
+                prompt_details,
+                detached_asset_details,
+            )
+            rollback_stack.append(lambda: self._delete_prompt_asset(pta_id))
 
-        subscription_id = self._wos_execute_prompt_setup(
-            pta_id=pta_id,
-            task_id=task_id,
-            locale=locale,
-            context_fields=context_fields,
-            question_field=question_field,
-            rollback_stack=rollback_stack,
-        )
+            try:
+                subscription_id = self._wos_execute_prompt_setup(
+                    pta_id=pta_id,
+                    task_id=task_id,
+                    locale=locale,
+                    context_fields=context_fields,
+                    question_field=question_field,
+                )
+            except Exception as e:
+                # Some CP4D versions require a deployment_id during subscription setup.
+                # If the API returns HTTP 400 with "deployment_id missing", a deployment
+                # is created for the prompt template asset before proceeding.
+                if e.status_code == 400 and "deployment_id missing" in getattr(
+                    e, "message", ""
+                ):
+                    deployment_id = None
+                    if self._container_type == "space":
+                        deployment_id = suppress_output(
+                            self._create_deployment_pta, pta_id, name, model_id
+                        )
+                        rollback_stack.append(
+                            lambda: self._delete_deployment_pta(deployment_id)
+                        )
 
-        return {
-            "asset_id": pta_id,
-            "asset_type": "detached_prompt_template",
-            "subscription_id": subscription_id,
-        }
+                        subscription_id = self._wos_execute_prompt_setup(
+                            pta_id=pta_id,
+                            task_id=task_id,
+                            locale=locale,
+                            context_fields=context_fields,
+                            question_field=question_field,
+                            deployment_id=deployment_id,
+                        )
+
+                else:
+                    raise
+
+            return {
+                "asset_id": pta_id,
+                "asset_type": "detached_prompt_template",
+                "subscription_id": subscription_id,
+            }
+        except Exception:
+            for step in reversed(rollback_stack):
+                step()
+            raise
 
     def log_payload_records(
         self,
