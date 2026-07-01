@@ -18,6 +18,7 @@ from novastack.observability.watsonx.supporting_classes.utils import (
     retry_if_exception_wos_entitlement,
     suppress_output,
     validate_and_filter_dict,
+    validate_container_id,
 )
 
 os.environ["REQUESTS_CA_BUNDLE"] = certifi.where()
@@ -106,9 +107,7 @@ class WatsonxGovClient(BaseModel):
                 "id": asset_id,
             },
             wml_client.deployments.ConfigurationMetaNames.FOUNDATION_MODEL: {},
-            wml_client.deployments.ConfigurationMetaNames.NAME: name
-            + " "
-            + "deployment",
+            wml_client.deployments.ConfigurationMetaNames.NAME: f"{name} deployment",
             wml_client.deployments.ConfigurationMetaNames.BASE_MODEL_ID: model_id,
         }
 
@@ -238,7 +237,6 @@ class WatsonxGovClient(BaseModel):
 
         generative_ai_monitor_details = _execute()
 
-
         generative_ai_monitor_details = generative_ai_monitor_details._to_dict()
 
         wos_status = generative_ai_monitor_details.get("status", {})
@@ -292,14 +290,7 @@ class WatsonxGovClient(BaseModel):
             ```
         """
         validate_enum(task_id, "task_id", TaskType)
-
-        if (not (self.project_id or self.space_id)) or (
-            self.project_id and self.space_id
-        ):
-            raise ValueError(
-                "Invalid configuration: Neither was provided: please set either 'project_id' or 'space_id'. "
-                "Both were provided: 'project_id' and 'space_id' cannot be set at the same time."
-            )
+        validate_container_id(self.project_id, self.space_id)
 
         if task_id == TaskType.RETRIEVAL_AUGMENTED_GENERATION:
             if not context_fields or not question_field:
@@ -341,7 +332,9 @@ class WatsonxGovClient(BaseModel):
                 deployment_id = suppress_output(
                     self._create_deployment_pta, pta_id, name, model_id
                 )
-                rollback_stack.append(lambda: self._delete_deployment_pta(deployment_id))
+                rollback_stack.append(
+                    lambda: self._delete_deployment_pta(deployment_id)
+                )
 
             subscription_id = self._wos_execute_prompt_setup(
                 pta_id=pta_id,
@@ -422,14 +415,7 @@ class WatsonxGovClient(BaseModel):
             ```
         """
         validate_enum(task_id, "task_id", TaskType)
-
-        if (not (self.project_id or self.space_id)) or (
-            self.project_id and self.space_id
-        ):
-            raise ValueError(
-                "Invalid configuration: Neither was provided: please set either 'project_id' or 'space_id'. "
-                "Both were provided: 'project_id' and 'space_id' cannot be set at the same time."
-            )
+        validate_container_id(self.project_id, self.space_id)
 
         if task_id == TaskType.RETRIEVAL_AUGMENTED_GENERATION:
             if not context_fields or not question_field:
@@ -507,14 +493,14 @@ class WatsonxGovClient(BaseModel):
                             lambda: self._delete_deployment_pta(deployment_id)
                         )
 
-                        subscription_id = self._wos_execute_prompt_setup(
-                            pta_id=pta_id,
-                            task_id=task_id,
-                            locale=locale,
-                            context_fields=context_fields,
-                            question_field=question_field,
-                            deployment_id=deployment_id,
-                        )
+                    subscription_id = self._wos_execute_prompt_setup(
+                        pta_id=pta_id,
+                        task_id=task_id,
+                        locale=locale,
+                        context_fields=context_fields,
+                        question_field=question_field,
+                        deployment_id=deployment_id,
+                    )
 
                 else:
                     raise
@@ -564,7 +550,7 @@ class WatsonxGovClient(BaseModel):
                 region=self.region,
                 service_instance_id=self.service_instance_id,
             )
-        data_sets_mgr = DataSets(wos_client=self._wos_client)  # type: ignore
+        data_sets_mgr = DataSets(wos_client=self._wos_client)
 
         return data_sets_mgr.store_payload_records(
             request_records=request_records,
@@ -609,7 +595,7 @@ class WatsonxGovClient(BaseModel):
                 region=self.region,
                 service_instance_id=self.service_instance_id,
             )
-        data_sets_mgr = DataSets(wos_client=self._wos_client)  # type: ignore
+        data_sets_mgr = DataSets(wos_client=self._wos_client)
 
         return data_sets_mgr.store_feedback_records(
             request_records=request_records,

@@ -87,6 +87,24 @@ def validate_and_filter_dict(
     }
 
 
+def validate_container_id(
+    project_id: str | None,
+    space_id: str | None,
+) -> None:
+    """
+    Validates container_id parameter `project_id` or `space_id` is provided.
+
+    Args:
+        project_id (str | None): The project ID.
+        space_id (str | None): The space ID.
+    """
+    if (not (project_id or space_id)) or (project_id and space_id):
+        raise ValueError(
+            "Invalid configuration: Neither was provided: please set either 'project_id' or 'space_id'. "
+            "Both were provided: 'project_id' and 'space_id' cannot be set at the same time."
+        )
+
+
 class retry_if_exception_wos_entitlement:
     def __init__(
         self,
