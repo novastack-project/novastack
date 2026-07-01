@@ -386,7 +386,7 @@ class WatsonxCustomMetricsManager(BaseModel):
         request_records: dict[str, float | int],
     ):
         """
-        Log computed metrics data to the specified monitor instance.
+        Log aggregated metrics measurements to the specified custom monitor instance.
 
         Args:
             monitor_instance_id (str): The unique ID of the monitor instance.
@@ -447,7 +447,7 @@ class WatsonxCustomMetricsManager(BaseModel):
         request_records: list[dict],
     ):
         """
-        Log computed metrics data to the specified transaction record.
+        Log record-level metrics for individual transactions in the custom dataset.
 
         Args:
             custom_data_set_id (str): The ID of the custom metric data set.

@@ -3,6 +3,10 @@ import uuid
 from typing import Any
 
 import certifi
+from ibm_aigov_facts_client import (
+    DetachedPromptTemplate,
+    PromptTemplate,
+)
 from ibm_cloud_sdk_core.authenticators import Authenticator as IBMAuthenticator
 from novastack.core.bridge.pydantic import BaseModel, PrivateAttr
 from novastack.core.utils import validate_enum
@@ -84,16 +88,38 @@ class WatsonxGovClient(BaseModel):
     region: str = Region.US_SOUTH
     service_instance_id: str | None = None
 
-    _wos_client: Any | None = PrivateAttr(default=None)
-    _aigov_client: Any | None = PrivateAttr(default=None)
     _container_id: str | None = PrivateAttr(default=None)
     _container_type: str | None = PrivateAttr(default=None)
     _deployment_stage: str | None = PrivateAttr(default=None)
+
+    __aigov_client: Any | None = PrivateAttr(default=None)
+    __wos_client: Any | None = PrivateAttr(default=None)
 
     def model_post_init(self, __context: Any) -> None:  # noqa: PYI063
         self._container_id = self.space_id if self.space_id else self.project_id
         self._container_type = "space" if self.space_id else "project"
         self._deployment_stage = "production" if self.space_id else "development"
+
+    @property
+    def _aigov_client(self) -> Any:
+        if self.__aigov_client is None:
+            self.__aigov_client = AIGovFactsClientFactory.create_client(
+                authenticator=self.authenticator,
+                container_id=self._container_id,
+                container_type=self._container_type,
+                region=self.region,
+            )
+        return self.__aigov_client
+
+    @property
+    def _wos_client(self) -> Any:
+        if self.__wos_client is None:
+            self.__wos_client = WosClientFactory.create_client(
+                authenticator=self.authenticator,
+                region=self.region,
+                service_instance_id=self.service_instance_id,
+            )
+        return self.__wos_client
 
     def _create_deployment_pta(self, asset_id: str, name: str, model_id: str) -> str:
         wml_client = WMLClientFactory.create_client(
@@ -121,19 +147,6 @@ class WatsonxGovClient(BaseModel):
         prompt_template_details: dict,
         detached_asset_details: dict,
     ) -> str:
-        from ibm_aigov_facts_client import (
-            DetachedPromptTemplate,
-            PromptTemplate,
-        )
-
-        if not self._aigov_client:
-            self._aigov_client = AIGovFactsClientFactory.create_client(
-                authenticator=self.authenticator,
-                container_id=self._container_id,
-                container_type=self._container_type,
-                region=self.region,
-            )
-
         created_detached_pta = self._aigov_client.assets.create_detached_prompt(
             **detached_asset_details,
             prompt_details=PromptTemplate(**prompt_template_details),
@@ -147,16 +160,6 @@ class WatsonxGovClient(BaseModel):
         prompt_template_details: dict,
         asset_details: dict,
     ) -> str:
-        from ibm_aigov_facts_client import PromptTemplate
-
-        if not self._aigov_client:
-            self._aigov_client = AIGovFactsClientFactory.create_client(
-                authenticator=self.authenticator,
-                container_id=self._container_id,
-                container_type=self._container_type,
-                region=self.region,
-            )
-
         created_pta = self._aigov_client.assets.create_prompt(
             **asset_details,
             input_mode="freeform",
@@ -175,14 +178,6 @@ class WatsonxGovClient(BaseModel):
         suppress_output(wml_client.deployments.delete, deployment_id)
 
     def _delete_prompt_asset(self, asset_id: str) -> None:
-        if not self._aigov_client:
-            self._aigov_client = AIGovFactsClientFactory.create_client(
-                authenticator=self.authenticator,
-                container_id=self._container_id,
-                container_type=self._container_type,
-                region=self.region,
-            )
-
         suppress_output(self._aigov_client.assets.delete_prompt_asset, asset_id)
 
     def _wos_execute_prompt_setup(
@@ -194,13 +189,6 @@ class WatsonxGovClient(BaseModel):
         question_field: str | None,
         deployment_id: str | None = None,
     ) -> str:
-        if not self._wos_client:
-            self._wos_client = WosClientFactory.create_client(
-                authenticator=self.authenticator,
-                region=self.region,
-                service_instance_id=self.service_instance_id,
-            )
-
         monitors = {
             "generative_ai_quality": {
                 "parameters": {"min_sample_size": 10, "metrics_configuration": {}},
@@ -481,9 +469,9 @@ class WatsonxGovClient(BaseModel):
                 # Some CP4D versions require a deployment_id during subscription setup.
                 # If the API returns HTTP 400 with "deployment_id missing", a deployment
                 # is created for the prompt template asset before proceeding.
-                if e.status_code == 400 and "deployment_id missing" in getattr(
-                    e, "message", ""
-                ):
+                if getattr(
+                    e, "status_code", None
+                ) == 400 and "deployment_id missing" in getattr(e, "message", ""):
                     deployment_id = None
                     if self._container_type == "space":
                         deployment_id = suppress_output(
@@ -544,12 +532,6 @@ class WatsonxGovClient(BaseModel):
             )
             ```
         """
-        if not self._wos_client:
-            self._wos_client = WosClientFactory.create_client(
-                authenticator=self.authenticator,
-                region=self.region,
-                service_instance_id=self.service_instance_id,
-            )
         data_sets_mgr = DataSets(wos_client=self._wos_client)
 
         return data_sets_mgr.store_payload_records(
@@ -589,12 +571,6 @@ class WatsonxGovClient(BaseModel):
             )
             ```
         """
-        if not self._wos_client:
-            self._wos_client = WosClientFactory.create_client(
-                authenticator=self.authenticator,
-                region=self.region,
-                service_instance_id=self.service_instance_id,
-            )
         data_sets_mgr = DataSets(wos_client=self._wos_client)
 
         return data_sets_mgr.store_feedback_records(
