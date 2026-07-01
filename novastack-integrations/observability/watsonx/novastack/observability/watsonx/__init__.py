@@ -1,3 +1,4 @@
+from novastack.observability.watsonx.aigov_client import WatsonxGovClient
 from novastack.observability.watsonx.base import (
     WatsonxObservability,
 )
@@ -17,7 +18,6 @@ from novastack.observability.watsonx.schemas import (
     WatsonxMetricSpec,
     WatsonxMetricThreshold,
 )
-from novastack.observability.watsonx.aigov_client import WatsonxGovClient
 
 __all__ = [
     "WatsonxObservability",
