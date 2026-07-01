@@ -53,7 +53,7 @@ class WatsonxGovClient(BaseModel):
 
         # watsonx.governance (IBM Cloud)
         client = WatsonxGovClient(
-            authenticator=IAMAuthenticator(apikey="API_KEY"),
+            authenticator=IAMAuthenticator(api_key="API_KEY"),
             region="us-south",
             space_id="SPACE_ID",
         )
