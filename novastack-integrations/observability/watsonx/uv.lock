@@ -702,7 +702,7 @@ wheels = [
 
 [[package]]
 name = "novastack-observability-watsonx"
-version = "0.1.1"
+version = "0.1.2"
 source = { editable = "." }
 dependencies = [
     { name = "certifi" },
