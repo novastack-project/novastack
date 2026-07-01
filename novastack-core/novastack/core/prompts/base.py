@@ -41,7 +41,7 @@ class PromptTemplate(BaseComponent):
     )
 
     def __init__(self, template: str):
-        super().__init__(template=template) # type: ignore[call-arg]
+        super().__init__(template=template)  # type: ignore[call-arg]
 
     @classmethod
     def model_validate_input(

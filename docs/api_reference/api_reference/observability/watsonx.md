@@ -13,16 +13,9 @@ title: watsonx
       show_root_full_path: false
       heading_level: 3
 
-## Monitors Setup
+## watsonx.governance Client
 
-::: novastack.observability.watsonx.WatsonxMonitorManager
-    options:
-      members_order: source
-      show_root_heading: true
-      show_root_full_path: false
-      heading_level: 3
-
-::: novastack.observability.watsonx.WatsonxExternalMonitorManager
+::: novastack.observability.watsonx.WatsonxGovClient
     options:
       members_order: source
       show_root_heading: true

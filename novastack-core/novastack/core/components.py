@@ -1,9 +1,13 @@
+from __future__ import annotations
+
 import json
 from abc import abstractmethod
-from typing import Any
+from typing import TYPE_CHECKING, Any
 
 from novastack.core.bridge.pydantic import BaseModel
-from novastack.core.document import Document
+
+if TYPE_CHECKING:
+    from novastack.core.document import Document
 
 
 class BaseComponent(BaseModel):
