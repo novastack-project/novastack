@@ -4,7 +4,7 @@ build-backend = "hatchling.build"
 
 [project]
 name = "novastack-core"
-version = "0.1.0"
+version = "0.1.1"
 description = "Forge data pipelines, unleash smart AI applications."
 authors = [{ name = "Leonardo Furnielis", email = "leonardofurnielis@outlook.com" }]
 license = { text = "Apache-2.0" }
@@ -25,7 +25,7 @@ dependencies = [
     "tiktoken>=0.12.0,<0.13.0",
     "novastack-instrumentation>=0.1.0,<0.2.0",
     "novastack-utils>=0.1.0,<0.2.0",
-    "novastack-workflows>=0.1.0,<0.2.0",
+    "novastack-workflows>=0.1.1,<0.2.0",
 ]
 
 [project.optional-dependencies]
