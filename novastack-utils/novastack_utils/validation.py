@@ -4,6 +4,7 @@ Shared utilities for validation operations.
 This module provides common validation functions for data integrity and type checking.
 """
 
+
 def validate_enum(el: str, el_name: str, expected_enum) -> str:
     allowed = {
         getattr(expected_enum, attr) for attr in vars(expected_enum) if attr.isupper()

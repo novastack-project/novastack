@@ -1,3 +1,4 @@
+from novastack.observability.watsonx.aigov_client import WatsonxGovClient
 from novastack.observability.watsonx.base import (
     WatsonxObservability,
 )
@@ -13,7 +14,7 @@ from novastack.observability.watsonx.integrated_system import (
 from novastack.observability.watsonx.monitor_manager import (
     WatsonxMonitorManager,
 )
-from novastack.observability.watsonx.types import (
+from novastack.observability.watsonx.schemas import (
     WatsonxMetricSpec,
     WatsonxMetricThreshold,
 )
@@ -21,9 +22,10 @@ from novastack.observability.watsonx.types import (
 __all__ = [
     "WatsonxObservability",
     "IntegratedSystemCredentials",
+    "WatsonxGovClient",
+    "WatsonxMonitorManager",
     "WatsonxExternalMonitorManager",
     "WatsonxCustomMetricsManager",
     "WatsonxMetricSpec",
     "WatsonxMetricThreshold",
-    "WatsonxMonitorManager",
 ]
