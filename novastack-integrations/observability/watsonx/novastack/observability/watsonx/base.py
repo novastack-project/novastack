@@ -40,7 +40,7 @@ class WatsonxObservability(BaseObservability):
 
         # watsonx.governance (IBM Cloud)
         watsonx_handler = WatsonxObservability(
-            authenticator=IAMAuthenticator(apikey="API_KEY"),
+            authenticator=IAMAuthenticator(api_key="API_KEY"),
             subscription_id="SUBSCRIPTION_ID",
         )
 

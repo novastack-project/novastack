@@ -35,7 +35,7 @@ class WatsonxCustomMetricsManager(BaseModel):
 
         # watsonx.governance (IBM Cloud)
         custom_metric_mgr = WatsonxCustomMetricsManager(
-            authenticator=IAMAuthenticator(apikey="API_KEY"),
+            authenticator=IAMAuthenticator(api_key="API_KEY"),
             space_id="SPACE_ID",
             region="us-south",
         )
