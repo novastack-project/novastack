@@ -1,5 +1,5 @@
 ---
-title: Performance Report
+title: Benchmarks Report
 ---
 
 ## 🧪 Environment
