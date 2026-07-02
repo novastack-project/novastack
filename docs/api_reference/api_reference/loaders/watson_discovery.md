@@ -2,7 +2,17 @@
 title: Watson Discovery
 ---
 
-`% pip install novastack-loaders-watson-discovery`
+=== "pip"
+
+    ```bash
+    $ pip install novastack-loaders-watson-discovery
+    ```
+
+=== "uv"
+
+    ```bash
+    $ uv add novastack-loaders-watson-discovery
+    ```
 
 ::: novastack.loaders.watson_discovery
     options:

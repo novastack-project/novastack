@@ -2,7 +2,17 @@
 title: watsonx
 ---
 
-`% pip install novastack-guardrails-watsonx`
+=== "pip"
+
+    ```bash
+    $ pip install novastack-guardrails-watsonx
+    ```
+
+=== "uv"
+
+    ```bash
+    $ uv add novastack-guardrails-watsonx
+    ```
 
 ::: novastack.guardrails.watsonx.WatsonxGuardrail
     options:

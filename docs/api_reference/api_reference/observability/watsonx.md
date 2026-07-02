@@ -2,7 +2,17 @@
 title: watsonx
 ---
 
-`% pip install novastack-observability-watsonx`
+=== "pip"
+
+    ```bash
+    $ pip install novastack-observability-watsonx
+    ```
+
+=== "uv"
+
+    ```bash
+    $ uv add novastack-observability-watsonx
+    ```
 
 ## Observability
 
