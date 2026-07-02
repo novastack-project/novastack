@@ -35,8 +35,7 @@ p {
     font-size: 16px !important;
     font-weight: 400 !important;
     color: #374151 !important;
-    transition: color 0.15s ease, background-color 0.15s ease;
-    border-radius: 4px;
+    transition: color 0.15s ease;
 }
 
 [data-md-color-scheme="slate"] .md-nav__item .md-nav__link {

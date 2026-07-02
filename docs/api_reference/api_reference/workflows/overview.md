@@ -132,4 +132,4 @@ asyncio.run(server.serve(host="0.0.0.0", port=8080))
 
 ## License
 
-[Apache License 2.0](LICENSE)
+[Apache License 2.0](https://github.com/novastack-project/novastack/blob/main/LICENSE)
