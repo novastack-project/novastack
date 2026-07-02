@@ -3,9 +3,9 @@
 @import url('https://fonts.googleapis.com/css2?family=Geist+Mono:wght@100..900&display=swap');
 
 :root  > * {
-  --md-accent-fg-color:        #e91e63;
-  --md-accent-fg-color--light: #f06292;
-  --md-accent-fg-color--dark:  #c2185b;
+  --md-accent-fg-color:        #d6336c;
+  --md-accent-fg-color--light: #e8608a;
+  --md-accent-fg-color--dark:  #b52758;
 }
 
 /* Change the font for the entire body */
@@ -33,43 +33,57 @@ p {
 /* Left sidebar base styles */
 .md-nav__item .md-nav__link {
     font-size: 16px !important;
-    font-weight: 300 !important;
-    transition: color 0.2s ease;
+    font-weight: 400 !important;
+    color: #374151 !important;
+    transition: color 0.15s ease, background-color 0.15s ease;
+    border-radius: 4px;
+}
+
+[data-md-color-scheme="slate"] .md-nav__item .md-nav__link {
+    color: #d1d5db !important;
 }
 
 /* Left sidebar hover */
 .md-nav__item .md-nav__link:hover {
-    color: #f06292 !important;
+    color: #374151 !important;
+    font-weight: 500 !important;
+}
+
+[data-md-color-scheme="slate"] .md-nav__item .md-nav__link:hover {
+    color: #ffffff !important;
+    font-weight: 500 !important;
 }
 
 /* Left sidebar selected/active state */
-.md-nav__item .md-nav__link--active {
-    color: #c2185b !important;
+.md-nav__item .md-nav__link--active,
+[data-md-color-scheme="slate"] .md-nav__item .md-nav__link--active {
+    color: #d6336c !important;
     font-weight: 500 !important;
 }
 
 /* Left sidebar active state (when clicked) */
 .md-nav__item .md-nav__link:active {
-    color: #c2185b !important;
+    color: #b52758 !important;
 }
 
 /* Left sidebar passed/visited state */
-.md-nav__item .md-nav__link--passed {
-    color: #c2185b !important;
+.md-nav__item .md-nav__link--passed,
+[data-md-color-scheme="slate"] .md-nav__item .md-nav__link--passed {
+    color: #d6336c !important;
 }
 
 /* TOC (On this page) sidebar */
 .md-nav--secondary .md-nav__link--active {
-    color: #c2185b !important;
+    color: #d6336c !important;
+    border-color: transparent;
 }
 
 .md-nav--secondary .md-nav__link:hover {
-    color: #f06292 !important;
+    color: #d6336c !important;
 }
 
-/* TOC active indicator border */
-.md-nav--secondary .md-nav__link--active {
-    border-color: #c2185b;
+[data-md-color-scheme="slate"] .md-nav--secondary .md-nav__link:hover {
+    color: #ffffff !important;
 }
 
 /* TOC (On this page) font size */
@@ -83,6 +97,7 @@ p {
 .language-console.highlight {
     position: relative;
     padding-top: 1.6rem;
+    margin-top: 0.6rem;
     background: #1e1e2e;
     border-radius: 12px;
     overflow: hidden;

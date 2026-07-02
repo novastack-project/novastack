@@ -6,11 +6,19 @@ Provides a production-ready HTTP API server for managing and executing workflows
 
 ## Installation
 
-```bash
-pip install "novastack-workflows[server]"
-```
+=== "pip"
 
-## Usage Example:
+    ```bash
+    $ pip install "novastack-workflows[server]"
+    ```
+
+=== "uv"
+
+    ```bash
+    $ uv add "novastack-workflows[server]"
+    ```
+
+## Usage Example
 
 ```python
 from novastack_workflows.server import WorkflowServer

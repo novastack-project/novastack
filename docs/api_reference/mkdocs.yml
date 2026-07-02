@@ -62,18 +62,16 @@ plugins:
 
 nav:
   - API Reference: index.md
-  # - Getting Started:
-  #   - Installation: getting-started/installation.md
-  - Embeddings: embeddings/
-  - Evaluation: evaluation/
-  - Guardrails: guardrails/
   - LLMs: llms/
-  - Observability: observability/
-  - Prompts: prompts/
+  - Embeddings: embeddings/
   - Loaders: loaders/
-  - Retriever: retrievers/
   - Text Chunkers: text_chunkers/
   - Vector Stores: vector_stores/
+  - Retrievers: retrievers/
+  - Prompts: prompts/
+  - Evaluation: evaluation/
+  - Guardrails: guardrails/
+  - Observability: observability/
   - Workflows:
     - Overview: workflows/overview.md
     - Run as a Server: workflows/run_server.md
@@ -90,14 +88,14 @@ theme:
     - scheme: default
       media: "(prefers-color-scheme: light)"
       primary: white
-      accent: pink
+      accent: purple
       toggle:
         icon: material/brightness-7
         name: Switch to dark mode
     - scheme: slate
       media: "(prefers-color-scheme: dark)"
       primary: black
-      accent: pink
+      accent: purple
       toggle:
         icon: material/brightness-4
         name: Switch to light mode

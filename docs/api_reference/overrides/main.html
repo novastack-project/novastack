@@ -3,19 +3,38 @@
 {% block header %}
   {{ super() }}
   <style>
-    [data-md-color-scheme="default"] .md-header__inner::after,
+    [data-md-color-scheme="default"] .md-header__inner::after {
+      content: "v{{ config.extra.version }}";
+      display: inline-block;
+      margin-left: auto;
+      margin-right: 16px;
+      padding: 4px 12px;
+      font-size: 0.5rem;
+      font-weight: 700;
+      color: black;
+      letter-spacing: 0.5px;
+    }
+
     [data-md-color-scheme="slate"] .md-header__inner::after {
       content: "v{{ config.extra.version }}";
       display: inline-block;
       margin-left: auto;
       margin-right: 16px;
-      padding: 3px 10px;
-      font-size: 0.6rem;
-      font-weight: 600;
-      color: #ffffff;
-      background: linear-gradient(135deg, #8b5cf6, #e91e63, #ef4444);
-      border-radius: 20px;
-      letter-spacing: 0.3px;
+      padding: 4px 12px;
+      font-size: 0.5rem;
+      font-weight: 700;
+      color: white;
+      letter-spacing: 0.5px;
     }
   </style>
+{% endblock %}
+
+{% block footer %}
+  <div class="md-footer">
+    <div class="md-footer-meta md-typeset">
+      <div class="md-footer-meta__inner md-grid">
+        <div class="md-copyright"></div>
+      </div>
+    </div>
+  </div>
 {% endblock %}
