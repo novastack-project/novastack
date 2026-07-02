@@ -1,5 +1,5 @@
 import json
-from typing import Any
+from typing import Any, Literal
 
 from ibm_watson_openscale.supporting_classes.enums import (
     DataSetTypes,
@@ -23,6 +23,49 @@ class DataSets(BaseModel):
     """
 
     wos_client: Any
+
+    def get_id(
+        self,
+        subscription_id: str,
+        data_set_type: Literal["feedback", "payload_logging"],
+    ) -> str | None:
+        """
+        Retrieves the ID of the data set matching the subscription and type.
+
+        Args:
+            subscription_id (str): The ID of the subscription associated with the data set.
+            data_set_type (Literal["feedback", "payload_logging"]): The type of data set to retrieve.
+        """
+        data_sets = self.wos_client.data_sets.list(
+            target_target_id=subscription_id,
+            type=data_set_type,
+        ).result.data_sets
+
+        data_set_id = None
+        if len(data_sets) > 0:
+            data_set_id = data_sets[0].metadata.id
+
+        return data_set_id
+
+    def get_records(
+        self,
+        data_set_id: str,
+    ) -> str | None:
+        """
+        Retrieves the records by the specified data set.
+
+        Args:
+            data_set_id (str): The ID of the data set to query.
+        """
+        json_data = self.wos_client.data_sets.get_list_of_records(
+            data_set_id=data_set_id,
+            format="list",
+        ).result
+
+        if not json_data.get("records"):
+            return None
+
+        return json_data["records"][0]
 
     def store_payload_records(
         self,

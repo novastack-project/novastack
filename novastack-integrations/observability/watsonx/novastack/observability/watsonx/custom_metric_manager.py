@@ -1,6 +1,6 @@
 import datetime
 import uuid
-from typing import Any, Literal
+from typing import Any
 
 from ibm_cloud_sdk_core.authenticators import Authenticator as IBMAuthenticator
 from novastack.core.bridge.pydantic import BaseModel, PrivateAttr
@@ -66,15 +66,17 @@ class WatsonxCustomMetricsManager(BaseModel):
     region: str = Region.US_SOUTH
     service_instance_id: str | None = None
 
-    _wos_client: Any | None = PrivateAttr(default=None)
+    __wos_client: Any | None = PrivateAttr(default=None)
 
-    def model_post_init(self, __context: Any) -> None:  # noqa: PYI063
-        if not self._wos_client:
-            self._wos_client = WosClientFactory.create_client(
+    @property
+    def _wos_client(self) -> Any:
+        if self.__wos_client is None:
+            self.__wos_client = WosClientFactory.create_client(
                 authenticator=self.authenticator,
                 region=self.region,
                 service_instance_id=self.service_instance_id,
             )
+        return self.__wos_client
 
     def _add_integrated_system(
         self,
@@ -165,21 +167,18 @@ class WatsonxCustomMetricsManager(BaseModel):
         integrated_system_id: str,
         custom_monitor_id: str,
     ):
-        payload = [
+        payload = self._get_patch_request_field(
+            "/parameters",
             {
-                "op": "replace",
-                "path": "/parameters",
-                "value": {
-                    "custom_metrics_provider_id": integrated_system_id,
-                    "custom_metrics_wait_time": 60,
-                    "enable_custom_metric_runs": True,
-                },
+                "custom_metrics_provider_id": integrated_system_id,
+                "custom_metrics_wait_time": 60,
+                "enable_custom_metric_runs": True,
             },
-        ]
+        )
 
         return self._wos_client.monitor_instances.update(
             custom_monitor_id,
-            payload,
+            [payload],
             update_metadata_only=True,
         ).result
 
@@ -190,40 +189,6 @@ class WatsonxCustomMetricsManager(BaseModel):
         op_name: str = "replace",
     ) -> dict:
         return {"op": op_name, "path": field_path, "value": field_value}
-
-    def _get_dataset_id(
-        self,
-        subscription_id: str,
-        data_set_type: Literal["feedback", "payload_logging"],
-    ) -> str:
-        data_sets = self._wos_client.data_sets.list(
-            target_target_id=subscription_id,
-            type=data_set_type,
-        ).result.data_sets
-        data_set_id = None
-        if len(data_sets) > 0:
-            data_set_id = data_sets[0].metadata.id
-        return data_set_id
-
-    def _get_dataset_data(self, data_set_id: str):
-        json_data = self._wos_client.data_sets.get_list_of_records(
-            data_set_id=data_set_id,
-            format="list",
-        ).result
-
-        if not json_data.get("records"):
-            return None
-
-        return json_data["records"][0]
-
-    def _get_existing_data_mart(self):
-        data_marts = self._wos_client.data_marts.list().result.data_marts
-        if len(data_marts) == 0:
-            raise Exception(
-                "No data marts found. Please ensure at least one data mart is available.",
-            )
-
-        return data_marts[0].metadata.id
 
     def create_metric_definition(
         self,
@@ -295,15 +260,13 @@ class WatsonxCustomMetricsManager(BaseModel):
         )
 
         # Associate the external monitor with the integrated system
-        payload = [
-            {
-                "op": "add",
-                "path": "/parameters",
-                "value": {"monitor_definition_ids": [external_monitor_id]},
-            },
-        ]
+        payload = self._get_patch_request_field(
+            "/parameters",
+            {"monitor_definition_ids": [external_monitor_id]},
+            op_name="add",
+        )
 
-        self._wos_client.integrated_systems.update(integrated_system_id, payload)
+        self._wos_client.integrated_systems.update(integrated_system_id, [payload])
 
         return {
             "integrated_system_id": integrated_system_id,
@@ -408,9 +371,7 @@ class WatsonxCustomMetricsManager(BaseModel):
         )
 
         measurement_request = MonitorMeasurementRequest(
-            timestamp=datetime.datetime.now(datetime.timezone.utc).strftime(
-                "%Y-%m-%dT%H:%M:%S.%fZ",
-            ),
+            timestamp=datetime.datetime.now(datetime.timezone.utc),
             run_id=run_id,
             metrics=[request_records],
         )
