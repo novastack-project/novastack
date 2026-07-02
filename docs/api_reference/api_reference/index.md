@@ -1,7 +1,19 @@
-# API Reference
+# Novastack
 
-Welcome to **Novastack** API reference! This documentation provide modules and integrations used in the framework.
+Build production-ready AI applications with modular, composable components.
+
+---
 
 ## Installation
 
-`% pip install novastack`
+=== "pip"
+
+    ```bash
+    $ pip install novastack
+    ```
+
+=== "uv"
+
+    ```bash
+    $ uv add novastack
+    ```
