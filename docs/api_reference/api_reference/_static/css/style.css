@@ -91,6 +91,39 @@ p {
     font-size: 14px !important;
 }
 
+/* Example boxes from docstrings */
+details.example {
+    border: 1px solid #e5e7eb !important;
+    border-left-width: 1px !important;
+    border-radius: 8px !important;
+    box-shadow: none !important;
+    overflow: hidden;
+}
+
+[data-md-color-scheme="slate"] details.example {
+    border-color: #374151 !important;
+}
+
+details.example > summary {
+    background-color: #f9fafb !important;
+    border-bottom: 1px solid #e5e7eb;
+    font-weight: 500;
+}
+
+details.example > summary::before {
+    background-color: #9ca3af !important;
+    color: #9ca3af !important;
+}
+
+details.example > summary::after {
+    color: #9ca3af !important;
+}
+
+[data-md-color-scheme="slate"] details.example > summary {
+    background-color: #1f2937 !important;
+    border-bottom-color: #374151;
+}
+
 /* Terminal macOS style for bash/shell code blocks */
 .language-bash.highlight,
 .language-shell.highlight,
