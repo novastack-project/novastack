@@ -496,14 +496,14 @@ wheels = [
 
 [[package]]
 name = "importlib-metadata"
-version = "9.0.0"
+version = "8.9.0"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "zipp" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/a9/01/15bb152d77b21318514a96f43af312635eb2500c96b55398d020c93d86ea/importlib_metadata-9.0.0.tar.gz", hash = "sha256:a4f57ab599e6a2e3016d7595cfd72eb4661a5106e787a95bcc90c7105b831efc", size = 56405, upload-time = "2026-03-20T06:42:56.999Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/e7/72/c600ae4f68c28fc19f9c31b9403053e5dbb8cace2e6842c7b7c3e4d42fe9/importlib_metadata-8.9.0.tar.gz", hash = "sha256:58850626cef4bd2df100378b0f2aea9724a7b92f10770d547725b047078f99ee", size = 56140, upload-time = "2026-03-20T16:56:26.362Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/38/3d/2d244233ac4f76e38533cfcb2991c9eb4c7bf688ae0a036d30725b8faafe/importlib_metadata-9.0.0-py3-none-any.whl", hash = "sha256:2d21d1cc5a017bd0559e36150c21c830ab1dc304dedd1b7ea85d20f45ef3edd7", size = 27789, upload-time = "2026-03-20T06:42:55.665Z" },
+    { url = "https://files.pythonhosted.org/packages/7d/f9/97f2ca8bb3ec6e4b1d64f983ebe98b9a192faddff67fac3d6303a537e670/importlib_metadata-8.9.0-py3-none-any.whl", hash = "sha256:e0f761b6ea91ced3b0844c14c9d955224d538105921f8e6754c00f6ca79fba7f", size = 27220, upload-time = "2026-03-20T16:56:25.07Z" },
 ]
 
 [[package]]
@@ -661,7 +661,7 @@ wheels = [
 
 [[package]]
 name = "litellm"
-version = "1.82.5"
+version = "1.84.10"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "aiohttp" },
@@ -677,9 +677,9 @@ dependencies = [
     { name = "tiktoken" },
     { name = "tokenizers" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/d7/f0/ec42ee14b388ce1d08a1df638f894ed7f1e6ac35b9daf0588ff7f7d52262/litellm-1.82.5.tar.gz", hash = "sha256:7988a9b48c8ccd9e5ebced80a4dfce9ce87083b303c3f67082450a4ad6dd312f", size = 17406156, upload-time = "2026-03-21T00:03:53.239Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/c9/c4/512c8cb204450b585bb7bee2cef9466c8b79b90cf774766f319de5c444ed/litellm-1.84.10.tar.gz", hash = "sha256:5ccb6aec803c35f463a7ea1a446030fe99f7c556388b435dc2fb7ad91aa48a24", size = 15123874, upload-time = "2026-06-24T03:57:19.791Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/68/1f/b6c8043eec81eade53a4d0e15a50b788ab0e82661e01a25e0b8536a4dca0/litellm-1.82.5-py3-none-any.whl", hash = "sha256:e1012ab816352215c4e00776dd48b0c68058b537888a8ff82cca62af19e6fb11", size = 15589652, upload-time = "2026-03-21T00:03:48.87Z" },
+    { url = "https://files.pythonhosted.org/packages/5b/88/e45bcdefc7a85bbef8eb852111dd4e02b92ea25727b6009c78893a768deb/litellm-1.84.10-py3-none-any.whl", hash = "sha256:7e175ebec04aa92149794adc83e4dd82b60d2b833c1ec265d68c08e8f56edde5", size = 16753091, upload-time = "2026-06-24T03:57:16.759Z" },
 ]
 
 [[package]]
@@ -872,7 +872,7 @@ dev = [
 [package.metadata]
 requires-dist = [
     { name = "novastack-core", specifier = ">=0.1.1,<0.2.0" },
-    { name = "novastack-llms-litellm", specifier = ">=0.1.0,<0.2.0" },
+    { name = "novastack-llms-litellm", specifier = ">=0.1.1,<0.2.0" },
     { name = "novastack-loaders-file", specifier = ">=0.1.0,<0.2.0" },
     { name = "pytest", marker = "extra == 'dev'", specifier = ">=9.1.1,<10.0.0" },
     { name = "pytest-asyncio", marker = "extra == 'dev'", specifier = ">=1.4.0,<2.0.0" },
@@ -916,15 +916,15 @@ wheels = [
 
 [[package]]
 name = "novastack-llms-litellm"
-version = "0.1.0"
+version = "0.1.1"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "litellm" },
     { name = "novastack-core" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/3a/c4/35becffd3ba08909e471f529d4a7f5aa43e6e95a572e80bf4a7f60d6392b/novastack_llms_litellm-0.1.0.tar.gz", hash = "sha256:756dd14304eaca3819a0a86a2a4dc0814a923d8c30e3aeec82639fd95a8f3d43", size = 2884, upload-time = "2026-06-25T19:18:29.718Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/90/32/5f02568268b044108b1820d2ff9faa5652eaee0523e83e5026dfed3dc558/novastack_llms_litellm-0.1.1.tar.gz", hash = "sha256:47c6b05e12faa133a74cc253564c15d1f363f5f3a4a1f78dd8b4181abd3a3279", size = 2882, upload-time = "2026-07-03T20:24:01.85Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/81/e6/e540b3d7b261e1506c7504719c103400cee4571bb9ede50e5395a983d139/novastack_llms_litellm-0.1.0-py3-none-any.whl", hash = "sha256:3e1ab2c1e5302239029e776aa8ab5e9c7401af1e7009d387b5a7d6a1823b1d29", size = 2913, upload-time = "2026-06-25T19:18:28.747Z" },
+    { url = "https://files.pythonhosted.org/packages/d4/a0/9e166ea731947858fb1cebc646c307ffaf1955a54c8a0b2ad779eea458b9/novastack_llms_litellm-0.1.1-py3-none-any.whl", hash = "sha256:d18e996aebf9b0903a7cdaf1816539c58eed55a1302750a78ba0cde5f65657cc", size = 2912, upload-time = "2026-07-03T20:24:02.76Z" },
 ]
 
 [[package]]
