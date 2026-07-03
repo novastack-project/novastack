@@ -10,6 +10,13 @@ markdown_extensions:
   - admonition
   - pymdownx.details
   - pymdownx.superfences
+  - pymdownx.tabbed:
+      alternate_style: true
+  - pymdownx.highlight:
+      pygments_lang_class: true
+      linenums: true
+      linenums_style: pymdownx-inline
+  - pymdownx.inlinehilite
   - md_in_html
 
 extra:
@@ -57,22 +64,20 @@ plugins:
 
 nav:
   - API Reference: index.md
-  # - Getting Started:
-  #   - Installation: getting-started/installation.md
-  - Embeddings: embeddings/
-  - Evaluation: evaluation/
-  - Guardrails: guardrails/
   - LLMs: llms/
-  - Observability: observability/
-  - Prompts: prompts/
+  - Embeddings: embeddings/
   - Loaders: loaders/
-  - Retriever: retrievers/
   - Text Chunkers: text_chunkers/
   - Vector Stores: vector_stores/
+  - Retrievers: retrievers/
+  - Prompts: prompts/
+  - Evaluation: evaluation/
+  - Guardrails: guardrails/
+  - Observability: observability/
   - Workflows:
     - Overview: workflows/overview.md
     - Run as a Server: workflows/run_server.md
-    - Benchmark: workflows/benchmark_report.md
+    - Benchmarks: workflows/benchmark_report.md
     - Prebuilt:
       - Document Ingestion:  workflows/prebuilt/document_ingestion.md
 
@@ -97,12 +102,12 @@ theme:
         icon: material/brightness-4
         name: Switch to light mode
   features:
-    # - navigation.tabs
-    # - navigation.sections
-    - navigation.instant        
-    - navigation.indexes        
-    - navigation.top                    
+    - navigation.instant
+    - navigation.indexes
+    - navigation.top
     - navigation.tracking
     - search.highlight
+    - search.suggest
     - content.code.copy
+    - content.code.annotate
     - toc.follow

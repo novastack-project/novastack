@@ -2,7 +2,17 @@
 title: LiteLLM
 ---
 
-`% pip install novastack-llms-litellm`
+=== "pip"
+
+    ```bash
+    $ pip install novastack-llms-litellm
+    ```
+
+=== "uv"
+
+    ```bash
+    $ uv add novastack-llms-litellm
+    ```
 
 ::: novastack.llms.litellm
     options:
