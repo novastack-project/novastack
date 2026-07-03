@@ -12,10 +12,17 @@ from novastack.core.bridge.pydantic import BaseModel, PrivateAttr
 from novastack.core.utils import validate_enum
 from novastack.core.utils.retry import retry, stop_after_attempt
 from novastack.observability.watsonx.enums import Region, TaskType
+from novastack.observability.watsonx.integrated_system import (
+    IntegratedSystemCredentials,
+)
+from novastack.observability.watsonx.schemas import WatsonxMetricSpec
 from novastack.observability.watsonx.supporting_classes.clients import (
     AIGovFactsClientFactory,
     WMLClientFactory,
     WosClientFactory,
+)
+from novastack.observability.watsonx.supporting_classes.custom_metrics import (
+    CustomMetrics,
 )
 from novastack.observability.watsonx.supporting_classes.data_sets import DataSets
 from novastack.observability.watsonx.supporting_classes.utils import (
@@ -532,9 +539,9 @@ class WatsonxGovClient(BaseModel):
             )
             ```
         """
-        data_sets_mgr = DataSets(wos_client=self._wos_client)
+        data_sets = DataSets(wos_client=self._wos_client)
 
-        return data_sets_mgr.store_payload_records(
+        return data_sets.store_payload_records(
             request_records=request_records,
             subscription_id=subscription_id,
         )
@@ -571,9 +578,178 @@ class WatsonxGovClient(BaseModel):
             )
             ```
         """
-        data_sets_mgr = DataSets(wos_client=self._wos_client)
+        data_sets = DataSets(wos_client=self._wos_client)
 
-        return data_sets_mgr.store_feedback_records(
+        return data_sets.store_feedback_records(
             request_records=request_records,
             subscription_id=subscription_id,
+        )
+
+    def create_custom_metric_definition(
+        self,
+        name: str,
+        metrics: list[WatsonxMetricSpec],
+        integrated_system_url: str,
+        integrated_system_credentials: IntegratedSystemCredentials,
+        schedule: bool = False,
+    ) -> dict:
+        """
+        Creates a custom metric definition for IBM watsonx.governance.
+
+        This must be done before using custom metrics.
+
+        Args:
+            name (str): The name of the custom metric group.
+            metrics (list[WatsonxMetricSpec]): A list of metrics to be measured.
+            integrated_system_url (str): The URL of the external metric provider.
+            integrated_system_credentials (IntegratedSystemCredentials): The credentials for the integrated system.
+            schedule (bool, optional): Enable or disable the scheduler. Defaults to `False`.
+
+        Example:
+            ```python
+            from novastack.observability.watsonx import (
+                WatsonxMetricSpec,
+                IntegratedSystemCredentials,
+                WatsonxMetricThreshold,
+            )
+
+            client.create_custom_metric_definition(
+                name="Custom LLM Quality",
+                metrics=[
+                    WatsonxMetricSpec(
+                        name="context_quality",
+                        applies_to=[
+                            "retrieval_augmented_generation",
+                            "summarization",
+                        ],
+                        thresholds=[
+                            WatsonxMetricThreshold(
+                                threshold_type="lower_limit", default_value=0.75
+                            )
+                        ],
+                    )
+                ],
+                integrated_system_url="IS_URL",
+                integrated_system_credentials=IntegratedSystemCredentials(
+                    auth_type="basic", username="USERNAME", password="PASSWORD"
+                ),
+            )
+            ```
+        """
+        custom_metrics = CustomMetrics(wos_client=self._wos_client)
+
+        return custom_metrics.create_metric_definition(
+            name=name,
+            metrics=metrics,
+            integrated_system_url=integrated_system_url,
+            integrated_system_credentials=integrated_system_credentials,
+            schedule=schedule,
+        )
+
+    def associate_monitor_instance(
+        self,
+        integrated_system_id: str,
+        monitor_definition_id: str,
+        subscription_id: str,
+    ):
+        """
+        Associate the specified monitor definition to the specified subscription.
+
+        Args:
+            integrated_system_id (str): The ID of the integrated system.
+            monitor_definition_id (str): The ID of the custom metric monitor instance.
+            subscription_id (str): The ID of the subscription to associate the monitor with.
+
+        Example:
+            ```python
+            client.associate_monitor_instance(
+                integrated_system_id="019667ca-5687-7838-8d29-4ff70c2b36b0",
+                monitor_definition_id="custom_llm_quality",
+                subscription_id="0195e95d-03a4-7000-b954-b607db10fe9e",
+            )
+            ```
+        """
+        custom_metrics = CustomMetrics(wos_client=self._wos_client)
+
+        return custom_metrics.associate_monitor_instance(
+            integrated_system_id=integrated_system_id,
+            monitor_definition_id=monitor_definition_id,
+            subscription_id=subscription_id,
+        )
+
+    def log_metrics(
+        self,
+        monitor_instance_id: str,
+        run_id: str,
+        request_records: dict[str, float | int],
+    ):
+        """
+        Log aggregated metrics measurements to the specified custom monitor instance.
+
+        Args:
+            monitor_instance_id (str): The unique ID of the monitor instance.
+            run_id (str): The ID of the monitor run that generated the metrics.
+            request_records (dict[str | float | int]): dict containing the metrics to be published.
+
+        Example:
+            ```python
+            client.log_metrics(
+                monitor_instance_id="01966801-f9ee-7248-a706-41de00a8a998",
+                run_id="RUN_ID",
+                request_records={"context_quality": 0.914, "sensitivity": 0.85},
+            )
+            ```
+        """
+        custom_metrics = CustomMetrics(wos_client=self._wos_client)
+
+        return custom_metrics.log_metrics(
+            monitor_instance_id=monitor_instance_id,
+            run_id=run_id,
+            request_records=request_records,
+        )
+
+    def log_record_metrics(
+        self,
+        custom_data_set_id: str,
+        reference_data_set_id: str,
+        computed_on: str,
+        run_id: str,
+        request_records: list[dict],
+    ):
+        """
+        Log record-level metrics for individual transactions in the custom dataset.
+
+        Args:
+            custom_data_set_id (str): The ID of the custom metric data set.
+            reference_data_set_id (str): The dataset ID on which the metric was calculated.
+            computed_on (str): The dataset on which the metric was calculated (e.g., payload or feedback).
+            run_id (str): The ID of the monitor run that generated the metrics.
+            request_records (list[dict]): A list of dictionaries containing the records to be stored.
+
+        Example:
+            ```python
+            client.log_record_metrics(
+                custom_data_set_id="CUSTOM_DATASET_ID",
+                reference_data_set_id="COMPUTED_ON_DATASET_ID",
+                computed_on="payload",
+                run_id="RUN_ID",
+                request_records=[
+                    {
+                        "reference_record_id": "COMPUTED_ON_RECORD_ID",
+                        "record_timestamp": "2025-12-09T00:00:00Z",
+                        "context_quality": 0.786,
+                        "pii": 0.05,
+                    }
+                ],
+            )
+            ```
+        """
+        custom_metrics = CustomMetrics(wos_client=self._wos_client)
+
+        return custom_metrics.log_record_metrics(
+            custom_data_set_id=custom_data_set_id,
+            reference_data_set_id=reference_data_set_id,
+            computed_on=computed_on,
+            run_id=run_id,
+            request_records=request_records,
         )

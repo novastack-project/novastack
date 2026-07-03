@@ -1,7 +1,7 @@
-from novastack.observability.watsonx.aigov_client import WatsonxGovClient
 from novastack.observability.watsonx.base import (
     WatsonxObservability,
 )
+from novastack.observability.watsonx.client import WatsonxGovClient
 from novastack.observability.watsonx.custom_metric_manager import (
     WatsonxCustomMetricsManager,
 )

@@ -1,6 +1,6 @@
 import warnings
 
-from novastack.observability.watsonx.aigov_client import WatsonxGovClient
+from novastack.observability.watsonx.client import WatsonxGovClient
 
 
 class WatsonxMonitorManager(WatsonxGovClient):
