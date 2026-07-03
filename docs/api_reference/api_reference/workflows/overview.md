@@ -6,11 +6,17 @@ A powerful and flexible event-driven workflow engine for Python, designed to bui
 
 ## Installation
 
-```bash
-pip install novastack-workflows
-# or
-uv add novastack-workflows
-```
+=== "pip"
+
+    ```bash
+    $ pip install novastack-workflows
+    ```
+
+=== "uv"
+
+    ```bash
+    $ uv add novastack-workflows
+    ```
 
 ## Quick Start
 
@@ -126,4 +132,4 @@ asyncio.run(server.serve(host="0.0.0.0", port=8080))
 
 ## License
 
-[Apache License 2.0](LICENSE)
+[Apache License 2.0](https://github.com/novastack-project/novastack/blob/main/LICENSE)

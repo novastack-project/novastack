@@ -2,7 +2,17 @@
 title: watsonx
 ---
 
-`% pip install novastack-observability-watsonx`
+=== "pip"
+
+    ```bash
+    $ pip install novastack-observability-watsonx
+    ```
+
+=== "uv"
+
+    ```bash
+    $ uv add novastack-observability-watsonx
+    ```
 
 ## Observability
 
@@ -13,7 +23,7 @@ title: watsonx
       show_root_full_path: false
       heading_level: 3
 
-## watsonx.governance Client
+## Client
 
 ::: novastack.observability.watsonx.WatsonxGovClient
     options:
@@ -22,7 +32,6 @@ title: watsonx
       show_root_full_path: false
       heading_level: 3
 
-## Custom Metrics
 ::: novastack.observability.watsonx.WatsonxCustomMetricsManager
     options:
       members_order: alphabetical

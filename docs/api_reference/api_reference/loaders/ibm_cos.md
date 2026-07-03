@@ -2,7 +2,17 @@
 title: IBM COS
 ---
 
-`% pip install novastack-loaders-ibm-cos`
+=== "pip"
+
+    ```bash
+    $ pip install novastack-loaders-ibm-cos
+    ```
+
+=== "uv"
+
+    ```bash
+    $ uv add novastack-loaders-ibm-cos
+    ```
 
 ::: novastack.loaders.ibm_cos
     options:

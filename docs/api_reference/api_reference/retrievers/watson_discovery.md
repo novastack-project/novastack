@@ -2,7 +2,17 @@
 title: Watson Discovery
 ---
 
-`% pip install novastack-retrievers-watson-discovery`
+=== "pip"
+
+    ```bash
+    $ pip install novastack-retrievers-watson-discovery
+    ```
+
+=== "uv"
+
+    ```bash
+    $ uv add novastack-retrievers-watson-discovery
+    ```
 
 ::: novastack.retrievers.watson_discovery
     options:

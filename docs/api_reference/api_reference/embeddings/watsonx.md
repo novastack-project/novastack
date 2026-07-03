@@ -2,7 +2,17 @@
 title: watsonx
 ---
 
-`% pip install novastack-embeddings-watsonx`
+=== "pip"
+
+    ```bash
+    $ pip install novastack-embeddings-watsonx
+    ```
+
+=== "uv"
+
+    ```bash
+    $ uv add novastack-embeddings-watsonx
+    ```
 
 ::: novastack.embeddings.watsonx
     options:

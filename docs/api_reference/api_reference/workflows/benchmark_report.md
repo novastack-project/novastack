@@ -1,5 +1,5 @@
 ---
-title: Performance Benchmark Report
+title: Benchmarks Report
 ---
 
 ## 🧪 Environment
@@ -12,7 +12,7 @@ title: Performance Benchmark Report
 - **Total Memory**: 36.00 GB
 - **novastack-workflows Version**: 1.1.2
 
-## 1. 📈 Scalability Benchmark
+## 1. 📈 Scalability
 
 How performance scales with workflow complexity and data size.
 
@@ -37,7 +37,7 @@ How performance scales with workflow complexity and data size.
 | 1,000 | 0.91 ms | 1099.38 wf/s | 0.02 MB |
 | 10,000 | 1.12 ms | 894.12 wf/s | 0.09 MB |
 
-## 2. 🔄 Concurrency Benchmark
+## 2. 🔄 Concurrency
 
 How performance scales with parallel workflow execution.
 
