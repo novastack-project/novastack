@@ -23,7 +23,7 @@ title: watsonx
       show_root_full_path: false
       heading_level: 3
 
-## Setup Client
+## Client
 
 ::: novastack.observability.watsonx.WatsonxGovClient
     options:
@@ -32,7 +32,6 @@ title: watsonx
       show_root_full_path: false
       heading_level: 3
 
-## Custom Metrics Client
 ::: novastack.observability.watsonx.WatsonxCustomMetricsManager
     options:
       members_order: alphabetical

@@ -160,6 +160,14 @@ details.example > summary {
     font-weight: 500;
 }
 
+.md-typeset details.example > summary:before {
+    background-color: #9ca3af !important;
+}
+
+.md-typeset details.example > summary:after {
+    color: #9ca3af !important;
+}
+
 [data-md-color-scheme="slate"] details.example > summary {
     background-color: #1f2937 !important;
     border-bottom-color: #374151;
