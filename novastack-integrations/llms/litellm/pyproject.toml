@@ -4,14 +4,14 @@ build-backend = "hatchling.build"
 
 [project]
 name = "novastack-llms-litellm"
-version = "0.1.0"
+version = "0.1.1"
 description = "novastack integration llms LiteLLM"
 authors = [{ name = "Leonardo Furnielis", email = "leonardofurnielis@outlook.com" }]
 license = { text = "Apache-2.0" }
 readme = "README.md"
 requires-python = ">=3.11,<3.14"
 dependencies = [
-    "litellm>=1.81.13,<1.82.6",
+    "litellm>=1.84.0 ,<1.85.0",
     "novastack-core>=0.1.0,<0.2.0",
 ]
 
