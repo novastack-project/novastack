@@ -14,6 +14,8 @@ markdown_extensions:
       alternate_style: true
   - pymdownx.highlight:
       pygments_lang_class: true
+      linenums: true
+      linenums_style: pymdownx-inline
   - pymdownx.inlinehilite
   - md_in_html
 

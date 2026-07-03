@@ -1,5 +1,4 @@
 @import url('https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap');
-@import url('https://fonts.googleapis.com/css2?family=Geist:ital,wght@0,100..900;1,100..900&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=Geist+Mono:wght@100..900&display=swap');
 
 :root > * {
@@ -9,7 +8,7 @@
 }
 
 body {
-    font-family: "Geist", "Inter", sans-serif;
+    font-family: "Inter", sans-serif;
     font-weight: 400;
     font-optical-sizing: auto;
 }
@@ -20,13 +19,72 @@ p {
 
 .highlight > pre > code {
     font-family: "Geist Mono", monospace;
-    font-size: 12px;
-    border-radius: 10px;
+    font-size: 13px;
 }
 
-/* Signature blocks only need the border-radius override */
-.doc-signature.highlight > pre > code {
+/* Python code blocks — dark style (excludes doc signatures) */
+.language-python.highlight:not(.doc-signature) {
+    --md-code-bg-color: #0d0d0d;
+    background: #0d0d0d;
     border-radius: 10px;
+    overflow: hidden;
+    margin-top: 0.6rem;
+}
+
+.language-python.highlight:not(.doc-signature) > pre {
+    background: #0d0d0d;
+    margin: 0;
+    padding: 1rem 1.25rem;
+}
+
+.language-python.highlight:not(.doc-signature) > pre > code {
+    color: #e2e8f0;
+    line-height: 1.7;
+}
+
+/* Pygments token colours for dark background */
+.language-python.highlight:not(.doc-signature) .k,
+.language-python.highlight:not(.doc-signature) .kn,
+.language-python.highlight:not(.doc-signature) .kd,
+.language-python.highlight:not(.doc-signature) .kr,
+.language-python.highlight:not(.doc-signature) .kt { color: #c792ea; } /* keywords */
+
+.language-python.highlight:not(.doc-signature) .nb,
+.language-python.highlight:not(.doc-signature) .bp,
+.language-python.highlight:not(.doc-signature) .nf,
+.language-python.highlight:not(.doc-signature) .nd { color: #82aaff; } /* builtins, functions, decorators */
+
+.language-python.highlight:not(.doc-signature) .nc { color: #ffcb6b; } /* class names */
+
+.language-python.highlight:not(.doc-signature) .s,
+.language-python.highlight:not(.doc-signature) .s1,
+.language-python.highlight:not(.doc-signature) .s2,
+.language-python.highlight:not(.doc-signature) .sa,
+.language-python.highlight:not(.doc-signature) .sb,
+.language-python.highlight:not(.doc-signature) .se,
+.language-python.highlight:not(.doc-signature) .si,
+.language-python.highlight:not(.doc-signature) .ss { color: #c3e88d; } /* strings */
+
+.language-python.highlight:not(.doc-signature) .mi,
+.language-python.highlight:not(.doc-signature) .mf,
+.language-python.highlight:not(.doc-signature) .mh { color: #f78c6c; } /* numbers */
+
+.language-python.highlight:not(.doc-signature) .c,
+.language-python.highlight:not(.doc-signature) .c1,
+.language-python.highlight:not(.doc-signature) .cm { color: #546e7a; font-style: italic; } /* comments */
+
+.language-python.highlight:not(.doc-signature) .n,
+.language-python.highlight:not(.doc-signature) .nn { color: #e2e8f0; } /* names */
+
+.language-python.highlight:not(.doc-signature) .o,
+.language-python.highlight:not(.doc-signature) .ow,
+.language-python.highlight:not(.doc-signature) .p  { color: #89ddff; } /* operators, punctuation */
+
+/* Line numbers */
+.language-python.highlight:not(.doc-signature) [data-linenos]::before {
+    background-color: #0d0d0d !important;
+    color: #4b5563 !important;
+    box-shadow: -.05rem 0 #1f2937 inset;
 }
 
 /* Left sidebar */
@@ -87,7 +145,6 @@ p {
 /* Example boxes from docstrings */
 details.example {
     border: 1px solid #e5e7eb !important;
-    border-left-width: 1px !important;
     border-radius: 8px !important;
     box-shadow: none !important;
     overflow: hidden;
@@ -101,12 +158,6 @@ details.example > summary {
     background-color: #f9fafb !important;
     border-bottom: 1px solid #e5e7eb;
     font-weight: 500;
-}
-
-/* summary icon uses mask-image, only background-color applies */
-details.example > summary::before,
-details.example > summary::after {
-    background-color: #9ca3af !important;
 }
 
 [data-md-color-scheme="slate"] details.example > summary {
@@ -124,6 +175,13 @@ details.example > summary::after {
     background: #1e1e2e;
     border-radius: 12px;
     overflow: hidden;
+}
+
+/* Hide line numbers inside terminal blocks */
+.language-bash.highlight [data-linenos]::before,
+.language-shell.highlight [data-linenos]::before,
+.language-console.highlight [data-linenos]::before {
+    display: none;
 }
 
 .language-bash.highlight::before,
@@ -186,7 +244,6 @@ details.example > summary::after {
 .md-code__nav {
     background-color: transparent !important;
     padding: 0.3rem !important;
-    gap: 0 !important;
 }
 
 .md-code__button {
@@ -200,7 +257,7 @@ details.example > summary::after {
     color: #d6336c !important;
 }
 
-/* Copy button inside dark terminal blocks */
+/* Copy button inside terminal blocks */
 .language-bash.highlight .md-code__button,
 .language-shell.highlight .md-code__button,
 .language-console.highlight .md-code__button {
@@ -211,4 +268,86 @@ details.example > summary::after {
 .language-shell.highlight .md-code__button:hover,
 .language-console.highlight .md-code__button:hover {
     color: #cdd6f4 !important;
+}
+
+/* Tables */
+.md-typeset table:not([class]) {
+    border-collapse: collapse;
+    font-size: 14px;
+    border: 1px solid #e5e7eb;
+}
+
+.md-typeset table:not([class]) th {
+    background-color: #f3f4f6;
+    color: #111827;
+    font-weight: 600;
+    padding: 0.5rem 1.25rem;
+    border-bottom: 1px solid #e5e7eb;
+    border-right: 1px solid #e5e7eb;
+    text-align: center;
+}
+
+.md-typeset table:not([class]) th:last-child {
+    border-right: none;
+}
+
+.md-typeset table:not([class]) td {
+    padding: 0.4rem 12px;
+    border-bottom: 1px solid #e5e7eb;
+    border-right: 1px solid #e5e7eb;
+    vertical-align: top;
+    color: #374151;
+}
+
+.md-typeset table:not([class]) td:last-child {
+    border-right: none;
+}
+
+.md-typeset table:not([class]) tr:last-child td {
+    border-bottom: none;
+}
+
+.md-typeset table:not([class]) tbody tr:nth-child(odd) {
+    background-color: #f9fafb;
+}
+
+/* Remove default hover */
+.md-typeset table:not([class]) tbody tr:hover {
+    background-color: transparent !important;
+    box-shadow: none !important;
+}
+
+.md-typeset table:not([class]) tbody tr:nth-child(odd):hover {
+    background-color: #f9fafb !important;
+}
+
+/* Dark mode */
+[data-md-color-scheme="slate"] .md-typeset table:not([class]) {
+    border-color: #374151;
+}
+
+[data-md-color-scheme="slate"] .md-typeset table:not([class]) th {
+    background-color: #1f2937;
+    color: #f9fafb;
+    border-bottom-color: #374151;
+    border-right-color: #374151;
+}
+
+[data-md-color-scheme="slate"] .md-typeset table:not([class]) td {
+    border-bottom-color: #374151;
+    border-right-color: #374151;
+    color: #d1d5db;
+}
+
+[data-md-color-scheme="slate"] .md-typeset table:not([class]) tbody tr:nth-child(odd) {
+    background-color: #1f2937;
+}
+
+[data-md-color-scheme="slate"] .md-typeset table:not([class]) tbody tr:hover {
+    background-color: transparent !important;
+    box-shadow: none !important;
+}
+
+[data-md-color-scheme="slate"] .md-typeset table:not([class]) tbody tr:nth-child(odd):hover {
+    background-color: #1f2937 !important;
 }
