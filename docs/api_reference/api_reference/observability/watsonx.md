@@ -32,13 +32,6 @@ title: watsonx
       show_root_full_path: false
       heading_level: 3
 
-::: novastack.observability.watsonx.WatsonxCustomMetricsManager
-    options:
-      members_order: alphabetical
-      show_root_heading: true
-      show_root_full_path: false
-      heading_level: 3
-
 ## Supporting Classes
 ::: novastack.observability.watsonx.IntegratedSystemCredentials
     options:
