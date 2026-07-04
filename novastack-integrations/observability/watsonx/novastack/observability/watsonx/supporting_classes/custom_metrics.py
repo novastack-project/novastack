@@ -225,7 +225,7 @@ class CustomMetrics(BaseModel):
 
         return monitor_instance_details
 
-    def log_metrics(
+    def log_measurements(
         self,
         monitor_instance_id: str,
         run_id: str,
@@ -264,7 +264,7 @@ class CustomMetrics(BaseModel):
             json_patch_operation=patch_payload,
         ).result
 
-    def log_record_metrics(
+    def log_record_measurements(
         self,
         custom_data_set_id: str,
         reference_data_set_id: str,

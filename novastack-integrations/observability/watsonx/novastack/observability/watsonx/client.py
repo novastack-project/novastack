@@ -3,6 +3,7 @@ import uuid
 from typing import Any
 
 import certifi
+from deprecated import deprecated
 from ibm_aigov_facts_client import (
     DetachedPromptTemplate,
     PromptTemplate,
@@ -585,7 +586,7 @@ class WatsonxGovClient(BaseModel):
             subscription_id=subscription_id,
         )
 
-    def create_custom_metric_definition(
+    def create_custom_metric(
         self,
         name: str,
         metrics: list[WatsonxMetricSpec],
@@ -613,7 +614,7 @@ class WatsonxGovClient(BaseModel):
                 WatsonxMetricThreshold,
             )
 
-            client.create_custom_metric_definition(
+            client.create_custom_metric(
                 name="Custom LLM Quality",
                 metrics=[
                     WatsonxMetricSpec(
@@ -639,6 +640,23 @@ class WatsonxGovClient(BaseModel):
         custom_metrics = CustomMetrics(wos_client=self._wos_client)
 
         return custom_metrics.create_metric_definition(
+            name=name,
+            metrics=metrics,
+            integrated_system_url=integrated_system_url,
+            integrated_system_credentials=integrated_system_credentials,
+            schedule=schedule,
+        )
+
+    @deprecated(reason="Use `create_custom_metric` instead.", version="0.1.4")
+    def create_custom_metric_definition(
+        self,
+        name: str,
+        metrics: list[WatsonxMetricSpec],
+        integrated_system_url: str,
+        integrated_system_credentials: IntegratedSystemCredentials,
+        schedule: bool = False,
+    ) -> dict:
+        return self.create_custom_metric(
             name=name,
             metrics=metrics,
             integrated_system_url=integrated_system_url,
@@ -677,7 +695,7 @@ class WatsonxGovClient(BaseModel):
             subscription_id=subscription_id,
         )
 
-    def log_metrics(
+    def log_measurements(
         self,
         monitor_instance_id: str,
         run_id: str,
@@ -693,7 +711,7 @@ class WatsonxGovClient(BaseModel):
 
         Example:
             ```python
-            client.log_metrics(
+            client.log_measurements(
                 monitor_instance_id="01966801-f9ee-7248-a706-41de00a8a998",
                 run_id="RUN_ID",
                 request_records={"context_quality": 0.914, "sensitivity": 0.85},
@@ -702,13 +720,26 @@ class WatsonxGovClient(BaseModel):
         """
         custom_metrics = CustomMetrics(wos_client=self._wos_client)
 
-        return custom_metrics.log_metrics(
+        return custom_metrics.log_measurements(
             monitor_instance_id=monitor_instance_id,
             run_id=run_id,
             request_records=request_records,
         )
 
-    def log_record_metrics(
+    @deprecated(reason="Use `log_measurements` instead.", version="0.1.4")
+    def log_metrics(
+        self,
+        monitor_instance_id: str,
+        run_id: str,
+        request_records: dict[str, float | int],
+    ):
+        return self.log_measurements(
+            monitor_instance_id=monitor_instance_id,
+            run_id=run_id,
+            request_records=request_records,
+        )
+
+    def log_record_measurements(
         self,
         custom_data_set_id: str,
         reference_data_set_id: str,
@@ -717,7 +748,7 @@ class WatsonxGovClient(BaseModel):
         request_records: list[dict],
     ):
         """
-        Log record-level metrics for individual transactions in the custom dataset.
+        Log record-level measurements for individual records in the custom dataset.
 
         Args:
             custom_data_set_id (str): The ID of the custom metric data set.
@@ -728,7 +759,7 @@ class WatsonxGovClient(BaseModel):
 
         Example:
             ```python
-            client.log_record_metrics(
+            client.log_record_measurements(
                 custom_data_set_id="CUSTOM_DATASET_ID",
                 reference_data_set_id="COMPUTED_ON_DATASET_ID",
                 computed_on="payload",
@@ -746,7 +777,24 @@ class WatsonxGovClient(BaseModel):
         """
         custom_metrics = CustomMetrics(wos_client=self._wos_client)
 
-        return custom_metrics.log_record_metrics(
+        return custom_metrics.log_record_measurements(
+            custom_data_set_id=custom_data_set_id,
+            reference_data_set_id=reference_data_set_id,
+            computed_on=computed_on,
+            run_id=run_id,
+            request_records=request_records,
+        )
+
+    @deprecated(reason="Use `log_record_measurements` instead.", version="0.1.4")
+    def log_record_metrics(
+        self,
+        custom_data_set_id: str,
+        reference_data_set_id: str,
+        computed_on: str,
+        run_id: str,
+        request_records: list[dict],
+    ):
+        return self.log_record_measurements(
             custom_data_set_id=custom_data_set_id,
             reference_data_set_id=reference_data_set_id,
             computed_on=computed_on,
