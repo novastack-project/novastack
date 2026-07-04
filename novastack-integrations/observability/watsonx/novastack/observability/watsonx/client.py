@@ -2,9 +2,8 @@ import os
 import uuid
 from typing import Any
 
-from deprecated import deprecated
-
 import certifi
+from deprecated import deprecated
 from ibm_aigov_facts_client import (
     DetachedPromptTemplate,
     PromptTemplate,
