@@ -14,10 +14,10 @@ jobs:
       pages: write
       id-token: write
     steps:
-    - uses: actions/checkout@v4
+    - uses: actions/checkout@v5
 
     - name: Set up Python
-      uses: actions/setup-python@v4
+      uses: actions/setup-python@v5
       with:
           python-version: 3.12
       
@@ -35,7 +35,7 @@ jobs:
       working-directory: docs/api_reference
 
     - name: Setup pages
-      uses: actions/configure-pages@v4
+      uses: actions/configure-pages@v5
       
     - name: Upload pages artifact
       uses: actions/upload-pages-artifact@v3
@@ -44,4 +44,4 @@ jobs:
         
     - id: deployment
       name: Deploy to github pages
-      uses: actions/deploy-pages@v4
+      uses: actions/deploy-pages@v5
