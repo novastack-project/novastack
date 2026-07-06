@@ -16,10 +16,10 @@ from novastack.core.instrumentation.span import Span
 from novastack.core.observability import BaseObservability
 from novastack.core.prompts import PromptTemplate
 from novastack.core.prompts.utils import extract_template_vars
-from novastack.observability.watsonx.enums import Region
 from novastack.observability.watsonx.client import (
     WatsonxGovClient,
 )
+from novastack.observability.watsonx.enums import Region
 
 
 class WatsonxObservability(BaseObservability):
