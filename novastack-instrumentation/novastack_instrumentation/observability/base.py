@@ -1,9 +1,11 @@
 import inspect
-from typing import Any
+import threading
+from typing import Any, Optional
 
-from pydantic import BaseModel
+from pydantic import BaseModel, Field, PrivateAttr
 
 from novastack_instrumentation.events.base import BaseEvent
+from novastack_instrumentation.span.base import Span
 
 
 class BaseObservability(BaseModel):
@@ -15,6 +17,24 @@ class BaseObservability(BaseModel):
     """
 
     model_config = {"arbitrary_types_allowed": True}
+
+    open_spans: dict[str, Span] = Field(
+        default_factory=dict, description="Dictionary of open spans."
+    )
+    completed_spans: list[Span] = Field(
+        default_factory=list, description="List of completed spans."
+    )
+    dropped_spans: list[Span] = Field(
+        default_factory=list, description="List of dropped spans."
+    )
+    events: list[BaseEvent] = Field(default_factory=list, description="List of events.")
+    _lock: Optional[threading.Lock] = PrivateAttr(default=None)
+
+    @property
+    def lock(self) -> threading.Lock:
+        if self._lock is None:
+            self._lock = threading.Lock()
+        return self._lock
 
     @classmethod
     def class_name(cls) -> str:

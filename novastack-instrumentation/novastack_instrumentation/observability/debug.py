@@ -2,9 +2,9 @@ import inspect
 import threading
 from collections import defaultdict
 from datetime import datetime
-from typing import TYPE_CHECKING, Any, Optional
+from typing import TYPE_CHECKING, Any
 
-from pydantic import Field, PrivateAttr
+from pydantic import Field
 
 from novastack_instrumentation.events import BaseEvent
 from novastack_instrumentation.observability.base import BaseObservability
@@ -17,20 +17,8 @@ if TYPE_CHECKING:
 class DebugObservability(BaseObservability):
     """Sends observability data to console to track information (in-memory)."""
 
-    open_spans: dict[str, Span] = Field(
-        default_factory=dict, description="Dictionary of open spans."
-    )
-    completed_spans: list[Span] = Field(
-        default_factory=list, description="List of completed spans."
-    )
-    dropped_spans: list[Span] = Field(
-        default_factory=list, description="List of dropped spans."
-    )
-    events: list[BaseEvent] = Field(default_factory=list, description="List of events.")
-    _lock: Optional[threading.Lock] = PrivateAttr(default=None)
-
     print_span_on_end: bool = Field(
-        default=True,
+        default=False,
         description="Automatically print trace tree when a root span completes.",
     )
 
