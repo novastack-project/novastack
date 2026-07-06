@@ -17,8 +17,8 @@ from novastack.core.observability import BaseObservability
 from novastack.core.prompts import PromptTemplate
 from novastack.core.prompts.utils import extract_template_vars
 from novastack.observability.watsonx.enums import Region
-from novastack.observability.watsonx.external_monitor_manager import (
-    WatsonxExternalMonitorManager,
+from novastack.observability.watsonx.client import (
+    WatsonxGovClient,
 )
 
 
@@ -114,7 +114,7 @@ class WatsonxObservability(BaseObservability):
                         else {}
                     )
 
-                    wxgov_client = WatsonxExternalMonitorManager(
+                    wxgov_client = WatsonxGovClient(
                         authenticator=self.authenticator,
                         region=self.region,
                         service_instance_id=self.service_instance_id,
