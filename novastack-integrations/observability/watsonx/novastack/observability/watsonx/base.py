@@ -6,7 +6,7 @@ from datetime import datetime
 from typing import Any
 
 from ibm_cloud_sdk_core.authenticators import Authenticator as IBMAuthenticator
-from novastack.core.bridge.pydantic import Field, PrivateAttr, field_validator
+from novastack.core.bridge.pydantic import Field, field_validator
 from novastack.core.instrumentation.events import BaseEvent
 from novastack.core.instrumentation.events.llm import (
     LLMCompletionEndEvent,
@@ -47,14 +47,6 @@ class WatsonxObservability(BaseObservability):
         set_global_handler(watsonx_handler)
         ```
     """
-
-    open_spans: dict[str, Span] = Field(
-        default_factory=dict, description="Dictionary of open spans."
-    )
-    open_events: dict[str, BaseEvent] = Field(
-        default_factory=dict, description="Dictionary of start events."
-    )
-    _lock: threading.Lock | None = PrivateAttr(default=None)
 
     authenticator: IBMAuthenticator
     subscription_id: str
