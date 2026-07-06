@@ -2,10 +2,10 @@ import inspect
 import threading
 from typing import Any, Optional
 
-from novastack_instrumentation.span.base import Span
 from pydantic import BaseModel, Field, PrivateAttr
 
 from novastack_instrumentation.events.base import BaseEvent
+from novastack_instrumentation.span.base import Span
 
 
 class BaseObservability(BaseModel):
