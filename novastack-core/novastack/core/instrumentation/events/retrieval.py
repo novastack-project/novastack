@@ -1,5 +1,5 @@
-from novastack.core.document import DocumentWithScore
 from donkey_instrumentation.events import BaseEvent
+from novastack.core.document import DocumentWithScore
 
 
 class RetrievalStartEvent(BaseEvent):

@@ -1,5 +1,5 @@
-from novastack.core.document import Document
 from donkey_instrumentation.events import BaseEvent
+from novastack.core.document import Document
 
 
 class LoaderStartEvent(BaseEvent):
