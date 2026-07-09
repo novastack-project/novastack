@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
-from novastack_instrumentation.events import BaseEvent
+from donkey_instrumentation.events import BaseEvent
 
 if TYPE_CHECKING:
     from novastack.core.llms.schemas import (

@@ -1,4 +1,4 @@
-from novastack_utils.retry import (
+from donkey_toolkit.retry import (
     retry,
     retry_if_exception,
     retry_if_exception_type,

@@ -1,4 +1,4 @@
-from novastack_utils.http.authenticators import (
+from donkey_toolkit.http.authenticators import (
     BasicAuthenticator,
     IBMIAMAuthenticator,
     NoAuthAuthenticator,

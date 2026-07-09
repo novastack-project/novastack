@@ -1,4 +1,4 @@
-from novastack_instrumentation import (
+from donkey_instrumentation import (
     DispatcherSpanMixin,
     SpanExceptionEvent,
     get_dispatcher,

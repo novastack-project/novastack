@@ -112,6 +112,15 @@ wheels = [
 ]
 
 [[package]]
+name = "defusedxml"
+version = "0.7.1"
+source = { registry = "https://pypi.org/simple" }
+sdist = { url = "https://files.pythonhosted.org/packages/0f/d5/c66da9b79e5bdb124974bfe172b4daf3c984ebd9c2a06e2b8a4dc7331c72/defusedxml-0.7.1.tar.gz", hash = "sha256:1bb3032db185915b62d7c6209c5a8792be6a32ab2fedacc84e01b52c51aa3e69", size = 75520, upload-time = "2021-03-08T10:59:26.269Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/07/6c/aa3f2f849e01cb6a001cd8554a88d4c77c5c1a31c95bdf1cf9301e6d9ef4/defusedxml-0.7.1-py2.py3-none-any.whl", hash = "sha256:a352e7e428770286cc899e2542b6cdaedb2b4953ff269a210103ec58f6198a61", size = 25604, upload-time = "2021-03-08T10:59:24.45Z" },
+]
+
+[[package]]
 name = "deprecated"
 version = "1.3.1"
 source = { registry = "https://pypi.org/simple" }
@@ -121,6 +130,66 @@ dependencies = [
 sdist = { url = "https://files.pythonhosted.org/packages/49/85/12f0a49a7c4ffb70572b6c2ef13c90c88fd190debda93b23f026b25f9634/deprecated-1.3.1.tar.gz", hash = "sha256:b1b50e0ff0c1fddaa5708a2c6b0a6588bb09b892825ab2b214ac9ea9d92a5223", size = 2932523, upload-time = "2025-10-30T08:19:02.757Z" }
 wheels = [
     { url = "https://files.pythonhosted.org/packages/84/d0/205d54408c08b13550c733c4b85429e7ead111c7f0014309637425520a9a/deprecated-1.3.1-py2.py3-none-any.whl", hash = "sha256:597bfef186b6f60181535a29fbe44865ce137a5079f295b479886c82729d5f3f", size = 11298, upload-time = "2025-10-30T08:19:00.758Z" },
+]
+
+[[package]]
+name = "donkey-core"
+version = "0.1.0"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "deprecated" },
+    { name = "donkey-instrumentation" },
+    { name = "donkey-toolkit" },
+    { name = "donkey-workflows" },
+    { name = "httpx" },
+    { name = "nltk" },
+    { name = "numpy" },
+    { name = "pydantic" },
+    { name = "tiktoken" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/fa/48/ceb433295b6ab7a5ca999e656c7b0be6155e081eca3ca432d2758fa853ad/donkey_core-0.1.0.tar.gz", hash = "sha256:ae3d943acb0ff686cb122c593e3d3f04e62fc8737ffa1dcbc6aa205acd9633e1", size = 18102, upload-time = "2026-07-09T19:20:27.862Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/71/3a/344d0de2c67348c2d72b22d44b67620152704108adc9627f767d0b8c6758/donkey_core-0.1.0-py3-none-any.whl", hash = "sha256:9bc7da41d31a683af2eba84e242b0506af8c901e35853ce63ce59bf92bc7d4c5", size = 35481, upload-time = "2026-07-09T19:20:26.59Z" },
+]
+
+[[package]]
+name = "donkey-instrumentation"
+version = "0.1.0"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "pydantic" },
+    { name = "wrapt" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/ac/ab/dc8d60e1dde550b30f54eea31a18c778b88b58e05d2fe6e9818e130072c4/donkey_instrumentation-0.1.0.tar.gz", hash = "sha256:1b2c39863295bed77aa6417790dc34afaf6029a1c70ab883996746d9896e4029", size = 9211, upload-time = "2026-07-09T18:52:14.061Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/9c/81/c9f60df34c2cde5569da3afcb0e1ec6970923afa520d99bdd350557a9e7a/donkey_instrumentation-0.1.0-py3-none-any.whl", hash = "sha256:a63de0871708d018a041204f4a8f3995744f90bd0d2a3a83ab1875979ea8ba8d", size = 12761, upload-time = "2026-07-09T18:52:12.853Z" },
+]
+
+[[package]]
+name = "donkey-toolkit"
+version = "0.1.0"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "httpx" },
+    { name = "pydantic" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/66/34/5a38ddc4df1d2f5582bf5470bc33ccb5579b853f87808e2b4b7b75b3a1da/donkey_toolkit-0.1.0.tar.gz", hash = "sha256:c3803530863d8367b27cc2f14b084c9bf5ea9ec107d22c4277e8a676c914b632", size = 8207, upload-time = "2026-07-09T18:48:11.227Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/b5/8a/3db308e7bb45b3f98ff85a75dd1a1341baa2d9aeb42086f74944026b6f91/donkey_toolkit-0.1.0-py3-none-any.whl", hash = "sha256:69552c502f8f434ff29092ba82e9304ec1bf8f0eca284a61bbadad740fbc7e93", size = 13578, upload-time = "2026-07-09T18:48:10.178Z" },
+]
+
+[[package]]
+name = "donkey-workflows"
+version = "0.1.0"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "donkey-instrumentation" },
+    { name = "donkey-toolkit" },
+    { name = "pydantic" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/47/d5/b12cf55d9db96dac320cdce3b539e1b73c321bcc2669a5ab45f8f5d3bf07/donkey_workflows-0.1.0.tar.gz", hash = "sha256:0f0309a560c7a361a55bc8650e24e9f8309da684115135a99d91e05aab0e055b", size = 27194, upload-time = "2026-07-09T19:15:33.671Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/4e/8a/6a73cc1a1a2f7148d75fc48dcdbe895e9eb817c1b3c922b3d6085c73a7cc/donkey_workflows-0.1.0-py3-none-any.whl", hash = "sha256:c399a635d9963b20bac097086f7b37e136af6b5a29b6fb31c872120a2ef142df", size = 35330, upload-time = "2026-07-09T19:15:32.557Z" },
 ]
 
 [[package]]
@@ -189,30 +258,32 @@ wheels = [
 
 [[package]]
 name = "nltk"
-version = "3.9.4"
+version = "3.10.0"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "click" },
+    { name = "defusedxml" },
     { name = "joblib" },
     { name = "regex" },
     { name = "tqdm" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/74/a1/b3b4adf15585a5bc4c357adde150c01ebeeb642173ded4d871e89468767c/nltk-3.9.4.tar.gz", hash = "sha256:ed03bc098a40481310320808b2db712d95d13ca65b27372f8a403949c8b523d0", size = 2946864, upload-time = "2026-03-24T06:13:40.641Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/96/02/df4f105b28a7c16b0e41423bc09cf0f1b8a305df4ef0b10ca74a2e4c648c/nltk-3.10.0.tar.gz", hash = "sha256:4fbac1d98203cbcd1b5d94a2877fb822300072d80604a5e7fae49d2c5f84e8c1", size = 3089244, upload-time = "2026-07-08T02:39:13.562Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/9d/91/04e965f8e717ba0ab4bdca5c112deeab11c9e750d94c4d4602f050295d39/nltk-3.9.4-py3-none-any.whl", hash = "sha256:f2fa301c3a12718ce4a0e9305c5675299da5ad9e26068218b69d692fda84828f", size = 1552087, upload-time = "2026-03-24T06:13:38.47Z" },
+    { url = "https://files.pythonhosted.org/packages/6e/89/a0b0f35e2820d6a99d75ea1c11977ee6d5c9e6658eceb45b0c7620881faa/nltk-3.10.0-py3-none-any.whl", hash = "sha256:54ff84d4916d3ef127e8953bee0023f6a6b320b75d634a19e06ef056d3d244bf", size = 1716144, upload-time = "2026-07-08T02:39:09.753Z" },
 ]
 
 [[package]]
 name = "novastack-core"
-version = "0.1.2"
+version = "0.1.3"
 source = { editable = "." }
 dependencies = [
     { name = "deprecated" },
+    { name = "donkey-core" },
+    { name = "donkey-instrumentation" },
+    { name = "donkey-toolkit" },
+    { name = "donkey-workflows" },
     { name = "httpx" },
     { name = "nltk" },
-    { name = "novastack-instrumentation" },
-    { name = "novastack-utils" },
-    { name = "novastack-workflows" },
     { name = "numpy" },
     { name = "pydantic" },
     { name = "tiktoken" },
@@ -229,11 +300,12 @@ dev = [
 [package.metadata]
 requires-dist = [
     { name = "deprecated", specifier = ">=1.3.1,<2.0.0" },
+    { name = "donkey-core", specifier = ">=0.1.0,<0.2.0" },
+    { name = "donkey-instrumentation", specifier = ">=0.1.0,<0.2.0" },
+    { name = "donkey-toolkit", specifier = ">=0.1.0,<0.2.0" },
+    { name = "donkey-workflows", specifier = ">=0.1.0,<0.2.0" },
     { name = "httpx", specifier = ">=0.28.1,<1.0.0" },
     { name = "nltk", specifier = ">=3.9.2,<4.0.0" },
-    { name = "novastack-instrumentation", specifier = ">=0.1.1,<0.2.0" },
-    { name = "novastack-utils", specifier = ">=0.1.0,<0.2.0" },
-    { name = "novastack-workflows", specifier = ">=0.1.1,<0.2.0" },
     { name = "numpy", specifier = ">=1.26.4,<2.0.0" },
     { name = "pydantic", specifier = ">=2.12.5,<3.0.0" },
     { name = "pytest", marker = "extra == 'dev'", specifier = ">=9.1.1,<10.0.0" },
@@ -243,46 +315,6 @@ requires-dist = [
     { name = "tiktoken", specifier = ">=0.12.0,<0.13.0" },
 ]
 provides-extras = ["dev"]
-
-[[package]]
-name = "novastack-instrumentation"
-version = "0.1.1"
-source = { registry = "https://pypi.org/simple" }
-dependencies = [
-    { name = "pydantic" },
-    { name = "wrapt" },
-]
-sdist = { url = "https://files.pythonhosted.org/packages/2d/f1/c95e4008b97cf88642d0754059248fc05186ffdb4c66a6200a76f1f11f2f/novastack_instrumentation-0.1.1.tar.gz", hash = "sha256:41ee662a4345e197563ca740ffdbc93751778e4a7a146fa08536a5ccbcbdfe42", size = 9209, upload-time = "2026-07-06T15:01:58.089Z" }
-wheels = [
-    { url = "https://files.pythonhosted.org/packages/7e/f7/2ccfed445df9d723c5cc800977d5b9bb7ffc6b64c4b49d39c201dab4c4af/novastack_instrumentation-0.1.1-py3-none-any.whl", hash = "sha256:31d4f517419f235704d6fdd627c24983665dd2a8c3af42119b070ea4c083c90c", size = 12867, upload-time = "2026-07-06T15:01:58.946Z" },
-]
-
-[[package]]
-name = "novastack-utils"
-version = "0.1.0"
-source = { registry = "https://pypi.org/simple" }
-dependencies = [
-    { name = "httpx" },
-    { name = "pydantic" },
-]
-sdist = { url = "https://files.pythonhosted.org/packages/0a/da/d05484f3b3c7d9f9a4f84af2644d4c50188817fbdecd25408af844d23028/novastack_utils-0.1.0.tar.gz", hash = "sha256:e13bfb5917821bc7e7ebd271e9862b0dab28bfef7fd2dba509d67f21ac31b6de", size = 8226, upload-time = "2026-06-24T16:23:38.461Z" }
-wheels = [
-    { url = "https://files.pythonhosted.org/packages/84/84/8c6c222a9f843dd0fc2a7f96130336a802b7f513b9b3a963b979656b60ad/novastack_utils-0.1.0-py3-none-any.whl", hash = "sha256:8b30c208ed32f3e488d01d6736f4a576bd0cd2cd4c74fbbc7ed904dd8e8c3748", size = 13644, upload-time = "2026-06-24T16:23:37.513Z" },
-]
-
-[[package]]
-name = "novastack-workflows"
-version = "0.1.1"
-source = { registry = "https://pypi.org/simple" }
-dependencies = [
-    { name = "novastack-instrumentation" },
-    { name = "novastack-utils" },
-    { name = "pydantic" },
-]
-sdist = { url = "https://files.pythonhosted.org/packages/f4/02/e0b8b68636c94696b30150f07614518b9e4dbfee90f8ce102ac4964f94f4/novastack_workflows-0.1.1.tar.gz", hash = "sha256:df2d29bb8114998f3653d8e557ad41cc3532ac4b21039b5ecf11ac41e86c8051", size = 27263, upload-time = "2026-06-26T17:36:41.369Z" }
-wheels = [
-    { url = "https://files.pythonhosted.org/packages/37/9f/b75b3d5d4d42bff4d746745960383f39cebe438e01ee44718c08bbf11261/novastack_workflows-0.1.1-py3-none-any.whl", hash = "sha256:e14b3279f1d7fe10d1cab4397bc93f68219082c12d43f5e9cda623feb85ade88", size = 35613, upload-time = "2026-06-26T17:36:39.831Z" },
-]
 
 [[package]]
 name = "numpy"

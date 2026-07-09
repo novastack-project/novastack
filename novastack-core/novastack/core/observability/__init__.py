@@ -1,4 +1,4 @@
-from novastack_instrumentation.observability import (
+from donkey_instrumentation.observability import (
     BaseObservability,
     DebugObservability,
 )
