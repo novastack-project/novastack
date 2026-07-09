@@ -2,8 +2,8 @@ import datetime
 import uuid
 from typing import Any
 
-from novastack.core.bridge.pydantic import BaseModel
-from novastack.core.utils import validate_enum
+from donkey.core.bridge.pydantic import BaseModel
+from donkey.core.toolkit import validate_enum
 from novastack.observability.watsonx.enums import DataSetType
 from novastack.observability.watsonx.integrated_system import (
     IntegratedSystemCredentials,

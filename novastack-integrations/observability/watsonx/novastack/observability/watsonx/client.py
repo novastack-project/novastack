@@ -4,14 +4,14 @@ from typing import Any
 
 import certifi
 from deprecated import deprecated
+from donkey.core.bridge.pydantic import BaseModel, PrivateAttr
+from donkey.core.toolkit import validate_enum
+from donkey.core.toolkit.retry import retry, stop_after_attempt
 from ibm_aigov_facts_client import (
     DetachedPromptTemplate,
     PromptTemplate,
 )
 from ibm_cloud_sdk_core.authenticators import Authenticator as IBMAuthenticator
-from novastack.core.bridge.pydantic import BaseModel, PrivateAttr
-from novastack.core.utils import validate_enum
-from novastack.core.utils.retry import retry, stop_after_attempt
 from novastack.observability.watsonx.enums import Region, TaskType
 from novastack.observability.watsonx.integrated_system import (
     IntegratedSystemCredentials,

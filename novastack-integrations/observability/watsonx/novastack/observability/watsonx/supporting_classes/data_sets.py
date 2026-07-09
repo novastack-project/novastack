@@ -1,11 +1,11 @@
 import json
 from typing import Any, Literal
 
+from donkey.core.bridge.pydantic import BaseModel
 from ibm_watson_openscale.supporting_classes.enums import (
     DataSetTypes,
     TargetTypes,
 )
-from novastack.core.bridge.pydantic import BaseModel
 from novastack.observability.watsonx.supporting_classes.utils import (
     build_payload,
     suppress_output,

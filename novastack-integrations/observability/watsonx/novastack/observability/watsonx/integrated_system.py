@@ -1,6 +1,6 @@
 from typing import Any, Literal
 
-from novastack.core.bridge.pydantic import BaseModel, SecretStr
+from donkey.core.bridge.pydantic import BaseModel, SecretStr
 
 
 class IntegratedSystemCredentials(BaseModel):

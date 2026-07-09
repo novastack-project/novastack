@@ -1,7 +1,7 @@
 import logging
 from typing import TYPE_CHECKING, Any
 
-from novastack.core.utils import validate_type
+from donkey.core.toolkit import validate_type
 from novastack.observability.watsonx.authenticators import (
     CloudPakForDataAuthenticator,
     IAMAuthenticator,

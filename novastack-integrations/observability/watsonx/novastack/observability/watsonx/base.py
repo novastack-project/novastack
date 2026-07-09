@@ -5,17 +5,17 @@ import threading
 from datetime import datetime
 from typing import Any
 
-from ibm_cloud_sdk_core.authenticators import Authenticator as IBMAuthenticator
-from novastack.core.bridge.pydantic import Field, field_validator
-from novastack.core.instrumentation.events import BaseEvent
-from novastack.core.instrumentation.events.llm import (
+from donkey.core.bridge.pydantic import Field, field_validator
+from donkey.core.instrumentation.events import BaseEvent
+from donkey.core.instrumentation.events.llm import (
     LLMCompletionEndEvent,
     LLMCompletionStartEvent,
 )
-from novastack.core.instrumentation.span import Span
-from novastack.core.observability import BaseObservability
-from novastack.core.prompts import PromptTemplate
-from novastack.core.prompts.utils import extract_template_vars
+from donkey.core.instrumentation.span import Span
+from donkey.core.observability import BaseObservability
+from donkey.core.prompts import PromptTemplate
+from donkey.core.prompts.utils import extract_template_vars
+from ibm_cloud_sdk_core.authenticators import Authenticator as IBMAuthenticator
 from novastack.observability.watsonx.client import (
     WatsonxGovClient,
 )
@@ -35,7 +35,7 @@ class WatsonxObservability(BaseObservability):
 
     Example:
         ```python
-        from novastack.core import set_global_handler
+        from donkey.core import set_global_handler
         from novastack.observability.watsonx import WatsonxObservability
 
         # watsonx.governance (IBM Cloud)

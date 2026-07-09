@@ -1,6 +1,6 @@
 from typing import Literal
 
-from novastack.core.bridge.pydantic import BaseModel
+from donkey.core.bridge.pydantic import BaseModel
 
 
 class WatsonxMetricThreshold(BaseModel):
