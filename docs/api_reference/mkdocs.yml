@@ -20,7 +20,7 @@ markdown_extensions:
   - md_in_html
 
 extra:
-  version: "0.1.1"
+  version: "0.1.3"
 extra_css:
   - _static/css/style.css
 
@@ -48,38 +48,11 @@ plugins:
             show_root_toc_entry: false
           paths:
             - ../../novastack-core/
-            - ../../novastack-integrations/embeddings/huggingface
-            - ../../novastack-integrations/embeddings/watsonx
-            - ../../novastack-integrations/guardrails/watsonx
-            - ../../novastack-integrations/llms/litellm
-            - ../../novastack-integrations/llms/watsonx
             - ../../novastack-integrations/observability/watsonx
-            - ../../novastack-integrations/loaders/docling
-            - ../../novastack-integrations/loaders/file
-            - ../../novastack-integrations/loaders/ibm_cos
-            - ../../novastack-integrations/loaders/watson_discovery
-            - ../../novastack-integrations/retrievers/watson_discovery
-            - ../../novastack-integrations/vector_stores/chroma
-            - ../../novastack-integrations/vector_stores/elasticsearch
 
 nav:
   - API Reference: index.md
-  - LLMs: llms/
-  - Embeddings: embeddings/
-  - Loaders: loaders/
-  - Text Chunkers: text_chunkers/
-  - Vector Stores: vector_stores/
-  - Retrievers: retrievers/
-  - Prompts: prompts/
-  - Evaluation: evaluation/
-  - Guardrails: guardrails/
   - Observability: observability/
-  - Workflows:
-    - Overview: workflows/overview.md
-    - Run as a Server: workflows/run_server.md
-    - Benchmarks: workflows/benchmark_report.md
-    - Prebuilt:
-      - Document Ingestion:  workflows/prebuilt/document_ingestion.md
 
 theme:
   name: material
